@@ -1,13 +1,13 @@
 const express = require("express");
 const router = express.Router();
 
-const testDao = require("../modules/test-dao.js");
+//const testDao = require("../modules/test-dao.js");
+const userDao = require("../modules/user-dao.js")
+
 
 router.get("/", async function(req, res) {
-
-    res.locals.title = "My route title!";
-    res.locals.allTestData = await testDao.retrieveAllTestData();
-
+    const allStuff = ["Fiona", "Annie", "Jennie", "Shiyan"];
+    res.locals.allTestData = allStuff;
     res.render("home");
 });
 
@@ -27,6 +27,10 @@ router.post("/login", async function(req, res) {
 
 router.post("/userHomePage", async function(req, res) {
     res.render("userpage");
+});
+
+router.get("/setting", async function(req, res) {
+    res.render("setting");
 });
 
 

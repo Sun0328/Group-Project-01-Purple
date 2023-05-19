@@ -19,11 +19,11 @@ async function retrieveDataById(id, table) {
     return testData;
 }
 
-async function retrieveAllData(table) {
+async function retrieveAllData(item) {
     const db = await dbPromise;
+    const table = item;
 
     const allTestData = await db.all(SQL`select * from ${table}`);
-
     return allTestData;
 }
 
@@ -51,4 +51,5 @@ module.exports = {
     retrieveAllData,
     updateData,
     deleteData
+
 };
