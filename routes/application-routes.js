@@ -6,7 +6,9 @@ const testDao = require("../modules/test-dao.js");
 router.get("/", async function(req, res) {
 
     res.locals.title = "My route title!";
-    res.locals.allTestData = await testDao.retrieveAllTestData();
+    res.locals.allTestData = await testDao.retrieveAllData();
+    const allTestData = await testDao.retrieveAllData();
+    console.log (allTestData);
 
     res.render("home");
 });
