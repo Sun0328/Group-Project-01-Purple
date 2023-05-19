@@ -35,6 +35,17 @@ async function retrieveDataById(id, table) {
     return testData;
 }
 
+
+async function retrieveAllData(item) {
+    const db = await dbPromise;
+    const table = item;
+
+    const allTestData = await db.all(SQL`select * from ${table}`);
+    return allTestData;
+}
+
+
+
 async function updateData(data, table, column) {
     const db = await dbPromise;
 
@@ -51,4 +62,5 @@ module.exports = {
     retrieveAllData,
     updateData,
     deleteData
+
 };

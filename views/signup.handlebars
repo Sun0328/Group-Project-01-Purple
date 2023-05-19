@@ -7,19 +7,45 @@
 
     <h1>Sign up</h1>
     <form action="./login" method="POST">
-        <div class="flex-col mb">
-            <label for="txtUsername">Username:</label>
-            <input type="text" name="username" id="txtUsername" required>
-        </div>
+      <label for="avatar">Choose an Avatar:</label>
+      <select id="avatar" name="avatar">
+        <option value="bear">bear</option>
+        <option value="dragon">dragon</option>
+        <option value="people">people</option>
+        <!-- 添加更多选项，每个选项的值对应相应的头像图标 -->
+      </select>
+      <img src="../public/images/bear.png" alt="" width="50px" />
+      <br />
 
-        <div class="flex-col mb">
-            <label for="txtPassword">Password:</label>
-            <input type="password" name="password" id="txtPassword" required>
-        </div>
+      <label for="username">Username:</label>
+      <input type="text" id="username" name="username" required /><br />
 
-        <div class="flex-row justify-sb align-center">
-            <button type="submit">Sign in</button>
-        </div>
+      <label for="password">Password:</label>
+      <input type="password" id="password" name="password" required /><br />
+
+      <label for="confirm_password">Confirm Password:</label>
+      <input
+        type="password"
+        id="confirm_password"
+        name="confirm_password"
+        required
+      /><br />
+
+      <label for="realname">Real Name:</label>
+      <input type="text" id="realname" name="realname" required /><br />
+
+      <label for="dob">Date of Birth:</label>
+      <input type="date" id="dob" name="dob" required /><br />
+
+      <label for="description">Description:</label><br />
+      <textarea
+        id="description"
+        name="description"
+        rows="4"
+        cols="50"
+      ></textarea
+      ><br />
+
+      <input type="submit" value="Sign Up" />
     </form>
-
 </div>
