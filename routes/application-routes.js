@@ -6,6 +6,8 @@ const userDao = require("../modules/user-dao.js")
 
 
 router.get("/", async function(req, res) {
+
+    res.locals.title = "My route title!";
     const allStuff = ["Fiona", "Annie", "Jennie", "Shiyan"];
     res.locals.allTestData = allStuff;
     res.render("home");
