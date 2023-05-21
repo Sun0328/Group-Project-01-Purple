@@ -7,12 +7,15 @@
 // Setup Express
 const express = require("express");
 const app = express();
+const path = require("path");
 const port = 3000;
 
 // Setup Handlebars
 const handlebars = require("express-handlebars");
 app.engine("handlebars", handlebars({
-    defaultLayout: "main"
+    defaultLayout: "main",
+    // Add partials (nav_bar)
+    partialsDir: path.join(__dirname, 'views/partials')
 }));
 app.set("view engine", "handlebars");
 
@@ -25,7 +28,6 @@ const cookieParser = require("cookie-parser");
 app.use(cookieParser());
 
 // Make the "public" folder available statically
-const path = require("path");
 app.use(express.static(path.join(__dirname, "public")));
 
 // Use the toaster middleware

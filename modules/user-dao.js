@@ -1,18 +1,19 @@
 const SQL = require("sql-template-strings");
 const dbPromise = require("./database.js");
 
-
-async function retrieveAllDataInLikes() {
+// Retrieve article data
+async function retrieveArticleData() {
     const db = await dbPromise;
 
-    const testData = await db.all(SQL`
-        select * from likes`);
+    const article = await db.all(SQL`
+        select * from article
+        `);
 
-    return testData;
+    return article;
 }
 
 
 
 module.exports = {
-    retrieveAllDataInLikes
+    retrieveArticleData
 }
