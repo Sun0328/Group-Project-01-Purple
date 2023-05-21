@@ -1,0 +1,107 @@
+.article {
+    display: flex;
+    flex-direction: column;
+    width: 600px;
+    margin: auto;
+    padding: 20px;
+}
+
+.user {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    height: 15%;
+}
+
+.content {
+    height: 75%;
+}
+
+.article_function {
+    height: 10%;
+}
+
+.user_photo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 70px;
+}
+
+.user_photo img {
+    width: 40px;
+}
+
+.user_detail {
+    height: 80%;
+    width: 100%;
+    margin: auto;
+    font-size: 20px;
+}
+
+.article_date {
+    font-size: 15px;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    margin-left: 10px;
+}
+
+.content .title {
+    font-size: 35px;
+    color: rgb(131, 33, 255);
+}
+
+/* Set the maximum height to 6 lines ?*/
+/* .content .text p {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 6;
+    overflow: hidden;
+    text-overflow: ellipsis;
+} */
+
+.content .image {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 15px;
+}
+
+.image img {
+    width: 180px;
+}
+
+.article_function {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin-top: 15px;
+    border-top: 1px dashed rgb(191, 194, 199);
+}
+
+.like_container,
+.comment_container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+    border-radius: 4px;
+}
+
+.like_container:hover,
+.comment_container:hover {
+    cursor: pointer;
+    color: white;
+    background-color: rgb(131, 33, 255);
+    transition: background-color .5s;
+}
+
+.like_container .like,
+.comment_container .comment {
+    margin-left: 5px;
+}
