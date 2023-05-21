@@ -1,7 +1,8 @@
+
+/*
 {{#if toastMessage}}
     <p>{{toastMessage}}</p>
 {{/if}}
-<h1>Welcome to the our website!</h1>
 
 
 {{#if hasLogin}}
@@ -12,14 +13,40 @@
     <a href="./login">Click here to Login in</a>
     <a href="./register">Click here to sign up</a>
 {{/if}}
+*/
 
-<h1>My stuff:</h1>
-<ul>
-    {{#each allTestData}}
-    <li>{{this}}</li>
-    {{/each}}
-</ul>
+<html>
+
+<head>
+  {{!-- Add ico ?--}}
+  <link rel="shortcut icon" href="/ico/favicon.ico" />
+  <!-- Add CSS files -->
+  <link rel="stylesheet" href="/css/nav_bar.css">
+  <link rel="stylesheet" href="/css/home_main.css">
+  <link rel="stylesheet" href="/css/article.css">
+  {{!-- Add fonts link from google fonts--}}
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
 
 
-<h1>A dragon:</h1>
-<img src="./images/Dragonite.png">
+
+</head>
+
+<body>
+  <!-- Include the navbar partial -->
+  {{> nav_bar}}
+
+  <div class="main">
+    {{!-- Article Part --}}
+    {{!-- Import each article date inside partial --}}
+    <div class="article_container">
+      {{#each Array}}
+      {{> article}}
+      {{/each}}
+    </div>
+
+  </div>
+
+</body>
+
+</html>

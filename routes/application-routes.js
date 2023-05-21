@@ -8,9 +8,8 @@ const crypto = require('crypto');
 const userDao = require("../modules/user-dao.js")
 
 
+
 router.get("/", async function(req, res) {
-    const allStuff = ["Fiona", "Annie", "Jennie", "Shiyan"];
-    res.locals.allTestData = allStuff;
 
     
     const cookies = req.cookies;
@@ -21,12 +20,22 @@ router.get("/", async function(req, res) {
         const hasLogin = "has login";
         res.locals.hasLogin = hasLogin;
     }
+  
+    res.locals.title = "Purple";
+    const articleDataArray = await userDao.retrieveArticleData();
+    // console.log(JSON.stringify(articleData));
+    res.locals.Array = articleDataArray;
     res.render("home");
 });
 
-router.get("/login", async function(req, res) {
+router.get("/article", async function (req, res) {
+    console.log("received!");
+})
+
+router.get("/login", async function (req, res) {
     res.render("login");
 });
+
 
 router.get("/register", async function(req, res) {
     res.render("register");

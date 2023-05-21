@@ -2,6 +2,7 @@ const SQL = require("sql-template-strings");
 const dbPromise = require("./database.js");
 
 
+
 async function hasSameUsername(username){
     const db = await dbPromise;
 
@@ -95,6 +96,16 @@ async function changeAvatar(nowUsername, newAvatar){
         WHERE id = ${user.id}`);
 }
 
+async function retrieveArticleData() {
+    const db = await dbPromise;
+
+    const article = await db.all(SQL`
+        select * from article
+        `);
+
+    return article;
+}
+
 async function changeLastName(nowUsername, newLastName){
     const db = await dbPromise;
 
@@ -172,5 +183,7 @@ module.exports = {
     changeLastName,
     changeFirstName,
     changeBirth,
-    changeDescription
+    changeDescription,
+    retrieveArticleData
+
 }
