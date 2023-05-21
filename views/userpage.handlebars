@@ -1,3 +1,10 @@
-<h1>Hi, there! Here is your own space!</h1>
-<a href="./">Click here back to home page</a>
-<a href="./setting">Click here to set your personal detail</a>
+<div class="container">
+    <a href="./">Click here back to home page</a>
+    <a href="./setting">Click here to set your personal detail</a>
+    <a href="./logout">Click here to logout</a>
+    {{! Display a toast message if one was provided. }}
+    {{#if toastMessage}}
+        <h1>{{toastMessage}}</h1>
+    {{/if}}
+    <h1>Here is your own space!</h1>
+</div>

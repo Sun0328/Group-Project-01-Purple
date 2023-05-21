@@ -1,7 +1,17 @@
+{{#if toastMessage}}
+    <p>{{toastMessage}}</p>
+{{/if}}
 <h1>Welcome to the our website!</h1>
 
-<a href="./login">Click here to Login in</a>
-<a href="./signup">Click here to sign up</a>
+
+{{#if hasLogin}}
+    <a href="./userHomePage">Click here Go to your homePage</a>
+    <a href="./setting">Click here to set your personal detail</a>
+    <a href="./logout">Click here to logout</a>
+    {{else}}
+    <a href="./login">Click here to Login in</a>
+    <a href="./register">Click here to sign up</a>
+{{/if}}
 
 <h1>My stuff:</h1>
 <ul>

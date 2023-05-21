@@ -1,2 +1,59 @@
-<p>You can set your message here</p>
-<a href="./">Click here back to home page</a>
+<div class="container">
+    <a href="./">Click here back to home page</a>
+    {{#if toastMessage}}
+        <p>{{toastMessage}}</p>
+    {{/if}}
+
+    <h1>You can set your information here</h1>
+
+    <form action="./changeAvatar" method="post">
+        <label for="avatar">Change your Avatar:</label>
+        <select id="selectAvatar" name="avatar">
+            <option value="cat">Cat</option>
+            <option value="bear">Bear</option>
+            <option value="dragon">Dragon</option>
+            <option value="alien">Alien</option>
+            <option value="human">Human</option>
+        </select>
+        <button type="submit" name="settingButton">Change</button>
+    </form>
+
+    <form action="./changeUsername" method="post">
+        <label for="textUsername">Username:</label>
+        <input type="text" id="textUsername" name="username" required>
+        <button type="submit" name="settingButton">Change</button>
+    </form>
+
+    <form action="./changeLastName" method="post">
+        <label for="textLastName">Last Name:</label>
+        <input type="text" id="textLastName" name="lastName" required>
+        <button type="submit" name="settingButton">Change</button>
+    </form>
+
+
+    <form action="./changeFirstName" method="post">
+        <label for="textFirstName">First Name:</label>
+        <input type="text" id="textFirstName" name="firstName" required>
+        <button type="submit" name="settingButton">Change</button>
+    </form>
+
+    <form action="./changeBirth" method="post">
+        <label for="textFirstName">Date of Birth:</label>
+        <input type="date" id="textBirth" name="birth" required>
+        <button type="submit" name="settingButton">Change</button>
+    </form>
+
+
+    <form action="./changeDescription" method="post">
+        <label for="textDescription">Description</label><br/>
+        <textarea id="textDescription" name="description" row="4" cols="50"></textarea>
+        <button type="submit" name="settingButton">Change</button>
+    </form>
+
+
+    <form action="./delete" method="post">
+        <h1>↓Or you can delete your account by click the button↓</h1>
+        <button type="submit" name="deleteButton">Delete My Acoount</button>
+        <p>be carefully! Any data in your account will be wiped out!</p>
+    </form>
+</div>
