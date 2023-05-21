@@ -1,51 +1,51 @@
 <div class="container">
-
+    <a href="./">Click here back to home page</a>
     {{! Display a toast message if one was provided. }}
     {{#if toastMessage}}
-    <p>{{toastMessage}}</p>
+        <p>{{toastMessage}}</p>
     {{/if}}
 
     <h1>Sign up</h1>
-    <form action="./login" method="POST">
-      <label for="avatar">Choose an Avatar:</label>
-      <select id="avatar" name="avatar">
-        <option value="bear">bear</option>
-        <option value="dragon">dragon</option>
-        <option value="people">people</option>
-        <!-- 添加更多选项，每个选项的值对应相应的头像图标 -->
-      </select>
-      <img src="../public/images/bear.png" alt="" width="50px" />
-      <br />
+    <form action="./signupMessage" method="POST">
+        <label for="avatar">Choose your Avatar:</label>
+        <select id="selectAvatar" name="avatar">
+            <option value="cat">Cat</option>
+            <option value="bear">Bear</option>
+            <option value="dragon">Dragon</option>
+            <option value="alien">Alien</option>
+            <option value="human">Human</option>
+        </select>
+        <br/>
 
-      <label for="username">Username:</label>
-      <input type="text" id="username" name="username" required /><br />
+        <label for="textUsername">Username:</label>
+        <input type="text" id="textUsername" name="username" required>
+        <br/>
 
-      <label for="password">Password:</label>
-      <input type="password" id="password" name="password" required /><br />
+        <label for="textPassword">Password:</label>
+        <input type="password" id="textPassword" name="password" required>
+        <br/>
 
-      <label for="confirm_password">Confirm Password:</label>
-      <input
-        type="password"
-        id="confirm_password"
-        name="confirm_password"
-        required
-      /><br />
+        <label for="textConfirmPassword">Confirm Password:</label>
+        <input type="password" id="textConfirmPassword" name="confirmPassword" required>
+        <br/>
 
-      <label for="realname">Real Name:</label>
-      <input type="text" id="realname" name="realname" required /><br />
+        <p>Please improve your profile below</p>
+        <label for="textLastName">Last Name:</label>
+        <input type="text" id="textLastName" name="lastName" required>
 
-      <label for="dob">Date of Birth:</label>
-      <input type="date" id="dob" name="dob" required /><br />
+        <label for="textFirstName">First Name:</label>
+        <input type="text" id="textFirstName" name="firstName" required>
+        <br/>
 
-      <label for="description">Description:</label><br />
-      <textarea
-        id="description"
-        name="description"
-        rows="4"
-        cols="50"
-      ></textarea
-      ><br />
+        <label for="textBirth">Date of Birth:</label>
+        <input type="date" id="textBirth" name="birth" required>
+        <br/>
 
-      <input type="submit" value="Sign Up" />
+        <label for="description">Description:</label>
+        <br/>
+        <textarea id="textDescription" name="description" rows="4" cols="50"></textarea>
+        <br/>
+
+        <button type="submit" id="signUpButton">Sign up</button>
     </form>
 </div>
