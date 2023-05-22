@@ -2,27 +2,35 @@
 <h1>Hi, there! Here is your own space!</h1>
 <a href="./">Click here back to home page</a>
 <a href="./setting">Click here to set your personal detail</a>
-<form action="./deleteArticle" method="POST">
+
     <div>
         <h1>My Articles</h1>
         {{#if articles}}
-            <ul>
+            <ul name="articleUL">
             {{#each articles}}
             <li>
             {{this.header}} by
             {{this.username}} 
             {{this.date}}
+            <form action="./deleteArticle" method="POST">
             <input type="hidden" id="delete" name="delete" value="{{this.id}}">
             <button type="submit">Delete!</button>
+            </form>
+            <form action="./editArticle" method="POST">
+            <input type="hidden" id="edit" name="edit" value="{{this.id}}">
+            <button type="submit">Edit!</button>
+            </form>
             </li>
             {{/each}}
             </ul>
-            <input type="hidden" id="sortByTitle" name="sortByTitle" value="">
-            <button type="submit">Sort By Title!</button>
             {{else}}
             <p>No matching articles</p>
         {{/if}}
     </div>
+
+<form action="./sortByTitle" method="POST">
+    <input type="hidden" id="sort" name="sort" value="sort">
+    <button type="submit">Sort by title!</button>
 </form>
 
 <div class="container">
