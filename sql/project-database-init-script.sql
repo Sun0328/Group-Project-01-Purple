@@ -39,7 +39,7 @@ CREATE TABLE likes (
   id integer NOT NULL PRIMARY KEY,
   user_id integer NOT NULL,
   article_id integer NOT NULL,
-  FOREIGN KEY (user_id) REFERENCES user(id),
+  FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE,
   FOREIGN KEY (article_id) REFERENCES article(id)
   ON DELETE CASCADE
 );
