@@ -1,3 +1,30 @@
+
+<h1>Hi, there! Here is your own space!</h1>
+<a href="./">Click here back to home page</a>
+<a href="./setting">Click here to set your personal detail</a>
+<form action="./deleteArticle" method="POST">
+    <div>
+        <h1>My Articles</h1>
+        {{#if articles}}
+            <ul>
+            {{#each articles}}
+            <li>
+            {{this.header}} by
+            {{this.username}} 
+            {{this.date}}
+            <input type="hidden" id="delete" name="delete" value="{{this.id}}">
+            <button type="submit">Delete!</button>
+            </li>
+            {{/each}}
+            </ul>
+            <input type="hidden" id="sortByTitle" name="sortByTitle" value="">
+            <button type="submit">Sort By Title!</button>
+            {{else}}
+            <p>No matching articles</p>
+        {{/if}}
+    </div>
+</form>
+
 <div class="container">
     <a href="./">Click here back to home page</a>
     <a href="./setting">Click here to set your personal detail</a>
@@ -8,3 +35,4 @@
     {{/if}}
     <h1>Here is your own space!</h1>
 </div>
+

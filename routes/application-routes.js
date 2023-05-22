@@ -100,8 +100,20 @@ router.post("/signupMessage", async function(req, res) {
     }
 });
 
+router.post("/userHomePage", async function(req, res) {
+    
+
 router.get("/userHomePage", async function(req, res){
+
     res.render("userpage");
+});
+  
+router.post("/deleteArticle", async function(req, res) {
+    let articleID = JSON.stringify(req.body.delete);
+    articleID = articleID.slice(1, -1);
+    res.locals.articleID = articleID;
+    await userDao.deleteArticleById(articleID);
+    res.render("deleteArticle");
 });
 
 router.post("/userHomePage", async function(req, res) {
@@ -135,6 +147,13 @@ router.post("/userHomePage", async function(req, res) {
 
             const toastMessage = "Welcome, " + `${username}` + "!";
             res.locals.toastMessage = toastMessage;
+         if (req.body.delete){
+            console.log("receive delete query");
+        }else{
+            const username = req.body.username;
+            res.locals.articles = await userDao.getAriticlesByUser(username);
+            res.locals.username = username;
+        }
             res.render("userpage");
         }
         else
@@ -149,6 +168,38 @@ router.post("/userHomePage", async function(req, res) {
 router.get("/setting", async function(req, res) {
     res.render("setting");
 });
+
+
+function compareByHeader( a, b ) {
+    if ( a.header < b.header ){
+      return -1;
+    }
+    if ( a.header > b.header ){
+      return 1;
+    }
+    return 0;
+}
+
+function compareByAuthor( a, b ) {
+    if ( a.username < b.username ){
+      return -1;
+    }
+    if ( a.username > b.username ){
+      return 1;
+    }
+    return 0;
+}
+
+
+function compareByDate( a, b ) {
+    if ( a.date < b.date ){
+      return -1;
+    }
+    if ( a.date > b.date ){
+      return 1;
+    }
+    return 0;
+}
 
 router.get("/logout", async function(req, res){
     Object.keys(req.cookies).forEach(cookieName => {
