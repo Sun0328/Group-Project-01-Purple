@@ -1,51 +1,57 @@
-<div class="container">
-    <a href="./">Click here back to home page</a>
-    {{! Display a toast message if one was provided. }}
-    {{#if toastMessage}}
-        <p>{{toastMessage}}</p>
-    {{/if}}
+<link rel="stylesheet" href="/css/register.css">
 
-    <h1>Sign up</h1>
-    <form action="./signupMessage" method="POST">
-        <label for="avatar">Choose your Avatar:</label>
-        <select id="selectAvatar" name="avatar">
-            <option value="cat">Cat</option>
-            <option value="bear">Bear</option>
-            <option value="dragon">Dragon</option>
-            <option value="alien">Alien</option>
-            <option value="human">Human</option>
-        </select>
-        <br/>
+<body>
 
-        <label for="textUsername">Username:</label>
-        <input type="text" id="textUsername" name="username" required>
-        <br/>
+    <div class="container">
+        {{! Display a toast message if one was provided. }}
+        {{#if toastMessage}}
+        <span>{{toastMessage}}</span>
+        {{/if}}
 
-        <label for="textPassword">Password:</label>
-        <input type="password" id="textPassword" name="password" required>
-        <br/>
+        <h2>Sign up</h2>
+        <form action="./signupMessage" method="POST">
+            <label for="avatar">Choose your Avatar:</label>
+            <select id="selectAvatar" name="avatar">
+                <option value="/images/cat.png">Cat</option>
+                <option value="/images/bird.png">Bird</option>
+                <option value="/images/deer.png">Deer</option>
+            </select>
+            <br /> <br>
 
-        <label for="textConfirmPassword">Confirm Password:</label>
-        <input type="password" id="textConfirmPassword" name="confirmPassword" required>
-        <br/>
+            <label for="textUsername">Username:</label>
+            <input type="text" id="textUsername" name="username" required>
+            <br />
 
-        <p>Please improve your profile below</p>
-        <label for="textLastName">Last Name:</label>
-        <input type="text" id="textLastName" name="lastName" required>
+            <label for="textPassword">Password:</label>
+            <input type="password" id="textPassword" name="password" required>
+            <br />
 
-        <label for="textFirstName">First Name:</label>
-        <input type="text" id="textFirstName" name="firstName" required>
-        <br/>
+            <label for="textConfirmPassword">Confirm Password:</label>
+            <input type="password" id="textConfirmPassword" name="confirmPassword" required>
+            <br />
+            <label for="textLastName">Last Name:</label>
+            <input type="text" id="textLastName" name="lastName" required>
 
-        <label for="textBirth">Date of Birth:</label>
-        <input type="date" id="textBirth" name="birth" required>
-        <br/>
+            <label for="textFirstName">First Name:</label>
+            <input type="text" id="textFirstName" name="firstName" required>
+            <br />
 
-        <label for="description">Description:</label>
-        <br/>
-        <textarea id="textDescription" name="description" rows="4" cols="50"></textarea>
-        <br/>
+            <label for="textBirth">Date of Birth:</label>
+            <input type="date" id="textBirth" name="birth" required>
+            <br />
 
-        <button type="submit" id="signUpButton">Sign up</button>
-    </form>
-</div>
+            <label for="description">Description:</label>
+            <br />
+            <textarea id="textDescription" name="description" rows="4" cols="50"></textarea>
+            <br />
+
+            <button type="submit" id="signUpButton">Sign up</button>
+        </form>
+
+        <div class="back">
+            <a href="./">Back</a>
+        </div>
+
+    </div>
+
+</body>
