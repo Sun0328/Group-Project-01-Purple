@@ -1,0 +1,10 @@
+body {
+    background-color: rgb(236, 239, 243);
+}
+
+.article_container {
+    width: 75%;
+    margin: auto;
+    color: black;
+    background-color: white;
+}
