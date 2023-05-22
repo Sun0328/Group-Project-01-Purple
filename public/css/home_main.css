@@ -1,9 +1,49 @@
 body {
     background-color: rgb(236, 239, 243);
+    box-sizing: border-box;
 }
 
+/* Function Part */
+.function_container {
+    position: absolute;
+    margin-top: 5px;
+    color: black;
+    width: 224px;
+    /* background-color: antiquewhite; */
+}
+
+.function_container ul li {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    width: 204px;
+    height: 50px;
+    padding-left: 20px;
+    border-radius: 6px;
+}
+
+.function_container ul li:hover {
+    background-color: rgb(110, 8, 229);
+    color: white;
+    transition: background-color .3s;
+    cursor: pointer;
+}
+
+.function_container a {
+    display: flex;
+    align-items: center;
+    padding: 0px 10px;
+}
+
+.function_container p {
+    margin-left: 10px;
+}
+
+
+/* Artcle Part */
+
 .article_container {
-    width: 75%;
+    width: 65%;
     margin: auto;
     color: black;
     background-color: white;

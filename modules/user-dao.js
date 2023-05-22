@@ -199,7 +199,6 @@ async function changeDescription(nowUsername, newDescription){
 }
 
 module.exports = {
-    retrieveAllDataInLikes,
     getAriticlesByUser,
     deleteArticleById,
     hasSameUsername,
