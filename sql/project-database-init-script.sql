@@ -32,6 +32,7 @@ CREATE TABLE article (
   user_id integer NOT NULL,
   image varchar(32),
   FOREIGN KEY (user_id) REFERENCES user(id)
+  ON DELETE CASCADE
 );
 
 CREATE TABLE likes (
@@ -40,6 +41,7 @@ CREATE TABLE likes (
   article_id integer NOT NULL,
   FOREIGN KEY (user_id) REFERENCES user(id),
   FOREIGN KEY (article_id) REFERENCES article(id)
+  ON DELETE CASCADE
 );
 
 CREATE TABLE comment (
@@ -50,8 +52,9 @@ CREATE TABLE comment (
   date date NOT NULL,
   time time NOT NULL,
   parent_id integer DEFAULT NULL,
-  FOREIGN KEY (user_id) REFERENCES user(id),
+  FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE,
   FOREIGN KEY (article_id) REFERENCES article(id)
+  ON DELETE CASCADE
 );
 
 
