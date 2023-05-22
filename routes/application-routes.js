@@ -62,11 +62,8 @@ router.post("/signupMessage", async function (req, res) {
     const monthNumber = parseInt(month, 10);
     const dayNumber = parseInt(day, 10);
 
-    console.log("username: " + username);
     const userData = await userDao.hasSameUsername(username);
-    console.log("search result user data: " + userData);
-    console.log("password: " + password);
-    console.log("con password: " + confirmPassword);
+    
 
     if (password != confirmPassword) {
         console.log("password not fit")
@@ -106,18 +103,50 @@ router.post("/signupMessage", async function (req, res) {
 
 
 
-
 router.get("/userHomePage", async function (req, res) {
 
     res.render("userpage");
 });
 
 router.post("/deleteArticle", async function (req, res) {
+
     let articleID = JSON.stringify(req.body.delete);
     articleID = articleID.slice(1, -1);
     res.locals.articleID = articleID;
     await userDao.deleteArticleById(articleID);
     res.render("deleteArticle");
+
+});
+
+router.post("/editArticle", async function(req, res) {
+
+    let articleID = JSON.stringify(req.body.edit);
+    articleID = articleID.slice(1, -1);
+    res.locals.articleID = articleID;
+    let article = await userDao.getArticleById(articleID);
+    article = article[0];
+    res.locals.article = article;
+    console.log("Edit Article: " + JSON.stringify(article));
+    res.render("editArticle");
+
+});
+
+router.post("/submitChange", async function(req, res) {
+    const title = req.body.title;
+    const id = req.body.id;
+    await userDao.updateArticletitle(title, id);
+    const content = req.body.content;
+    await userDao.updateArticlecontent(content, id);
+    res.render("submitChange");
+});
+
+router.post("/sortByTitle", async function(req, res) {
+    const cookie = req.cookies;
+    const username = cookie.username;
+    const articles = await userDao.getAriticlesByUser(username);
+    articles.sort(compareByHeader);
+    res.locals.articles = articles;
+    res.render("sortByTitle");
 });
 
 router.post("/userHomePage", async function (req, res) {
@@ -133,12 +162,11 @@ router.post("/userHomePage", async function (req, res) {
     else {
         const saltObjectData = await userDao.getSalt(username);
         const salt = saltObjectData.salt;
-        console.log("salt: " + salt);
 
         const rightHashedPasswordData = await userDao.getPassword(username);
         const rightHashedPassword = rightHashedPasswordData.password;
-        console.log("rightHashedPassword: " + rightHashedPassword);
 
+        console.log("rightHashedPassword: " + rightHashedPassword);
         const hashedInputPassword = hashPassword(inputPassword, salt);
         if (hashedInputPassword == rightHashedPassword) {
             const cookieName = "authToken";
@@ -148,6 +176,10 @@ router.post("/userHomePage", async function (req, res) {
 
             const toastMessage = "Welcome, " + `${username}` + "!";
             res.locals.toastMessage = toastMessage;
+
+            res.locals.articles = await userDao.getAriticlesByUser(username);
+            res.locals.username = username;
+            
             if (req.body.delete) {
                 console.log("receive delete query");
             } else {
@@ -155,6 +187,7 @@ router.post("/userHomePage", async function (req, res) {
                 res.locals.articles = await userDao.getAriticlesByUser(username);
                 res.locals.username = username;
             }
+
             res.render("userpage");
         }
         else {

@@ -35,6 +35,7 @@ async function getAriticlesByUser(username){
         select * from user 
             where username = ${username}
     `);
+    console.log("User: "+JSON.stringify(user));
     // get article array from user id
     const articleArray = await db.all(SQL`
         select * from article 
@@ -198,6 +199,32 @@ async function changeDescription(nowUsername, newDescription){
         WHERE id = ${user.id}`);
 }
 
+async function getArticleById(id){
+    const db = await dbPromise;
+    const articleID = id;
+    return await db.all(SQL`
+        select * from article
+        where id = ${articleID}`);
+}
+async function updateArticletitle(title, id){
+    const db = await dbPromise;
+    return await db.run(SQL`
+    UPDATE article
+    SET header = ${title}
+    WHERE id = ${id}
+    `);
+}
+
+async function updateArticlecontent(content, id){
+    const db = await dbPromise;
+    const articleContent = content;
+    return await db.run(SQL`
+    UPDATE article
+    SET content = ${articleContent}
+    WHERE id = ${id}
+    `);
+}
+
 module.exports = {
     getAriticlesByUser,
     deleteArticleById,
@@ -213,6 +240,9 @@ module.exports = {
     changeFirstName,
     changeBirth,
     changeDescription,
-    retrieveArticleData
+    retrieveArticleData,
+    getArticleById,
+    updateArticletitle,
+    updateArticlecontent
 
 }
