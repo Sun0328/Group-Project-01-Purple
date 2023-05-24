@@ -7,10 +7,12 @@ const crypto = require('crypto');
 
 //const testDao = require("../modules/test-dao.js");
 const userDao = require("../modules/user-dao.js");
+const articleDao = require("../modules/article-dao.js");
+const commentDao = require("../modules/comment-dao.js");
+const likeDao = require("../modules/like-dao.js");
 
 //sort array function
 const sortMethod = require("../modules/sort.js");
-
 
 router.get("/", async function (req, res) {
 
@@ -32,12 +34,24 @@ router.get("/", async function (req, res) {
         const user_avatar = userData.avatar;
         res.locals.avatar = user_avatar;
     }
+  
+  
+    const articleData = await articleDao.getAllArticle();
+    for (let i = 0; i < articleData.length; i++)
+    {
+        const articleItem = articleData[i];
+        console.log("item:"+ articleItem);
+        const articleID = articleItem.id;
+        console.log("article id: " + articleID);
+        const likeCount = await likeDao.getLikeNumberByArticleId(articleID);
+        const key = "likeNumber";
+        articleData[i][key] = likeCount;
+    }
+
+    // res.locals.article = articleData;
+    console.log(articleData);
 
     res.render("home");
-});
-
-router.get("/article", async function (req, res) {
-    console.log("received!");
 });
 
 router.get("/login", async function (req, res) {
@@ -49,7 +63,24 @@ router.get("/register", async function (req, res) {
     res.render("register");
 });
 
+router.get("/testUsername", async function(req, res){
+    const testUsername = req.query.username;
+    console.log("testusername: " + testUsername);
+    const userData = await userDao.hasSameUsername(testUsername);
+    if(userData === undefined)
+    {
+        const message = "unique"
+        res.json(message);
+    }
+    else
+    {
+        const message = "same"
+        res.json(message);
+    }
+});
+
 router.post("/signupMessage", async function (req, res) {
+
     const avatar = req.body.avatar;
     const username = req.body.username;
     const password = req.body.password;
@@ -498,8 +529,49 @@ router.post("/delete", async function (req, res) {
     const toastMessage = "Successfully deleted account!";
     res.locals.toastMessage = toastMessage;
     res.render("home");
-
 })
+
+router.get("/article", async function(req, res){
+    const articleId = req.query.id;
+    console.log("id:" + articleId);
+
+    const articleData = await articleDao.getArticleById(articleId);
+    res.locals.articleData = articleData;
+
+    const header = articleData.header;
+    const author = (await userDao.getAuthor(articleData.user_id)).username;
+    const time = articleData.time;
+    const content = articleData.content;
+    res.locals.header = header;
+    res.locals.author = author;
+    res.locals.time = time;
+    res.locals.content = content;
+    res.locals.articleId = articleId
+    
+    const commentData = await commentDao.getCommentByArticleId(articleData.id);
+    res.locals.commentData = commentData;
+
+    res.render("article");
+});
+
+router.get("/article/comment", async function(req, res){
+    const commentContent = req.query.commentContent;
+    const articleId = req.query.articleId;
+
+    const cookies = req.cookies;
+    const sender = cookies.username;
+    const recipient = null;
+    
+    const userData = await userDao.getUserByUsername(sender);
+    const senderId = userData.id;
+
+    const commentId = await commentDao.addCommentIntoCommentTable(senderId, recipient, commentContent, articleId);
+    const commentData = await commentDao.getCommentByCommentId(commentId);
+
+    res.json(commentData);
+    console.log("succeccfully add comment");
+})
+
 
 const generateSalt = function () {
     const salt = crypto.randomBytes(16);

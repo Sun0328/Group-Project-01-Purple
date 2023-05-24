@@ -27,7 +27,6 @@ CREATE TABLE article (
   id integer NOT NULL PRIMARY KEY,
   header varchar(32) NOT NULL,
   content varchar(108) NOT NULL,
-  date date NOT NULL,
   time time NOT NULL,
   user_id integer NOT NULL,
   image varchar(32),
@@ -57,7 +56,6 @@ CREATE TABLE comment (
   user_id integer NOT NULL,
   article_id integer NOT NULL,
   content varchar(108) NOT NULL,
-  date date NOT NULL,
   time time NOT NULL,
   parent_id integer DEFAULT NULL,
   FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE,
@@ -92,8 +90,8 @@ INSERT INTO likes (id, user_id, article_id) VALUES
   (2, 1, 2),
   (3, 2, 3);
 
-INSERT INTO comment (id, user_id, article_id, content, date, time, parent_id) VALUES
-  (1, 1, 2, 'Hi', '2022-11-11', '08:26:13', NULL),
-  (2, 2, 3, 'Good', '2022-11-12', '16:46:25', 1),
-  (3, 3, 3, 'Lol', '2023-01-08', '10:41:20', NULL);
+INSERT INTO comment (id, user_id, article_id, content, time, parent_id) VALUES
+  (1, 1, 2, 'Hi', '2022-11-11 08:26:13', NULL),
+  (2, 2, 3, 'Good', '2022-11-12 16:46:25', 1),
+  (3, 3, 3, 'Lol', '2023-01-08 10:41:20', NULL);
 
