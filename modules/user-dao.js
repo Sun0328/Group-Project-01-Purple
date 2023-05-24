@@ -70,6 +70,9 @@ async function getUser(username){
     const userData= await db.get(SQL`
         select * from user
         where username = ${testUsername}`);
+
+    console.log(JSON.stringify(username));    
+    console.log(userData);    
     return userData;
 }
 
@@ -287,8 +290,8 @@ async function createNewArticle(userid) {
     const db = await dbPromise;
     console.log("user_id is: "+JSON.stringify (userid[0].id));
     return await db.run(SQL`
-        insert into article (header, content, date, time, user_id) 
-        VALUES("Default header", "Default content", DATE(), TIME(), ${JSON.stringify (userid[0].id)}) RETURNING *;`);
+        insert into article (header, content, time, user_id) 
+        VALUES("Default header", "Default content", DATETIME('now'), ${JSON.stringify (userid[0].id)}) RETURNING *;`);
 }
 
 async function getUserIdByUserName(username) {

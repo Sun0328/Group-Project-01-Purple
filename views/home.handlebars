@@ -30,18 +30,7 @@
   <div class="main">
 
 
-<!-- from new to old -->
-    {{#if article}}
-      {{#each article}}
-        <a href="./article?id={{this.id}}">{{this.header}}</a><br/>
-        <p>{{this.time}}</p>
-        <p>{{this.username}}</p>
-        <p>{{this.content}}</p>
-        <a href="./article?id={{this.id}}">comment</a><br/>
-        <p>like: {{this.likeNumber}}</p>
-        <p>----------------</p>
-      {{/each}}
-    {{/if}}
+
 
 
 
@@ -54,6 +43,8 @@
     {{!-- Article Part --}}
     {{!-- Import each article date inside partial --}}
     <div class="article_container">
+
+      <a href="./go">go comment!</a>
 
       <div class="sort_container">
         <form action="./homeSortByTitle" method="POST">

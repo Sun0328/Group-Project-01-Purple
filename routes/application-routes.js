@@ -30,17 +30,22 @@ router.get("/", async function (req, res) {
 
         // Get user avatar by username from cookies
         const username = cookies.username;
-        const userData = await userDao.getUser(username);
+        const userData = await userDao.getUserByUsername(username);
+        console.log("userData: " + JSON.stringify(userData));
         const user_avatar = userData.avatar;
         res.locals.avatar = user_avatar;
     }
-  
-  
+
+
+
+    res.render("home");
+});
+
+router.get("/go", async function (req, res) {
     const articleData = await articleDao.getAllArticle();
-    for (let i = 0; i < articleData.length; i++)
-    {
+    for (let i = 0; i < articleData.length; i++) {
         const articleItem = articleData[i];
-        console.log("item:"+ articleItem);
+        console.log("item:" + articleItem);
         const articleID = articleItem.id;
         console.log("article id: " + articleID);
         const likeCount = await likeDao.getLikeNumberByArticleId(articleID);
@@ -48,10 +53,9 @@ router.get("/", async function (req, res) {
         articleData[i][key] = likeCount;
     }
 
-    // res.locals.article = articleData;
+    res.locals.article = articleData;
     console.log(articleData);
-
-    res.render("home");
+    res.render("commentArticle");
 });
 
 router.get("/login", async function (req, res) {
@@ -63,17 +67,15 @@ router.get("/register", async function (req, res) {
     res.render("register");
 });
 
-router.get("/testUsername", async function(req, res){
+router.get("/testUsername", async function (req, res) {
     const testUsername = req.query.username;
     console.log("testusername: " + testUsername);
     const userData = await userDao.hasSameUsername(testUsername);
-    if(userData === undefined)
-    {
+    if (userData === undefined) {
         const message = "unique"
         res.json(message);
     }
-    else
-    {
+    else {
         const message = "same"
         res.json(message);
     }
@@ -127,9 +129,9 @@ router.post("/signupMessage", async function (req, res) {
             "description": description
         };
         userDao.createNewUser(user);
-        console.log("user name is: "+user.username);
+        console.log("user name is: " + user.username);
         const user_id = await userDao.getUserIdByUserName(user.username);
-        console.log("user id is: "+JSON.stringify(user_id[0].id));
+        console.log("user id is: " + JSON.stringify(user_id[0].id));
         addNewFolder(JSON.stringify(user_id[0].id));
         const toastMessage = "You have successfully registered";
         res.locals.toastMessage = toastMessage;
@@ -174,13 +176,13 @@ router.post("/editArticle", async function (req, res) {
     console.log("Edit Article: " + JSON.stringify(article));
 
     const folderPath = `./public/uploadedFiles/${article.user_id}`;
-    getFileNames(folderPath,function(files){
+    getFileNames(folderPath, function (files) {
         res.locals.files = files;
-    res.render("editArticle");
+        res.render("editArticle");
     });
 });
 
-router.post("/newArticle", async function(req, res) {
+router.post("/newArticle", async function (req, res) {
     const cookie = req.cookies;
     const username = cookie.username;
     const userID = await userDao.getUserIdByUserName(username);
@@ -192,15 +194,15 @@ router.post("/newArticle", async function(req, res) {
     console.log("New Article: " + JSON.stringify(article));
 
     const folderPath = `./public/uploadedFiles/${article.user_id}`;
-    getFileNames(folderPath,function(files){
+    getFileNames(folderPath, function (files) {
         res.locals.files = files;
         res.render("newArticle");
     });
-    
+
 });
 
 
-router.post("/submitChange", async function(req, res) {
+router.post("/submitChange", async function (req, res) {
     let title = req.body.title;
     if (title == "") {
         title = "default title";
@@ -213,7 +215,7 @@ router.post("/submitChange", async function(req, res) {
         content = "default content";
     }
     let image = req.body.image;
-    if (image){
+    if (image) {
         await userDao.updateArticleImage(image, id);
     }
     await userDao.updateArticlecontent(content, id);
@@ -531,7 +533,9 @@ router.post("/delete", async function (req, res) {
     res.render("home");
 })
 
-router.get("/article", async function(req, res){
+
+
+router.get("/article", async function (req, res) {
     const articleId = req.query.id;
     console.log("id:" + articleId);
 
@@ -547,21 +551,21 @@ router.get("/article", async function(req, res){
     res.locals.time = time;
     res.locals.content = content;
     res.locals.articleId = articleId
-    
+
     const commentData = await commentDao.getCommentByArticleId(articleData.id);
     res.locals.commentData = commentData;
 
-    res.render("article");
+    res.render("testArticle");
 });
 
-router.get("/article/comment", async function(req, res){
+router.get("/article/comment", async function (req, res) {
     const commentContent = req.query.commentContent;
     const articleId = req.query.articleId;
 
     const cookies = req.cookies;
     const sender = cookies.username;
     const recipient = null;
-    
+
     const userData = await userDao.getUserByUsername(sender);
     const senderId = userData.id;
 
@@ -582,27 +586,27 @@ const hashPassword = function (password, salt) {
     return crypto.pbkdf2Sync(password, salt, 1000, 64, 'sha512').toString('hex');
 };
 
-function addNewFolder(user_id){
+function addNewFolder(user_id) {
     const folderName = `./public/uploadedFiles/${user_id}`;
-    console.log("Folder name is: "+folderName);
+    console.log("Folder name is: " + folderName);
     try {
-    if (!fs.existsSync(folderName)) {
-        fs.mkdirSync(folderName);
-        console.log("Create folder successful");
-    }
+        if (!fs.existsSync(folderName)) {
+            fs.mkdirSync(folderName);
+            console.log("Create folder successful");
+        }
     } catch (err) {
-    console.error(err);
+        console.error(err);
     }
 }
 
-function getFileNames(folderPath, callback){
-    fs.readdir(folderPath, (err, files) =>{
-    if (err){
-        console.error(err);
-        return;
-    }
-    callback(files);
-})
+function getFileNames(folderPath, callback) {
+    fs.readdir(folderPath, (err, files) => {
+        if (err) {
+            console.error(err);
+            return;
+        }
+        callback(files);
+    })
 }
 
 
