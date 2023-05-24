@@ -60,9 +60,9 @@ CREATE TABLE comment (
 
 
 INSERT INTO user (id, username, password, fname, lname, year, month, day, salt, profile, avatar, subscriber) VALUES
-  (1, 'David', '24bd9c2e960b808e7beae43e4e69e8df4e4af3b24cd77ee08f4d622b01d137ed96ac014b998f8747cd75362642c0a94e0cfd0e789f8064620563a6ce0149c7a5', 'David', 'Smith', 1980, 12, 6, '79569a35e7d35e6c5f95010e3889a810', 'Hello', '1', NULL),
-  (2, 'Geoff', '24bd9c2e960b808e7beae43e4e69e8df4e4af3b24cd77ee08f4d622b01d137ed96ac014b998f8747cd75362642c0a94e0cfd0e789f8064620563a6ce0149c7a5', 'Geoff', 'MIller', 1990, 6, 19, '79569a35e7d35e6c5f95010e3889a810', 'Hello.','2', 3),
-  (3, 'Annika', '24bd9c2e960b808e7beae43e4e69e8df4e4af3b24cd77ee08f4d622b01d137ed96ac014b998f8747cd75362642c0a94e0cfd0e789f8064620563a6ce0149c7a5', 'Annika', 'Lee', 1975, 2, 23, '79569a35e7d35e6c5f95010e3889a810', 'Hello!!','3', NULL);
+  (1, 'David', '24bd9c2e960b808e7beae43e4e69e8df4e4af3b24cd77ee08f4d622b01d137ed96ac014b998f8747cd75362642c0a94e0cfd0e789f8064620563a6ce0149c7a5', 'David', 'Smith', 1980, 12, 6, '79569a35e7d35e6c5f95010e3889a810', 'Hello', '/images/bird.png', NULL),
+  (2, 'Geoff', '24bd9c2e960b808e7beae43e4e69e8df4e4af3b24cd77ee08f4d622b01d137ed96ac014b998f8747cd75362642c0a94e0cfd0e789f8064620563a6ce0149c7a5', 'Geoff', 'MIller', 1990, 6, 19, '79569a35e7d35e6c5f95010e3889a810', 'Hello.','/images/cat.png', 3),
+  (3, 'Annika', '24bd9c2e960b808e7beae43e4e69e8df4e4af3b24cd77ee08f4d622b01d137ed96ac014b998f8747cd75362642c0a94e0cfd0e789f8064620563a6ce0149c7a5', 'Annika', 'Lee', 1975, 2, 23, '79569a35e7d35e6c5f95010e3889a810', 'Hello!!','/images/deer.png', NULL);
 
 
 INSERT INTO article (id, header, content, date, time, user_id, image) VALUES
