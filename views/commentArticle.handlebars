@@ -1,0 +1,12 @@
+<!-- from new to old -->
+    {{#if article}}
+      {{#each article}}
+        <a href="./article?id={{this.id}}">{{this.header}}</a><br/>
+        <p>{{this.time}}</p>
+        <p>{{this.username}}</p>
+        <p>{{this.content}}</p>
+        <a href="./article?id={{this.id}}">comment</a><br/>
+        <p>like: {{this.likeNumber}}</p>
+        <p>----------------</p>
+      {{/each}}
+    {{/if}}

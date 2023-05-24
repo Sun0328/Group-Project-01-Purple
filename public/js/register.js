@@ -9,7 +9,7 @@ window.addEventListener("load",  function () {
         if (message === "same")
         {
             const warning = document.createElement("p");
-            warning.innerHTML = "The username already exists";
+            warning.innerHTML = "The username already exists!";
             const warningArea = document.querySelector(".warningUsernameArea");
             warningArea.innerHTML = '';
             warningArea.appendChild(warning);
@@ -17,7 +17,7 @@ window.addEventListener("load",  function () {
         else if (message === "unique")
         {
             const warning = document.createElement("p");
-            warning.innerHTML = "The username is unique";
+            warning.innerHTML = "The username is unique.";
             const warningArea = document.querySelector(".warningUsernameArea");
             warningArea.innerHTML = '';
             warningArea.appendChild(warning);

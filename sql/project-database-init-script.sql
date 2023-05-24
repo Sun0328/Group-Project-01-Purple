@@ -73,12 +73,12 @@ INSERT INTO user (id, username, password, fname, lname, year, month, day, salt, 
 
 
 
-INSERT INTO article (id, header, content, date, time, user_id, image) VALUES
-  (1, 'Header1', 'Content1', '2022-11-11', '08:26:13', 1, 'realCat.png'),
-  (2, 'Header2', 'Content2', '2023-01-01', '12:30:02', 2, 'realCat.png'),
-  (3, 'Header3', 'Content3', '2023-03-21', '22:01:52', 3, 'realCat.png'),
-  (4, 'Cat', 'Content4', '2023-02-01', '12:30:02', 3, 'realCat.png'),
-  (5, 'Eva', 'Content5', '2023-03-01', '12:30:02', 3, 'realCat.png');
+INSERT INTO article (id, header, content, time, user_id, image) VALUES
+  (1, 'Header1', 'Content1', '2022-11-11 08:26:13', 1, 'realCat.png'),
+  (2, 'Header2', 'Content2', '2023-01-01 12:30:02', 2, 'realCat.png'),
+  (3, 'Header3', 'Content3', '2023-03-21 22:01:52', 3, 'realCat.png'),
+  (4, 'Cat', 'Content4', '2023-02-01 12:30:02', 3, 'realCat.png'),
+  (5, 'Eva', 'Content5', '2023-03-01 12:30:02', 3, 'realCat.png');
 
 INSERT INTO subscribe (id, subscriber_id, follower_id) VALUES
   (1, 1, 3),
