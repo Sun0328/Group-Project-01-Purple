@@ -55,6 +55,27 @@
 
         </div>
 
-    </div>
+
+<form action="./sortByTitle" method="POST">
+    <input type="hidden" id="sort" name="sort" value="sort">
+    <button type="submit">Sort by title!</button>
+</form>
+
+<form action="./newArticle" method="POST">
+    <input type="hidden" id="new" name="new" value="new">
+    <button type="submit">Create new article!</button>
+</form>
+
+<div class="container">
+    <a href="./">Click here back to home page</a>
+    <a href="./setting">Click here to set your personal detail</a>
+    <a href="./logout">Click here to logout</a>
+    {{! Display a toast message if one was provided. }}
+    {{#if toastMessage}}
+        <h1>{{toastMessage}}</h1>
+    {{/if}}
+    <h1>Here is your own space!</h1>
+</div>
+
 
 </body>

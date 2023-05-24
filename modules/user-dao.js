@@ -35,7 +35,6 @@ async function getAriticlesByUser(username){
         select * from user 
             where username = ${username}
     `);
-    console.log("User: "+JSON.stringify(user));
     // get article array from user id
     const articleArray = await db.all(SQL`
         select * from article 
@@ -45,13 +44,11 @@ async function getAriticlesByUser(username){
     articleArray.forEach(element => {
         element.username = username;
     });
-    console.log("Article: "+JSON.stringify(articleArray));
     return articleArray;
 }
 
 async function deleteArticleById(id) {
     const db = await dbPromise;
-    console.log (id);
     await db.run(SQL`
     delete from article
     where id = ${id};`);
@@ -60,11 +57,9 @@ async function getUser(username){
     const db = await dbPromise;
 
     const testUsername = username;
-    console.log("testUsername in getUser: " + testUsername);
     const userData= await db.get(SQL`
         select * from user
         where username = ${testUsername}`);
-    console.log("user data: " + userData);
     return userData;
 }
 
@@ -126,11 +121,35 @@ async function changeAvatar(nowUsername, newAvatar){
 
 async function retrieveArticleData() {
     const db = await dbPromise;
-
     const article = await db.all(SQL`
         select * from article
         `);
-
+    
+    //get user id lists
+    const userID = await db.all(SQL`
+        select user_id from article 
+    `);
+    console.log("User id list: "+JSON.stringify(userID));
+    // get user name from user id
+    let username = [];
+    const user = await db.all(SQL`
+        select * from user
+    `);
+    let index=0;
+    user.forEach(element => {
+        userID.forEach(idElement => {
+            if (element.id == JSON.stringify(idElement.user_id)){
+                username[index] = element.username;
+                index += 1;
+            }
+        });
+    });
+    // manually assign user name to article array
+    
+    for (let i = 0; i < username.length; i++) {
+        article[i].username = username[i];
+    }
+            
     return article;
 }
 
@@ -234,6 +253,32 @@ async function updateArticlecontent(content, id){
     `);
 }
 
+async function updateArticleImage(image, id){
+    const db = await dbPromise;
+    const articleImage = image;
+    return await db.run(SQL`
+    UPDATE article
+    SET image = ${articleImage}
+    WHERE id = ${id}
+    `);
+}
+
+async function createNewArticle(userid) {
+    const db = await dbPromise;
+    console.log("user_id is: "+JSON.stringify (userid[0].id));
+    return await db.run(SQL`
+        insert into article (header, content, date, time, user_id) 
+        VALUES("Default header", "Default content", DATE(), TIME(), ${JSON.stringify (userid[0].id)}) RETURNING *;`);
+}
+
+async function getUserIdByUserName(username) {
+    const db = await dbPromise;
+    return await db.all(SQL`
+        select id from user
+        where username = ${username}`);
+    
+}
+
 module.exports = {
     getAriticlesByUser,
     deleteArticleById,
@@ -253,6 +298,9 @@ module.exports = {
     getArticleById,
     getAvatarByUserId,
     updateArticletitle,
-    updateArticlecontent
+    updateArticlecontent,
+    createNewArticle,
+    getUserIdByUserName,
+    updateArticleImage
 
 }

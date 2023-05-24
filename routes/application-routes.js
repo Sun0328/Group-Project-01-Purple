@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
-
+// Setup fs
+const fs = require("fs");
 //add to use salt
 const crypto = require('crypto');
 
@@ -95,7 +96,10 @@ router.post("/signupMessage", async function (req, res) {
             "description": description
         };
         userDao.createNewUser(user);
-
+        console.log("user name is: "+user.username);
+        const user_id = await userDao.getUserIdByUserName(user.username);
+        console.log("user id is: "+JSON.stringify(user_id[0].id));
+        addNewFolder(JSON.stringify(user_id[0].id));
         const toastMessage = "You have successfully registered";
         res.locals.toastMessage = toastMessage;
         res.render("login");
@@ -137,15 +141,50 @@ router.post("/editArticle", async function (req, res) {
     article = article[0];
     res.locals.article = article;
     console.log("Edit Article: " + JSON.stringify(article));
-    res.render("editArticle");
 
+    const folderPath = `./public/uploadedFiles/${article.user_id}`;
+    getFileNames(folderPath,function(files){
+        res.locals.files = files;
+    res.render("editArticle");
+    });
 });
 
-router.post("/submitChange", async function (req, res) {
-    const title = req.body.title;
+router.post("/newArticle", async function(req, res) {
+    const cookie = req.cookies;
+    const username = cookie.username;
+    const userID = await userDao.getUserIdByUserName(username);
+    let articleID = await userDao.createNewArticle(userID);
+    res.locals.articleID = JSON.stringify(articleID.lastID);
+    let article = await userDao.getArticleById(JSON.stringify(articleID.lastID));
+    article = article[0];
+    res.locals.article = article;
+    console.log("New Article: " + JSON.stringify(article));
+
+    const folderPath = `./public/uploadedFiles/${article.user_id}`;
+    getFileNames(folderPath,function(files){
+        res.locals.files = files;
+        res.render("newArticle");
+    });
+    
+});
+
+
+router.post("/submitChange", async function(req, res) {
+    let title = req.body.title;
+    if (title == "") {
+        title = "default title";
+    }
+
     const id = req.body.id;
     await userDao.updateArticletitle(title, id);
-    const content = req.body.content;
+    let content = req.body.content;
+    if (content == "") {
+        content = "default content";
+    }
+    let image = req.body.image;
+    if (image){
+        await userDao.updateArticleImage(image, id);
+    }
     await userDao.updateArticlecontent(content, id);
 
     res.redirect("/userHomePage");
@@ -301,6 +340,7 @@ router.post("/userHomePage", async function (req, res) {
                 console.log("receive delete query");
             } else {
                 const username = req.body.username;
+                console.log("receive article");
                 res.locals.articles = await userDao.getAriticlesByUser(username);
                 res.locals.username = username;
             }
@@ -469,5 +509,29 @@ const generateSalt = function () {
 const hashPassword = function (password, salt) {
     return crypto.pbkdf2Sync(password, salt, 1000, 64, 'sha512').toString('hex');
 };
+
+function addNewFolder(user_id){
+    const folderName = `./public/uploadedFiles/${user_id}`;
+    console.log("Folder name is: "+folderName);
+    try {
+    if (!fs.existsSync(folderName)) {
+        fs.mkdirSync(folderName);
+        console.log("Create folder successful");
+    }
+    } catch (err) {
+    console.error(err);
+    }
+}
+
+function getFileNames(folderPath, callback){
+    fs.readdir(folderPath, (err, files) =>{
+    if (err){
+        console.error(err);
+        return;
+    }
+    callback(files);
+})
+}
+
 
 module.exports = router;
