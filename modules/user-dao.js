@@ -225,6 +225,15 @@ async function getArticleById(id){
         select * from article
         where id = ${articleID}`);
 }
+
+async function getAvatarByUserId(id){
+    const db = await dbPromise;
+    const userId = id;
+    return await db.all(SQL`
+        select avatar from user
+        where id = ${userId}`);
+}
+
 async function updateArticletitle(title, id){
     const db = await dbPromise;
     return await db.run(SQL`
@@ -287,6 +296,7 @@ module.exports = {
     changeDescription,
     retrieveArticleData,
     getArticleById,
+    getAvatarByUserId,
     updateArticletitle,
     updateArticlecontent,
     createNewArticle,

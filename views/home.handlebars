@@ -6,6 +6,7 @@
   <!-- Add CSS files -->
   <link rel="stylesheet" href="/css/nav_bar.css">
   <link rel="stylesheet" href="/css/home_main.css">
+  <link rel="stylesheet" href="/css/function.css">
   <link rel="stylesheet" href="/css/article.css">
   {{!-- Add fonts link from google fonts--}}
   <link rel="stylesheet"
@@ -27,39 +28,37 @@
 
   <div class="main">
     {{!-- Function Part (Left)--}}
-    <div class="function_container">
-      <ul>
-        <li>
-          <a href="">
-            <span class="material-symbols-outlined">edit_square</span>
-            <p>My Article</p>
-          </a>
-        </li>
-        <li>
-          <a href="">
-            <span class="material-symbols-outlined">bar_chart_4_bars</span>
-            <p>Dashboard</p>
-          </a>
-        </li>
-        <li>
-          <a href="">
-            <span class="material-symbols-outlined">heart_plus</span>
-            <p>Favorites</p>
-          </a>
-        </li>
-        <li>
-          <a href="">
-            <span class="material-symbols-outlined">subscriptions</span>
-            <p>Subscription</p>
-          </a>
-        </li>
-      </ul>
-    </div>
+    {{#if hasLogin}}
+    {{> function}}
+    {{/if}}
 
     {{!-- Article Part --}}
     {{!-- Import each article date inside partial --}}
     <div class="article_container">
-      {{#each Array}}
+
+      <div class="sort_container">
+        <form action="./homeSortByTitle" method="POST">
+          <input type="hidden" id="sort" name="sort" value="sort">
+          <button type="submit">Sort by Title!</button>
+        </form>
+
+        <form action="./homeSortByUsername" method="POST">
+          <input type="hidden" id="sort" name="sort" value="sort">
+          <button type="submit">Sort by Username</button>
+        </form>
+
+        <form action="./homeSortByDate" method="POST">
+          <input type="hidden" id="sort" name="sort" value="sort">
+          <button type="submit">Newest to Oldest</button>
+        </form>
+
+        <form action="./homeResetSort" method="POST">
+          <input type="hidden" id="sort" name="sort" value="sort">
+          <button type="submit">Reset order</button>
+        </form>
+      </div>
+
+      {{#each articlesArray}}
       {{> article}}
       {{/each}}
     </div>

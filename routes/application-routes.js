@@ -6,12 +6,18 @@ const fs = require("fs");
 const crypto = require('crypto');
 
 //const testDao = require("../modules/test-dao.js");
-const userDao = require("../modules/user-dao.js")
+const userDao = require("../modules/user-dao.js");
 
+//sort array function
+const sortMethod = require("../modules/sort.js");
 
 
 router.get("/", async function (req, res) {
 
+    res.locals.title = "Purple";
+    const articleDataArray = await userDao.retrieveArticleData();
+    // console.log(JSON.stringify(articleDataArray));
+    res.locals.articlesArray = articleDataArray;
 
     const cookies = req.cookies;
     console.log("cookies: " + JSON.stringify(cookies));
@@ -26,11 +32,6 @@ router.get("/", async function (req, res) {
         const user_avatar = userData.avatar;
         res.locals.avatar = user_avatar;
     }
-
-    res.locals.title = "Purple";
-    const articleDataArray = await userDao.retrieveArticleData();
-    // console.log(JSON.stringify(articleData));
-    res.locals.Array = articleDataArray;
 
     res.render("home");
 });
@@ -64,7 +65,7 @@ router.post("/signupMessage", async function (req, res) {
     const dayNumber = parseInt(day, 10);
 
     const userData = await userDao.hasSameUsername(username);
-    
+
 
     if (password != confirmPassword) {
         console.log("password not fit")
@@ -108,6 +109,15 @@ router.post("/signupMessage", async function (req, res) {
 
 
 router.get("/userHomePage", async function (req, res) {
+    // Get user articles by username from cookies
+    const cookies = req.cookies;
+    const username = cookies.username;
+    res.locals.articles = await userDao.getAriticlesByUser(username);
+
+    // Get user avatar by username from cookies
+    const userData = await userDao.getUser(username);
+    const user_avatar = userData.avatar;
+    res.locals.avatar = user_avatar;
 
     res.render("userpage");
 });
@@ -118,11 +128,11 @@ router.post("/deleteArticle", async function (req, res) {
     articleID = articleID.slice(1, -1);
     res.locals.articleID = articleID;
     await userDao.deleteArticleById(articleID);
-    res.render("deleteArticle");
+    res.redirect("./userHomePage");
 
 });
 
-router.post("/editArticle", async function(req, res) {
+router.post("/editArticle", async function (req, res) {
 
     let articleID = JSON.stringify(req.body.edit);
     articleID = articleID.slice(1, -1);
@@ -158,11 +168,13 @@ router.post("/newArticle", async function(req, res) {
     
 });
 
+
 router.post("/submitChange", async function(req, res) {
     let title = req.body.title;
     if (title == "") {
         title = "default title";
     }
+
     const id = req.body.id;
     await userDao.updateArticletitle(title, id);
     let content = req.body.content;
@@ -174,17 +186,124 @@ router.post("/submitChange", async function(req, res) {
         await userDao.updateArticleImage(image, id);
     }
     await userDao.updateArticlecontent(content, id);
-    res.render("submitChange");
+
+    res.redirect("/userHomePage");
 });
 
-router.post("/sortByTitle", async function(req, res) {
+// Sort functions for home page ---------
+
+router.post("/homeSortByTitle", async function (req, res) {
+    const cookie = req.cookies;
+    const username = cookie.username;
+    const articleDataArray = await userDao.retrieveArticleData();
+    articleDataArray.sort(sortMethod.compareByHeader);
+
+    if (cookie.username != undefined) {
+
+        // Keep login
+        const hasLogin = "has login";
+        res.locals.hasLogin = hasLogin;
+
+        // Get user avatar by username from cookies
+        const userData = await userDao.getUser(username);
+        const user_avatar = userData.avatar;
+        res.locals.avatar = user_avatar
+    }
+
+    res.locals.articlesArray = articleDataArray;
+
+    res.render("home");
+});
+
+router.post("/homeSortByUsername", async function (req, res) {
+    const cookie = req.cookies;
+    const username = cookie.username;
+    const articleDataArray = await userDao.retrieveArticleData();
+    articleDataArray.sort(sortMethod.compareByAuthor);
+
+    if (cookie.username != undefined) {
+
+        // Keep login
+        const hasLogin = "has login";
+        res.locals.hasLogin = hasLogin;
+
+        // Get user avatar by username from cookies
+        const userData = await userDao.getUser(username);
+        const user_avatar = userData.avatar;
+        res.locals.avatar = user_avatar;
+    }
+
+    res.locals.articlesArray = articleDataArray;
+
+    res.render("home");
+});
+
+router.post("/homeSortByDate", async function (req, res) {
+    const cookie = req.cookies;
+    const username = cookie.username;
+    const articleDataArray = await userDao.retrieveArticleData();
+    articleDataArray.sort(sortMethod.compareByDate);
+
+    if (cookie.username != undefined) {
+
+        // Keep login
+        const hasLogin = "has login";
+        res.locals.hasLogin = hasLogin;
+
+        // Get user avatar by username from cookies
+        const userData = await userDao.getUser(username);
+        const user_avatar = userData.avatar;
+        res.locals.avatar = user_avatar;
+
+    }
+
+    res.locals.articlesArray = articleDataArray;
+
+    res.render("home");
+
+});
+
+router.post("/homeResetSort", async function (req, res) {
+    res.redirect("/");
+});
+
+// Sort functions for user page -----------
+
+router.post("/sortByTitle", async function (req, res) {
     const cookie = req.cookies;
     const username = cookie.username;
     const articles = await userDao.getAriticlesByUser(username);
-    articles.sort(compareByHeader);
+    articles.sort(sortMethod.compareByHeader);
     res.locals.articles = articles;
-    res.render("sortByTitle");
+
+    // Get user avatar by username from cookies
+    const userData = await userDao.getUser(username);
+    const user_avatar = userData.avatar;
+    res.locals.avatar = user_avatar;
+
+    res.render("userpage");
 });
+
+router.post("/sortByDate", async function (req, res) {
+    const cookie = req.cookies;
+    const username = cookie.username;
+    const articles = await userDao.getAriticlesByUser(username);
+    articles.sort(sortMethod.compareByDate);
+    res.locals.articles = articles;
+
+    // Get user avatar by username from cookies
+    const userData = await userDao.getUser(username);
+    const user_avatar = userData.avatar;
+    res.locals.avatar = user_avatar;
+
+    res.render("userpage");
+});
+
+router.post("/resetSort", async function (req, res) {
+    res.redirect("/userHomePage");
+});
+
+// Sorting ends
 
 router.post("/userHomePage", async function (req, res) {
     const username = req.body.username;
@@ -216,7 +335,7 @@ router.post("/userHomePage", async function (req, res) {
 
             res.locals.articles = await userDao.getAriticlesByUser(username);
             res.locals.username = username;
-            
+
             if (req.body.delete) {
                 console.log("receive delete query");
             } else {
@@ -226,7 +345,8 @@ router.post("/userHomePage", async function (req, res) {
                 res.locals.username = username;
             }
 
-            res.render("userpage");
+            // Back to home page After login
+            res.redirect("/");
         }
         else {
             const toastMessage = "Wrong Password!";
@@ -241,36 +361,6 @@ router.get("/setting", async function (req, res) {
 });
 
 
-function compareByHeader(a, b) {
-    if (a.header < b.header) {
-        return -1;
-    }
-    if (a.header > b.header) {
-        return 1;
-    }
-    return 0;
-}
-
-function compareByAuthor(a, b) {
-    if (a.username < b.username) {
-        return -1;
-    }
-    if (a.username > b.username) {
-        return 1;
-    }
-    return 0;
-}
-
-
-function compareByDate(a, b) {
-    if (a.date < b.date) {
-        return -1;
-    }
-    if (a.date > b.date) {
-        return 1;
-    }
-    return 0;
-}
 
 router.get("/logout", async function (req, res) {
     Object.keys(req.cookies).forEach(cookieName => {
