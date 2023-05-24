@@ -1,3 +1,7 @@
+<head>
+     <script src="./js/setting.js"></script>
+</head>
+
 <div class="container">
     <a href="./">Click here back to home page</a>
     {{#if toastMessage}}
@@ -18,6 +22,8 @@
         <button type="submit" name="settingButton">Change</button>
     </form>
 
+    <div class="warningUsernameArea">
+    </div>
     <form action="./changeUsername" method="post">
         <label for="textUsername">Username:</label>
         <input type="text" id="textUsername" name="username" required>

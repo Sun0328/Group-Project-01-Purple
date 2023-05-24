@@ -15,6 +15,16 @@ async function hasSameUsername(username){
     return userData;
 }
 
+async function getUserByUsername(username){
+    const db = await dbPromise;
+
+    const testUsername = username;
+    const userData= await db.get(SQL`
+        select * from user
+        where username = ${testUsername}`);
+    return userData;
+}
+
 async function createNewUser(user){
     const db = await dbPromise;
 
@@ -38,6 +48,16 @@ async function getUser(username){
         where username = ${testUsername}`);
     console.log("user data: " + userData);
     return userData;
+}
+
+async function getAuthor(inputID){
+    const db = await dbPromise;
+
+    const authorID = inputID;
+    const authorName = await db.get(SQL`
+        select username from user
+        where id = ${authorID}`);
+    return authorName;
 }
 
 async function getSalt(username){
@@ -173,6 +193,7 @@ async function changeDescription(nowUsername, newDescription){
 
 module.exports = {
     hasSameUsername,
+    getUserByUsername,
     createNewUser,
     getUser,
     getSalt,
@@ -184,6 +205,7 @@ module.exports = {
     changeFirstName,
     changeBirth,
     changeDescription,
-    retrieveArticleData
+    retrieveArticleData,
+    getAuthor
 
 }

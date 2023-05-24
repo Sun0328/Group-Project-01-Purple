@@ -27,7 +27,6 @@ CREATE TABLE article (
   id integer NOT NULL PRIMARY KEY,
   header varchar(32) NOT NULL,
   content varchar(108) NOT NULL,
-  date date NOT NULL,
   time time NOT NULL,
   user_id integer NOT NULL,
   image varchar(32),
@@ -47,7 +46,6 @@ CREATE TABLE comment (
   user_id integer NOT NULL,
   article_id integer NOT NULL,
   content varchar(108) NOT NULL,
-  date date NOT NULL,
   time time NOT NULL,
   parent_id integer DEFAULT NULL,
   FOREIGN KEY (user_id) REFERENCES user(id),
@@ -62,10 +60,10 @@ INSERT INTO user (id, username, password, fname, lname, year, month, day, salt, 
   (3, 'Annika', 'pa55word', 'Annika', 'Lee', 1975, 2, 23, '567', 'Hello!!','3', NULL);
 
 
-INSERT INTO article (id, header, content, date, time, user_id, image) VALUES
-  (1, 'Header1', 'Content1', '2022-11-11', '08:26:13', 1, 'image1'),
-  (2, 'Header2', 'Content2', '2023-01-01', '12:30:02', 2, 'image2'),
-  (3, 'Header3', 'Content3', '2023-03-21', '22:01:52', 3, 'image3');
+INSERT INTO article (id, header, content,  time, user_id, image) VALUES
+  (1, 'Header1', 'Content1', '2022-11-11 08:26:13', 1, 'image1'),
+  (2, 'Header2', 'Content2', '2023-01-01 12:30:02', 2, 'image2'),
+  (3, 'Header3', 'Content3', '2023-03-21 22:01:52', 3, 'image3');
 
 
 INSERT INTO likes (id, user_id, article_id) VALUES
@@ -73,8 +71,8 @@ INSERT INTO likes (id, user_id, article_id) VALUES
   (2, 1, 2),
   (3, 2, 3);
 
-INSERT INTO comment (id, user_id, article_id, content, date, time, parent_id) VALUES
-  (1, 1, 2, 'Hi', '2022-11-11', '08:26:13', NULL),
-  (2, 2, 3, 'Good', '2022-11-12', '16:46:25', 1),
-  (3, 3, 3, 'Lol', '2023-01-08', '10:41:20', NULL);
+INSERT INTO comment (id, user_id, article_id, content, time, parent_id) VALUES
+  (1, 1, 2, 'Hi', '2022-11-11 08:26:13', NULL),
+  (2, 2, 3, 'Good', '2022-11-12 16:46:25', 1),
+  (3, 3, 3, 'Lol', '2023-01-08 10:41:20', NULL);
 
