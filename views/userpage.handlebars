@@ -1,10 +1,65 @@
-<div class="container">
-    <a href="./">Click here back to home page</a>
-    <a href="./setting">Click here to set your personal detail</a>
-    <a href="./logout">Click here to logout</a>
-    {{! Display a toast message if one was provided. }}
-    {{#if toastMessage}}
-        <h1>{{toastMessage}}</h1>
-    {{/if}}
-    <h1>Here is your own space!</h1>
-</div>
+<link rel="stylesheet" href="/css/nav_bar.css">
+<link rel="stylesheet" href="/css/userpage.css">
+<link rel="stylesheet" href="/css/function.css">
+<link rel="stylesheet" href="/css/article.css">
+<link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+
+
+<body>
+
+    {{> nav_bar_login}}
+
+    <div class="main">
+
+        {{> function}}
+
+        <div class="container">
+            <h1>Here are your own articles!</h1>
+
+            <form action="./sortByTitle" method="POST">
+                <input type="hidden" id="sort" name="sort" value="sort">
+                <button type="submit">Sort by title!</button>
+            </form>
+
+            <form action="./sortByDate" method="POST">
+                <input type="hidden" id="sort" name="sort" value="sort">
+                <button type="submit">Newest to Oldest</button>
+            </form>
+
+            <form action="./resetSort" method="POST">
+                <input type="hidden" id="sort" name="sort" value="sort">
+                <button type="submit">Reset order</button>
+            </form>
+
+            <form action="./newArticle" method="POST">
+                <input type="hidden" id="new" name="new" value="new">
+                <button type="submit">Create new article!</button>
+            </form>
+
+
+            {{#if articles}}
+            <ul name="articleUL">
+                {{#each articles}}
+                <li>
+                    {{> article}}
+                    <form action="./deleteArticle" method="POST">
+                        <input type="hidden" id="delete" name="delete" value="{{this.id}}">
+                        <button type="submit">Delete!</button>
+                    </form>
+                    <form action="./editArticle" method="POST">
+                        <input type="hidden" id="edit" name="edit" value="{{this.id}}">
+                        <button type="submit">Edit!</button>
+                    </form>
+                </li>
+                {{/each}}
+            </ul>
+            {{else}}
+            <p>No matching articles</p>
+            {{/if}}
+
+        </div>
+
+
+
+</body>

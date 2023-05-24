@@ -6,7 +6,7 @@
             </div>
             <div class="user_detail">
                 <div class="user_name">
-                    {{user_id}}
+                    {{username}}
                 </div>
                 <div class="article_date">{{date}} {{time}}</div>
             </div>
@@ -18,10 +18,10 @@
             </div>
             <div class="text">
                 <p>
-                    {{content}}
+                    {{{content}}}
                 </p>
                 <div class="image">
-                    <img src="../images/Dragonite.png" alt="">
+                    <img src="/uploadedFiles/{{user_id}}/{{image}}" width="300">
                 </div>
             </div>
             <div class="article_function">
@@ -43,6 +43,7 @@
 
             </div>
         </div>
+    </div>
 
 
 </body>

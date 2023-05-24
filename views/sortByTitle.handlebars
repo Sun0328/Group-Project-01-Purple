@@ -1,0 +1,20 @@
+<div>
+    <h1>My Articles</h1>
+    {{#if articles}}
+    <ul name="articleUL">
+        {{#each articles}}
+        <li>
+            {{this.header}} by
+            {{this.username}}
+            {{this.date}}
+            <form action="./deleteArticle" method="POST"></form>
+            <input type="hidden" id="delete" name="delete" value="{{this.id}}">
+            <button type="submit">Delete!</button>
+            </form>
+        </li>
+        {{/each}}
+    </ul>
+    {{else}}
+    <p>No matching articles</p>
+    {{/if}}
+</div>

@@ -3,9 +3,11 @@ body {
     box-sizing: border-box;
 }
 
-/* Artcle Part */
+.main {
+    color: black;
+}
 
-.article_container {
+.container {
     width: 65%;
     margin: auto;
     color: black;

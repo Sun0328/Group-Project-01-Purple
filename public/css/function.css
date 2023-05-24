@@ -1,0 +1,36 @@
+/* Function Part */
+.function_container {
+    position: absolute;
+    margin-top: 5px;
+    color: black;
+    width: 224px;
+    /* background-color: antiquewhite; */
+}
+
+.function_container ul li {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    width: 204px;
+    height: 50px;
+    padding-left: 20px;
+    border-radius: 6px;
+}
+
+.function_container ul li:hover {
+    background-color: rgb(110, 8, 229);
+    color: white;
+    transition: background-color .3s;
+    cursor: pointer;
+}
+
+.function_container a {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+}
+
+.function_container p {
+    margin-left: 10px;
+}

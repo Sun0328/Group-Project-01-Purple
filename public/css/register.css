@@ -1,0 +1,83 @@
+@import url('https://fonts.googleapis.com/css2?family=Climate+Crisis&family=Nunito:wght@300&display=swap');
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image: url("../images/login_background.jpeg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    font-family: 'Nunito', sans-serif;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    width: 400px;
+    background-color: white;
+    border-radius: 5px;
+    padding: 30px;
+    box-shadow: 0 0px 10px rgba(0, 0, 0, 0.2);
+}
+
+h1 {
+    display: inline;
+}
+
+.toastMessage {
+    height: 30px;
+}
+
+.password_container {
+    margin-top: 20px;
+}
+
+h2 {
+    color: rgb(131, 33, 255);
+}
+
+input,
+textarea {
+    width: 370px;
+    background-color: #fff;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    margin: 6px 0;
+    padding: 14px;
+}
+
+#signUpButton {
+    display: inline-block;
+    width: 400px;
+    height: 50px;
+    margin-top: 20px;
+    background-color: rgb(131, 33, 255);
+    font-size: 20px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: bold;
+    color: #fff;
+    border-radius: 25px;
+    cursor: pointer;
+    border: none;
+}
+
+#signUpButton:hover {
+    background-color: rgb(110, 8, 229);
+    transition: background-color .5s;
+}
+
+.back {
+    margin-top: 15px;
+}
+
+a {
+    font-size: 18px;
+    color: rgb(110, 8, 229);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
