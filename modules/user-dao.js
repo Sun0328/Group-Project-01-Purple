@@ -120,11 +120,14 @@ async function deleteTheUser(username){
 
 async function changeUsername(oldUsername, newUsername){
     const db = await dbPromise;
-
-    const username= oldUsername;
-    const nUsername = newUsername;
+    console.log("old user name is: "+oldUsername);
+    console.log("new user name is: "+newUsername);
+    const user = await db.get(SQL`
+        select * from user
+        where username = ${oldUsername}`);
+    console.log("user is: "+user);
     await db.run(SQL`UPDATE user
-        SET username = ${nUsername} 
+        SET username = ${newUsername} 
         WHERE id = ${user.id}`);
 }
 
