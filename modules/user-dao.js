@@ -504,6 +504,16 @@ async function deleteSubscribe(subscriber_name, author_name){
     
 }
 
+async function getUserByUserId(inputUserId){
+    const db = await dbPromise;
+
+    const userId = inputUserId;
+    const userData = await db.get(SQL`
+        select * from user
+        where id = ${userId}`)
+    return userData;
+}
+
 module.exports = {
     getAriticlesByUser,
     deleteArticleById,
@@ -530,6 +540,7 @@ module.exports = {
     createNewArticle,
     getUserIdByUserName,
     updateArticleImage,
+    getUserByUserId,
     getAuthorsByUserName,
     getSubscribersByUserName,
     getProfileByName,

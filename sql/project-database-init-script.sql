@@ -1,3 +1,4 @@
+
 /*
  * Upon submission, this file should contain the SQL script to initialize your database.
  * It should contain all DROP TABLE and CREATE TABLE statments, and any INSERT statements
@@ -60,7 +61,8 @@ CREATE TABLE comment (
   time time NOT NULL,
   parent_id integer DEFAULT NULL,
   FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE,
-  FOREIGN KEY (article_id) REFERENCES article(id)
+  FOREIGN KEY (article_id) REFERENCES article(id),
+  FOREIGN KEY(parent_id) REFERENCES comment(id)
   ON DELETE CASCADE
 );
 

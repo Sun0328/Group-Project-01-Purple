@@ -10,6 +10,8 @@ const userDao = require("../modules/user-dao.js");
 const articleDao = require("../modules/article-dao.js");
 const commentDao = require("../modules/comment-dao.js");
 const likeDao = require("../modules/like-dao.js");
+const subscribeDao = require("../modules/subscribe-dao.js");
+const notificationDao = require("../modules/notification-dao.js");
 
 //sort array function
 const sortMethod = require("../modules/sort.js");
@@ -192,14 +194,33 @@ router.post("/newArticle", async function (req, res) {
     let article = await userDao.getArticleById(JSON.stringify(articleID.lastID));
     article = article[0];
     res.locals.article = article;
-    console.log("New Article: " + JSON.stringify(article));
+
+    //notification
+    const currentArticleId = articleID.lastID;
+
+    const currentArticle =  await articleDao.getArticleById(currentArticleId);
+    const currentUser = await userDao.getUserByUsername(username);
+
+    const currentUserId = currentUser.id;
+    const subscribeData = await subscribeDao.getSubscribeDataByAuthorId(currentUserId);
+
+    for (let i = 0; i < subscribeData.length; i++)
+    {
+        const item = subscribeData[i];
+        const receiverId = item.subscriber_id;
+
+        const content = currentArticleId;
+        const type = "article";
+        const senderId = currentUserId;
+        const time =currentArticle.time;
+        await notificationDao.addNotification(receiverId, senderId, type, content, time);
+    }
 
     const folderPath = `./public/uploadedFiles/${article.user_id}`;
     getFileNames(folderPath, function (files) {
         res.locals.files = files;
         res.render("newArticle");
     });
-
 });
 
 
@@ -579,28 +600,202 @@ router.get("/article", async function (req, res) {
     res.locals.content = content;
     res.locals.articleId = articleId
 
-    const commentData = await commentDao.getCommentByArticleId(articleData.id);
-    res.locals.commentData = commentData;
+    const allCommentData = await commentDao.getCommentByArticleId(articleId);
+    
+    let firstLevelCommentData = [];
+    let s_t_o_ChildrenCommentData = [];
+    let t_o_ChildrenCommentData = [];
+    let o_ChildrenCommentData = [];
 
+    let secondLevelCommentData = [];
+    let thirdLevelCommentData = [];
+    let otherLevelCommentData = [];
+    
+    for (let i = 0; i < allCommentData.length; i++)
+    {
+        const item = allCommentData[i];
+        const parentId = item.parent_id;
+        if (parentId === null)
+        {
+            console.log("item: " + JSON.stringify(item));
+            const comment = {"comment_id":item.id,"sender":item.username,"recipient":author, "content":item.content, "time":item.time, "nextLevelComment": []}
+            firstLevelCommentData.push(comment);
+        }
+        else
+        {
+            const comment = {"comment_id":item.id, "parent_id":parentId, "sender":item.username,"recipient":null, "content":item.content, "time":item.time, "nextLevelComment": []}
+            s_t_o_ChildrenCommentData.push(comment);
+        }
+    }
+    console.log("firstLevelComment: " + JSON.stringify(firstLevelCommentData));
+    console.log("all children comment: " + JSON.stringify(s_t_o_ChildrenCommentData));
+    
+    for (let i = 0; i < s_t_o_ChildrenCommentData.length; i++)
+    {
+        const child = s_t_o_ChildrenCommentData[i];
+        const parentId = child.parent_id;
+        for (let j = 0; j < firstLevelCommentData.length; j++)
+        {
+            const parent = firstLevelCommentData[j];
+            const id = parent.comment_id;
+            if (parentId === id)
+            {
+                child.recipient = parent.sender;
+                parent.nextLevelComment.push(child);
+                secondLevelCommentData.push(child);
+            }
+            else
+            {
+                t_o_ChildrenCommentData.push(child);
+            }
+        }
+    }
+
+    console.log("second: " + JSON.stringify(secondLevelCommentData));
+
+    for (let i = 0; i < t_o_ChildrenCommentData.length; i++)
+    {
+        const child = t_o_ChildrenCommentData[i];
+        const parentId = child.parent_id;
+        for (let j = 0; j < secondLevelCommentData.length; j++)
+        {
+            const secondLevelComment = secondLevelCommentData[j];
+            const id = secondLevelComment.comment_id;
+            if (parentId === id)
+            {
+                child.recipient = secondLevelComment.sender;
+                secondLevelComment.nextLevelComment.push(child);
+                thirdLevelCommentData.push(child);
+            }
+            else
+            {
+                o_ChildrenCommentData.push(child);
+            }
+        }
+    }
+    
+    for (let i = 0; i < thirdLevelCommentData.length; i++)
+    {
+        const thirdComment = thirdLevelCommentData[i];
+        const thirdCommentId = thirdComment.comment_id;
+        const otherCommentData = await commentDao.getAllOtherCommentByCommentId(thirdCommentId);
+
+        console.log("other Comment data: " + JSON.stringify(otherCommentData));
+        for (let j = 0; j < otherCommentData.length; j++)
+        {
+            const item = otherCommentData[j];
+            if (item.id != thirdCommentId)
+            {
+                const parentId = item.parent_id;
+                const recipient = (await commentDao.getSenderByCommentId(parentId)).username;
+                const otherComment = {"comment_id":item.id,"sender":item.username,"recipient":recipient, "content":item.content, "time":item.time, "nextLevelComment": []}
+                otherLevelCommentData.push(otherComment);
+                thirdComment.nextLevelComment.push(otherComment);
+            }
+        }
+    }
+
+    res.locals.firstLevelCommentData = firstLevelCommentData;
     res.render("testArticle");
 });
 
-router.get("/article/comment", async function (req, res) {
+router.get("/article/comment", async function(req, res){
     const commentContent = req.query.commentContent;
     const articleId = req.query.articleId;
-
+    const recipientCommentId = req.query.recipientCommentId;
     const cookies = req.cookies;
     const sender = cookies.username;
-    const recipient = null;
-
+    
     const userData = await userDao.getUserByUsername(sender);
     const senderId = userData.id;
 
-    const commentId = await commentDao.addCommentIntoCommentTable(senderId, recipient, commentContent, articleId);
+    const commentId = await commentDao.addCommentIntoCommentTable(senderId, recipientCommentId, commentContent, articleId);
     const commentData = await commentDao.getCommentByCommentId(commentId);
 
+    const subscribeData = await subscribeDao.getSubscribeDataByAuthorId(senderId);
+    for (let i = 0; i < subscribeData.length; i ++)
+    {
+        const item = subscribeData[i];
+        const receiverId = item.subscriber_id;
+        const type = "comment";
+        const content = commentId;
+        const time = commentData.time;
+
+        await notificationDao.addNotification(receiverId, senderId, type, content, time);
+    }
     res.json(commentData);
     console.log("succeccfully add comment");
+});
+
+router.get("/article/deleComment", async function(req, res){
+    const deleCommentId = req.query.deleCommentId;
+    await commentDao.deleCommentByCommentId(deleCommentId);
+    res.json();
+})
+
+router.get("/goNo", async function(req, res){
+    const cookies = req.cookies;
+    const username = cookies.username;
+
+    const userData = await userDao.getUserByUsername(username);
+    const userId = userData.id;
+
+    const allNotificationData = await notificationDao.getNotificationByUserId(userId);
+    let notReadList = [];
+    for (let i = 0; i < allNotificationData.length; i++)
+    {
+        const item = allNotificationData[i];
+        const hasRead = item.read;
+        if (hasRead == 0)
+        {
+            notReadList.push(item);
+        }
+    }
+
+    let NotificationList = [];
+    const notificationNum = notReadList.length;
+    for (let i = 0; i < notReadList.length; i++)
+    {
+        const item = notReadList[i];
+        const type = item.type;
+        if (type == "comment")
+        {
+            const commentId = item.content;
+            const commentData = await commentDao.getCommentByCommentId(commentId);
+            const content = commentData.content;
+            const sender = commentData.username;
+            const articleData = await articleDao.getArticleById(commentData.id);
+            const articleHeader = articleData.header;
+            const title = sender + "send a comment on Article: " + articleHeader;
+            const time = commentData.time;
+            const notification = {"title": title, "content": content, "author":sender, "time":time};
+            NotificationList.push(notification);
+        }
+        else if (type == "article")
+        {
+            const articleId = item.content;
+            const articleData = await articleDao.getArticleById(articleId);
+            const content = articleData.content;
+            const sender = articleData.username;
+            const title = sender + "published an article";
+            const time = articleData.time;
+            const notification = {"title": title, "content": content, "author":sender, "time":time};
+            NotificationList.push(notification);
+        }
+        else if (type == "subscribe")
+        {
+            const beFollowedId = item.content;
+            const beFollowedUsername = await userDao.getUserByUserId(beFollowedId);
+            const sender = item.sender;
+            const title = "Newly followed"
+            const content = sender + " followed " + beFollowedUsername;
+            const notification = {"title": title, "content": content, "author":sender, "time":time};
+            NotificationList.push(notification);
+        }
+    }
+    res.locals.notificationNum = notificationNum;
+    res.locals.notification = NotificationList;
+    res.render("notification");
 })
 
 

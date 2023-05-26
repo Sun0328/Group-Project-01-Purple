@@ -18,10 +18,11 @@ async function getArticleById(articleId){
     const db = await dbPromise;
     
     const id = articleId;
-    console.log("id: " + id);
     const articleData = await db.get(SQL`
-        select * from article
-        where id=${id}`);
+        SELECT article.*, user.username
+        FROM article
+        JOIN user ON article.user_id = user.id
+        WHERE article.id = ${id}`);
     return articleData;
 }
 
