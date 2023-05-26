@@ -64,6 +64,16 @@ async function getAriticlesByUser(username){
     articleArray.forEach(element => {
         element.username = username;
     });
+    // get user avatar from user id
+    let userAvatar = await db.all(SQL`
+        select avatar from user 
+            where username = ${username}
+    `);
+    console.log("avatar is"+JSON.stringify(userAvatar));
+    // manually assign user avatar to article array
+    articleArray.forEach(element => {
+        element.avatar = userAvatar[0].avatar;
+    });
     return articleArray;
 }
 
@@ -180,12 +190,29 @@ async function retrieveArticleData() {
             }
         });
     });
+
+    // get user avatar from user id
+    let userAvatar = [];
+    let index2 = 0;
+    user.forEach(element => {
+        userID.forEach(idElement => {
+            if (element.id == JSON.stringify(idElement.user_id)){
+                userAvatar[index2] = element.avatar;
+                index2 += 1;
+            }
+        });
+    });
+    console.log("avatar list:"+userAvatar);
     // manually assign user name to article array
     
     for (let i = 0; i < username.length; i++) {
         article[i].username = username[i];
     }
-            
+    // manually assign user avatar to article array
+    for (let i = 0; i < userAvatar.length; i++) {
+        article[i].avatar = userAvatar[i];
+    }
+
     return article;
 }
 
@@ -315,6 +342,15 @@ async function getUserIdByUserName(username) {
     
 }
 
+async function getUserAvatarByUserId(userID) {
+    console.log("userid list:"+userID);
+    const db = await dbPromise;
+    return await db.all(SQL`
+        select avatar from user
+        where user_id = ${userID}`);
+    
+}
+
 module.exports = {
     getAriticlesByUser,
     deleteArticleById,
@@ -340,6 +376,7 @@ module.exports = {
     updateArticlecontent,
     createNewArticle,
     getUserIdByUserName,
-    updateArticleImage
+    updateArticleImage,
+    getUserAvatarByUserId
 
 }

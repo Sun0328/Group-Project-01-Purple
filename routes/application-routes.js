@@ -17,10 +17,10 @@ const sortMethod = require("../modules/sort.js");
 router.get("/", async function (req, res) {
 
     res.locals.title = "Purple";
-    const articleDataArray = await userDao.retrieveArticleData();
+    let articleDataArray = await userDao.retrieveArticleData();
     // console.log(JSON.stringify(articleDataArray));
     res.locals.articlesArray = articleDataArray;
-
+    
     const cookies = req.cookies;
     console.log("cookies: " + JSON.stringify(cookies));
 
@@ -32,11 +32,8 @@ router.get("/", async function (req, res) {
         const username = cookies.username;
         const userData = await userDao.getUserByUsername(username);
         console.log("userData: " + JSON.stringify(userData));
-        const user_avatar = userData.avatar;
-        res.locals.avatar = user_avatar;
+
     }
-
-
 
     res.render("home");
 });
@@ -632,6 +629,10 @@ function getFileNames(folderPath, callback) {
         callback(files);
     })
 }
+
+router.get("/subscription", async function (req, res) {
+    res.render("subscription");
+});
 
 
 module.exports = router;
