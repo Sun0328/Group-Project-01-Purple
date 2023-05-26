@@ -8,29 +8,94 @@
     <p>Time: {{time}}</p>
     <p>Content:</p>
     <p>{{content}}</p>
-    <p>--------comment---------</p>
-    {{#if commentData}}
+    <br/>
+
     <div class="commentContainer">
-        {{#each commentData}}
-            <p>Content: {{this.content}}</p>
-            <p>Sender: {{this.username}}</p>
-            <p>Time: {{this.time}}</p>
-            <p>------second level------</p>
-                    <input type="hidden" class="second-reciptientId" value="{{this.user_id}}">
-                    <p>who recipient: {{this.user_id}}</p>
-                    <label for="second-textComment">Comment:</label><br/>
-                    <textarea class="second-textComment" name="comment" row="4" cols="50"></textarea>
-                    <button type="submit" class="second-commentButton">send</button>
-            <p>-----next------</p>
-        {{/each}}
-    </div>
-    {{/if}}
-    </div>
-    <p>--------submit comment--------</p>
+        <p>----------------------------------submit comment----------------------------------</p>
         <input type="hidden" id="articleId"  value="{{articleId}}">
         <label for="textComment">Comment:</label><br/>
         <textarea id="textComment" name="comment" row="4" cols="50"></textarea>
         <button type="submit" id="commentButton" >send</button>
+    {{#if firstLevelCommentData}}
+        <p>----------------------------------comment----------------------------------</p>
+        {{#each firstLevelCommentData}}
+            <p>+++++++++++++++++++++++++++++++++++++++++++++++++++++</p>
+            <p>First Level comment</p>
+            <p>reply to article author:{{this.recipient}}</p>
+            <p>Content: {{this.content}}</p>
+            <p>Sender: {{this.sender}}</p>
+            <p>Time: {{this.time}}</p>
+            <div class="firstCommentDeleArea">
+                <input type="hidden" class="deleCommentId" value={{this.comment_id}}>
+                <button type="submit" class="deleCommentButton"  value={{this.sender}} style="display:none;">Delete</button>
+            </div>
+
+            <div class="secondSubmitContainer">
+                <input type="hidden" class="secondReciptientCommentId" value={{this.comment_id}}>
+                <button type="submit" class="showSecondSubmitTextarea">comment it</button>
+            </div>
+            {{#if this.nextLevelComment}}
+                <div class="secondCommentContainer">
+                    {{#each this.nextLevelComment}}
+                        <p>---------------------------------------------</p>
+                        <p>→Second level comment</p>
+                        <p>→Second level reply to: {{this.recipient}}</p>
+                        <p>→Second level content:{{this.content}}</p>
+                        <p>→Second level sender: {{this.sender}}</p>
+                        <p>→Second level time:{{this.time}}</p>
+                        <div class="secondCommentDeleArea">
+                            <input type="hidden" class="deleCommentId" value={{this.comment_id}}>
+                            <button type="submit" class="deleCommentButton"  value={{this.sender}} style="display:none;">Delete</button>
+                        </div>
+
+                        <div class="thirdSubmitContainer">
+                            <input type="hidden" class="thirdReciptientCommentId" value={{this.comment_id}}>
+                            <button type="submit" class="showThirdSubmitTextarea">comment it</button>
+                        </div>
+                        {{#if this.nextLevelComment}}   
+                            {{#each this.nextLevelComment}}
+                                <p>%%%%%%%%%%%%%</p>
+                                <p>→→Third level reply to: {{this.recipient}}</p>
+                                <p>→→Third level content:{{this.content}}</p>
+                                <p>→→third level sender: {{this.sender}}</p>
+                                <p>→→third level time:{{this.time}}</p>
+                                <div class="thirdCommentDeleArea">
+                                    <input type="hidden" class="deleCommentId" value={{this.comment_id}}>
+                                    <button type="submit" class="deleCommentButton"  value={{this.sender}} style="display:none;">Delete</button>
+                                </div>
+
+                                <div class="forthSubmitContainer">
+                                    <input type="hidden" class="otherReciptientCommentId" value={{this.comment_id}}>
+                                    <button type="submit" class="showOtherSubmitTextarea">comment it</button>
+                                </div>
+
+                                {{#if this.nextLevelComment}}
+                                    {{#each this.nextLevelComment}}
+                                        <p>→→Other level reply to: {{this.recipient}}</p>
+                                        <p>→→other level content:{{this.content}}</p>
+                                        <p>→→Other level sender: {{this.sender}}</p>
+                                        <p>→→Other third level time:{{this.time}}</p>
+
+                                        <div class="otherCommentDeleArea">
+                                            <input type="hidden" class="deleCommentId" value={{this.comment_id}}>
+                                            <button type="submit" class="deleCommentButton"  value={{this.sender}} style="display:none;">Delete</button>
+                                        </div>
+
+                                        <div class="otherSubmitContainer">
+                                            <input type="hidden" class="otherReciptientCommentId" value={{this.comment_id}}>
+                                            <button type="submit" class="showOtherSubmitTextarea">comment it</button>
+                                        </div>
+                                    {{/each}}
+                                {{/if}}
+                            <p>%%%%%%%%%%%%%</p>
+                            {{/each}}
+                        {{/if}}
+                        <p>---------------------------------------------</p>
+                    {{/each}}
+                </div>
+            {{/if}}
+            <p>+++++++++++++++++++++++++++++++++++++++++++++++++++++</p>
+        {{/each}}
+    {{/if}}
+    </div>
 {{/if}}
-
-

@@ -3,6 +3,7 @@
  * It should contain all DROP TABLE and CREATE TABLE statments, and any INSERT statements
  * required.
  */
+DROP TABLE IF EXISTS notification;
 DROP TABLE IF EXISTS comment;
 DROP TABLE IF EXISTS likes;
 DROP TABLE IF EXISTS subscribe;
@@ -36,10 +37,10 @@ CREATE TABLE article (
 
 CREATE TABLE subscribe (
   id integer NOT NULL PRIMARY KEY,
+  author_id integer NOT NULL,
   subscriber_id integer NOT NULL,
-  follower_id integer NOT NULL,
-  FOREIGN KEY (subscriber_id) REFERENCES user(id) ON DELETE CASCADE,
-  FOREIGN KEY (follower_id) REFERENCES user(id) ON DELETE CASCADE
+  FOREIGN KEY (author_id) REFERENCES user(id) ON DELETE CASCADE,
+  FOREIGN KEY (subscriber_id) REFERENCES user(id) ON DELETE CASCADE
 );
 
 CREATE TABLE likes (
@@ -59,11 +60,22 @@ CREATE TABLE comment (
   time time NOT NULL,
   parent_id integer DEFAULT NULL,
   FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE,
-  FOREIGN KEY (article_id) REFERENCES article(id)
+  FOREIGN KEY (article_id) REFERENCES article(id),
+  FOREIGN KEY(parent_id) REFERENCES comment(id)
   ON DELETE CASCADE
 );
 
-
+CREATE TABLE notification (
+  id integer NOT NULL PRIMARY KEY,
+  content integer NOT NULL,
+  type varchar(32) NOT NULL,
+  time time NOT NULL,
+  sender_id integer NOT NULL,
+  receiver_id integer NOT NULL,
+  read boolean NOT NULL,
+  FOREIGN KEY (sender_id) REFERENCES user(id) ON DELETE CASCADE,
+  FOREIGN KEY (receiver_id) REFERENCES user(id) ON DELETE CASCADE
+);
 
 
 INSERT INTO user (id, username, password, fname, lname, year, month, day, salt, profile, avatar) VALUES
@@ -80,7 +92,7 @@ INSERT INTO article (id, header, content, time, user_id, image) VALUES
   (4, 'Cat', 'Content4', '2023-02-01 12:30:02', 3, 'realCat.png'),
   (5, 'Eva', 'Content5', '2023-03-01 12:30:02', 3, 'realCat.png');
 
-INSERT INTO subscribe (id, subscriber_id, follower_id) VALUES
+INSERT INTO subscribe (id, author_id, subscriber_id) VALUES
   (1, 1, 3),
   (2, 1, 2),
   (3, 2, 3);
@@ -94,4 +106,8 @@ INSERT INTO comment (id, user_id, article_id, content, time, parent_id) VALUES
   (1, 1, 2, 'Hi', '2022-11-11 08:26:13', NULL),
   (2, 2, 3, 'Good', '2022-11-12 16:46:25', 1),
   (3, 3, 3, 'Lol', '2023-01-08 10:41:20', NULL);
+  
+  INSERT INTO notification (id, content, type, time, sender_id, receiver_id, read) VALUES
+  (1, 1, 'comment', '2022-11-11 08:26:13', 1, 2, FALSE),
+  (2, 1, 'comment', '2022-11-11 08:26:13', 1, 3, FALSE);
 

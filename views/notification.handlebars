@@ -1,0 +1,11 @@
+<h1>Notification</h1>
+
+{{#if notification}}
+    {{#each notification}}
+        <p>- {{this.author}}'s new activity</p>
+        <p>- {{this.title}}</p>
+        <p>- {{this.content}}</p>
+        <p>- {{this.time}}</p>
+        <p>%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</p>
+    {{/each}}
+{{/if}}

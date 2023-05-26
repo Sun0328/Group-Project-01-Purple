@@ -305,6 +305,16 @@ async function getUserIdByUserName(username) {
     
 }
 
+async function getUserByUserId(inputUserId){
+    const db = await dbPromise;
+
+    const userId = inputUserId;
+    const userData = await db.get(SQL`
+        select * from user
+        where id = ${userId}`)
+    return userData;
+}
+
 module.exports = {
     getAriticlesByUser,
     deleteArticleById,
@@ -329,6 +339,7 @@ module.exports = {
     updateArticlecontent,
     createNewArticle,
     getUserIdByUserName,
-    updateArticleImage
+    updateArticleImage,
+    getUserByUserId
 
 }
