@@ -12,6 +12,8 @@
   <link rel="stylesheet"
     href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
 
+  <script src="/js/sortHome.js"></script>
+
 
 </head>
 
@@ -29,44 +31,45 @@
 
   <div class="main">
 
-
-
-
-
-
     {{!-- Function Part (Left)--}}
     {{#if hasLogin}}
     {{> function}}
     {{/if}}
 
-
     {{!-- Article Part --}}
     {{!-- Import each article date inside partial --}}
     <div class="article_container">
 
-      <a href="./go">go comment!</a>
-
       <div class="sort_container">
-        <form action="./homeSortByTitle" method="POST">
-          <input type="hidden" id="sort" name="sort" value="sort">
-          <button type="submit">Sort by Title!</button>
-        </form>
-
-        <form action="./homeSortByUsername" method="POST">
-          <input type="hidden" id="sort" name="sort" value="sort">
-          <button type="submit">Sort by Username</button>
-        </form>
-
-        <form action="./homeSortByDate" method="POST">
-          <input type="hidden" id="sort" name="sort" value="sort">
-          <button type="submit">Newest to Oldest</button>
-        </form>
-
-        <form action="./homeResetSort" method="POST">
-          <input type="hidden" id="sort" name="sort" value="sort">
-          <button type="submit">Reset order</button>
-        </form>
+        <span>Sort by:</span>
+        <select name="sortBy" id="mySelect">
+          <option value="./homeResetSort">Default</option>
+          <option value="./homeSortByTitle">Title</option>
+          <option value="./homeSortByUsername">Username</option>
+          <option value="./homeSortByDate">Time</option>
+        </select>
       </div>
+
+
+      {{!-- <form action="./homeSortByTitle" method="POST">
+        <input type="hidden" id="sort" name="sort" value="sort">
+        <button type="submit">Sort by Title!</button>
+      </form>
+
+      <form action="./homeSortByUsername" method="POST">
+        <input type="hidden" id="sort" name="sort" value="sort">
+        <button type="submit">Sort by Username</button>
+      </form>
+
+      <form action="./homeSortByDate" method="POST">
+        <input type="hidden" id="sort" name="sort" value="sort">
+        <button type="submit">Newest to Oldest</button>
+      </form>
+
+      <form action="./homeResetSort" method="POST">
+        <input type="hidden" id="sort" name="sort" value="sort">
+        <button type="submit">Reset order</button>
+      </form> --}}
 
       {{#each articlesArray}}
       {{> article}}

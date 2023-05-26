@@ -110,10 +110,23 @@ ul {
 
 .user {
     display: flex;
+    justify-content: center;
     align-items: center;
     width: 20%;
     height: 40px;
     font-size: 20px;
+}
+
+#avatar_link {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#avatar_link:hover {
+    background-color: rgb(131, 33, 255);
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+    transition: box-shadow .3s;
 }
 
 .user .avatar {

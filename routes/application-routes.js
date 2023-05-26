@@ -222,7 +222,30 @@ router.post("/submitChange", async function (req, res) {
 
 // Sort functions for home page ---------
 
-router.post("/homeSortByTitle", async function (req, res) {
+// router.post("/homeSortByTitle", async function (req, res) {
+//     const cookie = req.cookies;
+//     const username = cookie.username;
+//     const articleDataArray = await userDao.retrieveArticleData();
+//     articleDataArray.sort(sortMethod.compareByHeader);
+
+//     if (cookie.username != undefined) {
+
+//         // Keep login
+//         const hasLogin = "has login";
+//         res.locals.hasLogin = hasLogin;
+
+//         // Get user avatar by username from cookies
+//         const userData = await userDao.getUser(username);
+//         const user_avatar = userData.avatar;
+//         res.locals.avatar = user_avatar
+//     }
+
+//     res.locals.articlesArray = articleDataArray;
+
+//     res.render("home");
+// });
+
+router.get("/homeSortByTitle", async function (req, res) {
     const cookie = req.cookies;
     const username = cookie.username;
     const articleDataArray = await userDao.retrieveArticleData();
@@ -241,11 +264,10 @@ router.post("/homeSortByTitle", async function (req, res) {
     }
 
     res.locals.articlesArray = articleDataArray;
-
     res.render("home");
-});
+})
 
-router.post("/homeSortByUsername", async function (req, res) {
+router.get("/homeSortByUsername", async function (req, res) {
     const cookie = req.cookies;
     const username = cookie.username;
     const articleDataArray = await userDao.retrieveArticleData();
@@ -268,7 +290,7 @@ router.post("/homeSortByUsername", async function (req, res) {
     res.render("home");
 });
 
-router.post("/homeSortByDate", async function (req, res) {
+router.get("/homeSortByDate", async function (req, res) {
     const cookie = req.cookies;
     const username = cookie.username;
     const articleDataArray = await userDao.retrieveArticleData();
@@ -293,13 +315,13 @@ router.post("/homeSortByDate", async function (req, res) {
 
 });
 
-router.post("/homeResetSort", async function (req, res) {
+router.get("/homeResetSort", async function (req, res) {
     res.redirect("/");
 });
 
 // Sort functions for user page -----------
 
-router.post("/sortByTitle", async function (req, res) {
+router.get("/sortByTitle", async function (req, res) {
     const cookie = req.cookies;
     const username = cookie.username;
     const articles = await userDao.getAriticlesByUser(username);
@@ -314,7 +336,7 @@ router.post("/sortByTitle", async function (req, res) {
     res.render("userpage");
 });
 
-router.post("/sortByDate", async function (req, res) {
+router.get("/sortByDate", async function (req, res) {
     const cookie = req.cookies;
     const username = cookie.username;
     const articles = await userDao.getAriticlesByUser(username);
@@ -329,11 +351,12 @@ router.post("/sortByDate", async function (req, res) {
     res.render("userpage");
 });
 
-router.post("/resetSort", async function (req, res) {
+router.get("/resetSort", async function (req, res) {
     res.redirect("/userHomePage");
 });
 
-// Sorting ends
+// Sorting ends ------------------------------
+
 
 router.post("/userHomePage", async function (req, res) {
     const username = req.body.username;
@@ -435,9 +458,10 @@ router.post("/changeAvatar", async function (req, res) {
     const username = cookies.username;
 
     await userDao.changeAvatar(username, newAvatar);
-    console.log("change ava suc");
+    // console.log("change ava suc");
 
     const toastMessage = "Successfully change the Avatar!";
+    console.log(toastMessage);
     res.locals.toastMessage = toastMessage;
     res.render("setting");
 });
@@ -527,7 +551,7 @@ router.post("/delete", async function (req, res) {
 
     const toastMessage = "Successfully deleted account!";
     res.locals.toastMessage = toastMessage;
-    res.render("home");
+    res.render("setting");
 })
 
 

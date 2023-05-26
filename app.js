@@ -15,7 +15,6 @@ const jimp = require("jimp");
 const handlebars = require("express-handlebars");
 app.engine("handlebars", handlebars({
     defaultLayout: "main",
-    // Add partials (nav_bar)
     partialsDir: path.join(__dirname, 'views/partials')
 }));
 app.set("view engine", "handlebars");
