@@ -25,6 +25,16 @@ async function getUserByUsername(username){
     return userData;
 }
 
+async function getUserByUserID(userID){
+    const db = await dbPromise;
+
+    const user_ID = userID;
+    const userData= await db.get(SQL`
+        select * from user
+        where id = ${user_ID}`);
+    return userData;
+}
+
 async function createNewUser(user){
     const db = await dbPromise;
 
@@ -310,6 +320,7 @@ module.exports = {
     deleteArticleById,
     hasSameUsername,
     getUserByUsername,
+    getUserByUserID,
     createNewUser,
     getUser,
     getSalt,

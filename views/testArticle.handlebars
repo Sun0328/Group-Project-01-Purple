@@ -3,34 +3,32 @@
 </head>
 <h1>Article Page</h1>
 {{#if articleData}}
-    <p>Header: {{header}}</p>
-    <p>Author: {{author}}</p>
-    <p>Time: {{time}}</p>
-    <p>Content:</p>
-    <p>{{content}}</p>
-    <p>--------comment---------</p>
-    {{#if commentData}}
-    <div class="commentContainer">
-        {{#each commentData}}
-            <p>Content: {{this.content}}</p>
-            <p>Sender: {{this.username}}</p>
-            <p>Time: {{this.time}}</p>
-            <p>------second level------</p>
-                    <input type="hidden" class="second-reciptientId" value="{{this.user_id}}">
-                    <p>who recipient: {{this.user_id}}</p>
-                    <label for="second-textComment">Comment:</label><br/>
-                    <textarea class="second-textComment" name="comment" row="4" cols="50"></textarea>
-                    <button type="submit" class="second-commentButton">send</button>
-            <p>-----next------</p>
-        {{/each}}
-    </div>
-    {{/if}}
-    </div>
-    <p>--------submit comment--------</p>
-        <input type="hidden" id="articleId"  value="{{articleId}}">
-        <label for="textComment">Comment:</label><br/>
-        <textarea id="textComment" name="comment" row="4" cols="50"></textarea>
-        <button type="submit" id="commentButton" >send</button>
+<p>Header: {{header}}</p>
+<p>Author: {{author}}</p>
+<p>Time: {{time}}</p>
+<p>Content:</p>
+<p>{{{content}}}</p>
+<p>--------comment---------</p>
+{{#if commentData}}
+<div class="commentContainer">
+    {{#each commentData}}
+    <p>Content: {{this.content}}</p>
+    <p>Sender: {{this.username}}</p>
+    <p>Time: {{this.time}}</p>
+    <p>------second level------</p>
+    <input type="hidden" class="second-reciptientId" value="{{this.user_id}}">
+    <p>who recipient: {{this.user_id}}</p>
+    <label for="second-textComment">Comment:</label><br />
+    <textarea class="second-textComment" name="comment" row="4" cols="50"></textarea>
+    <button type="submit" class="second-commentButton">send</button>
+    <p>-----next------</p>
+    {{/each}}
+</div>
 {{/if}}
-
-
+</div>
+<p>--------submit comment--------</p>
+<input type="hidden" id="articleId" value="{{articleId}}">
+<label for="textComment">Comment:</label><br />
+<textarea id="textComment" name="comment" row="4" cols="50"></textarea>
+<button type="submit" id="commentButton">send</button>
+{{/if}}
