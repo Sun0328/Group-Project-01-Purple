@@ -18,11 +18,13 @@
                 <span class="material-symbols-outlined notice_icon">
                     circle_notifications
                 </span>
-                {{!-- Change to user avatar --}}
-                <img src="{{avatar}}" class="avatar">
+                {{!-- Turn to user page when click the avatar --}}
+                <a href="./userHomePage" id="avatar_link">
+                    <img src="{{avatar}}" class="avatar">
+                </a>
             </div>
 
-            <a href="./setting" class="setting_a">
+            <a href="../setting" class="setting_a">
                 <span class="material-symbols-outlined setting_icon">
                     settings
                 </span>

@@ -36,6 +36,7 @@
         <br>
         {{#if files}}
         <select id="selectImage" name="image">
+            <option value="">Do not display image</option>
             {{#each files}}
             <option value="{{this}}">{{this}}</option>
             {{/each}}

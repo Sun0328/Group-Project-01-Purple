@@ -1,0 +1,57 @@
+<link rel="stylesheet" href="/css/nav_bar.css">
+<link rel="stylesheet" href="/css/userpage.css">
+<link rel="stylesheet" href="/css/function.css">
+<link rel="stylesheet" href="/css/article.css">
+<link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+
+
+<body>
+
+    {{> nav_bar_login}}
+
+    <div class="main">
+
+        {{> function}}
+
+        <div class="container">
+            <h2>List of authors and the list of subscribers</h2>
+            <br>
+            <h3>Author List</h3>
+            {{#if authors}}
+            <ul>
+                {{#each authors}}
+                <li>
+                    {{this.username}}
+                    <br>
+                    Profile: <a href="./subscription/author?name={{this.username}}">{{this.profile}}</a>
+                    <br>=======
+                </li>
+                {{/each}}
+            </ul>
+            {{else}}
+            <p>No existing authors</p>
+            {{/if}}
+            <br>
+
+            <h3>Subscriber List</h3>
+            {{#if subscribers}}
+            <ul>
+                {{#each subscribers}}
+                <li>
+                    {{this.username}}
+                    <br>
+                    Profile: <a href="./subscription/subscriber?name={{this.username}}">{{this.profile}}</a>
+                    <br>=======
+                </li>
+                {{/each}}
+            </ul>
+            {{else}}
+            <p>No existing subscribers</p>
+            {{/if}}
+
+        </div>
+
+
+
+</body>
