@@ -3,6 +3,7 @@
  * It should contain all DROP TABLE and CREATE TABLE statments, and any INSERT statements
  * required.
  */
+DROP TABLE IF EXISTS notification;
 DROP TABLE IF EXISTS comment;
 DROP TABLE IF EXISTS likes;
 DROP TABLE IF EXISTS subscribe;
@@ -63,7 +64,17 @@ CREATE TABLE comment (
   ON DELETE CASCADE
 );
 
-
+CREATE TABLE notification (
+  id integer NOT NULL PRIMARY KEY,
+  content integer NOT NULL,
+  type varchar(32) NOT NULL,
+  time time NOT NULL,
+  sender_id integer NOT NULL,
+  receiver_id integer NOT NULL,
+  read boolean NOT NULL,
+  FOREIGN KEY (sender_id) REFERENCES user(id) ON DELETE CASCADE,
+  FOREIGN KEY (receiver_id) REFERENCES user(id) ON DELETE CASCADE
+);
 
 
 INSERT INTO user (id, username, password, fname, lname, year, month, day, salt, profile, avatar) VALUES
@@ -94,4 +105,8 @@ INSERT INTO comment (id, user_id, article_id, content, time, parent_id) VALUES
   (1, 1, 2, 'Hi', '2022-11-11 08:26:13', NULL),
   (2, 2, 3, 'Good', '2022-11-12 16:46:25', 1),
   (3, 3, 3, 'Lol', '2023-01-08 10:41:20', NULL);
+  
+  INSERT INTO notification (id, content, type, time, sender_id, receiver_id, read) VALUES
+  (1, 1, 'comment', '2022-11-11 08:26:13', 1, 2, FALSE),
+  (2, 1, 'comment', '2022-11-11 08:26:13', 1, 3, FALSE);
 

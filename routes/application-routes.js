@@ -13,6 +13,7 @@ const likeDao = require("../modules/like-dao.js");
 
 //sort array function
 const sortMethod = require("../modules/sort.js");
+const { log } = require("console");
 
 router.get("/", async function (req, res) {
 
@@ -32,6 +33,9 @@ router.get("/", async function (req, res) {
         const username = cookies.username;
         const userData = await userDao.getUserByUsername(username);
         console.log("userData: " + JSON.stringify(userData));
+
+        const user_avatar = userData.avatar;
+        res.locals.avatar = user_avatar;
 
     }
 
@@ -213,6 +217,8 @@ router.post("/submitChange", async function (req, res) {
     }
     let image = req.body.image;
     if (image) {
+        await userDao.updateArticleImage(image, id);
+    }else if(image == ""){
         await userDao.updateArticleImage(image, id);
     }
     await userDao.updateArticlecontent(content, id);
@@ -607,8 +613,184 @@ function getFileNames(folderPath, callback) {
 }
 
 router.get("/subscription", async function (req, res) {
+    // Get user name from cookies
+    const cookie = req.cookies;
+    const username = cookie.username;
+    // Get user avatar by username from cookies
+    const userData = await userDao.getUser(username);
+    const user_avatar = userData.avatar;
+    res.locals.avatar = user_avatar;
+    const authors = await userDao.getAuthorsByUserName(username);
+    console.log("author passed: "+JSON.stringify(authors));
+    res.locals.authors = authors;
+    const subscribers = await userDao.getSubscribersByUserName(username);
+    console.log("subscriber passed: "+JSON.stringify(subscribers));
+    res.locals.subscribers = subscribers;
     res.render("subscription");
 });
 
+router.get("/subscription/author", async function (req, res) {
+    const author_name = req.query.name;
+    // get author username
+    res.locals.author = author_name;
+
+    // get author profile by author name
+    let profile = await userDao.getProfileByName(author_name);
+   
+    profile = (JSON.stringify(profile[0].profile))
+    profile = profile.slice(1, -1);
+    res.locals.profile = profile;
+
+    // Get user name from cookies
+    const cookie = req.cookies;
+    const username = cookie.username;
+
+    // do a check to check whether user are still following author
+    const result = await userDao.checkSubscription(username, author_name);
+    console.log("user name is: "+ username + "author is "+author_name);
+    console.log("result is: "+ result);
+    if (username !== author_name) {
+        res.locals.NotSameUser = 1;
+    } 
+    if (result == 1){
+        res.locals.subscribe = result;
+    }
+    res.render("profile");
+})
+
+router.get("/subscription/subscriber", async function (req, res) {
+    const subscriber_name = req.query.name;
+    // get subscriber username
+    res.locals.subscriber = subscriber_name;
+
+    // get subscriber profile by subscriber name
+    let profile = await userDao.getProfileByName(subscriber_name);
+   
+    profile = (JSON.stringify(profile[0].profile))
+    profile = profile.slice(1, -1);
+    res.locals.profile = profile;
+
+    // Get user name from cookies
+    const cookie = req.cookies;
+    const username = cookie.username;
+
+    // do a check to check whether user are still following author
+    const result = await userDao.checkSubscription(subscriber_name, username);
+    console.log("user name is: "+ username + "subscriber is "+subscriber_name);
+    console.log("result is: "+ result);
+    if (username !== subscriber_name) {
+        res.locals.NotSameUser = 1;
+    } 
+    if (result == 1){
+        res.locals.subscribe = result;
+    }
+
+    res.render("profile");
+})
+
+router.get("/subscription/subsribe", async function (req, res){
+    // Get user name from cookies
+    const cookie = req.cookies;
+    const username = cookie.username;
+    
+    if (req.query.author){
+        const author = req.query.author;
+        const subscriber = username;
+
+        // add to subscribe table
+        const testResult = await userDao.createNewSubscribe(subscriber, author);
+        const subscribe_id = JSON.stringify(testResult.lastID);
+    }
+    const author_name = req.query.author;
+    // get author username
+    res.locals.author = author_name;
+
+    // get author profile by author name
+    let profile = await userDao.getProfileByName(author_name);
+    profile = (JSON.stringify(profile[0].profile))
+    profile = profile.slice(1, -1);
+    res.locals.profile = profile;
+
+    // do a check to check whether user are still following author
+    const result = await userDao.checkSubscription(username, author_name);
+
+    if (username !== author_name) {
+        res.locals.NotSameUser = 1;
+    } 
+    if (result == 1){
+        res.locals.subscribe = result;
+    }
+    res.render("profile");
+
+})
+
+router.get("/subscription/unsubsribe", async function (req, res){
+    // Get user name from cookies
+    const cookie = req.cookies;
+    const username = cookie.username;
+    // If you are subscriber
+    if (req.query.author){
+        const author = req.query.author;
+        const subscriber = username;
+
+        // delete subscribe table
+        const testResult = await userDao.deleteSubscribe(subscriber, author);
+        const subscribe_id = JSON.stringify(testResult.lastID);
+        const author_name = req.query.author;
+        // set subscriber username
+        res.locals.author = author_name;
+
+        // set author profile by author_name
+        let profile = await userDao.getProfileByName(author_name);
+
+        profile = (JSON.stringify(profile[0].profile))
+        profile = profile.slice(1, -1);
+        res.locals.profile = profile;
+
+
+        // do a check to check whether subscriber is still following author
+        const result = await userDao.checkSubscription(username, author_name);
+
+        if (username !== author_name) {
+            res.locals.NotSameUser = 1;
+        } 
+        if (result == 1){
+            res.locals.subscribe = result;
+        }
+        res.render("profile");
+    }// If you are author
+    else{
+        const author = username;
+        const subscriber = req.query.subscriber;
+        console.log("author is "+author+" subscriber is "+subscriber);
+        // delete subscribe table
+        const testResult = await userDao.deleteSubscribe(subscriber, author);
+        console.log("test result: "+JSON.stringify(testResult));
+        const subscribe_id = JSON.stringify(testResult.lastID);
+        const subscriber_name = req.query.subscriber;
+        // set subscriber username
+        res.locals.subscriber = subscriber;
+
+        // set author profile by author_name
+        let profile = await userDao.getProfileByName(subscriber);
+
+        profile = (JSON.stringify(profile[0].profile))
+        profile = profile.slice(1, -1);
+        res.locals.profile = profile;
+
+
+        // do a check to check whether subscriber is still following author
+        const result = await userDao.checkSubscription(subscriber ,username);
+
+        if (username !== subscriber) {
+            res.locals.NotSameUser = 1;
+        } 
+        if (result == 1){
+            res.locals.subscribe = result;
+        }
+        res.render("profile");
+    }
+
+})
 
 module.exports = router;
