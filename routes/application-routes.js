@@ -21,19 +21,44 @@ router.get("/", async function (req, res) {
 
     res.locals.title = "Purple";
     let articleDataArray = await userDao.retrieveArticleData();
-    console.log("articleDataArray---" + JSON.stringify(articleDataArray));
-    res.locals.articlesArray = articleDataArray;
-
     const cookies = req.cookies;
-    console.log("cookies: " + JSON.stringify(cookies));
+
 
     if (Object.keys(cookies).length > 0) {
+        const username = cookies.username;
+        const userData = await userDao.getUserByUsername(username);
+        const userId = userData.id;
+
+        for (let i = 0; i < articleDataArray.length; i++) {
+            const item = articleDataArray[i];
+            const articleId = item.id;
+            const likeArticle = await likeDao.getLikeStateByUserIDandArticleId(userId, articleId);
+
+            let likeState;
+            if (likeArticle === undefined) {
+                likeState = "Like";
+            }
+            else {
+                likeState = "cancel Like"
+            }
+            const likeCount = await likeDao.getLikeNumberByArticleId(articleId);
+            const likStateKey = "likeState";
+            const likeNumberKey = "likeNumber";
+
+            articleDataArray[i][likStateKey] = likeState;
+            articleDataArray[i][likeNumberKey] = likeCount;
+        }
+
+
+        console.log("articleDataArray---" + JSON.stringify(articleDataArray));
+        res.locals.articlesArray = articleDataArray;
+
+        // console.log("cookies: " + JSON.stringify(cookies));
+
         const hasLogin = "has login";
         res.locals.hasLogin = hasLogin;
 
         // Get user avatar by username from cookies
-        const username = cookies.username;
-        const userData = await userDao.getUserByUsername(username);
         console.log("userData: " + JSON.stringify(userData));
 
         const user_avatar = userData.avatar;
@@ -41,7 +66,6 @@ router.get("/", async function (req, res) {
 
 
         // For notification
-        const userId = userData.id;
         const allNotificationData = await notificationDao.getNotificationByUserId(userId);
         // console.log("allNotificationData--" + JSON.stringify(allNotificationData));
         let notReadList = [];
@@ -106,7 +130,18 @@ router.get("/", async function (req, res) {
         }
         res.locals.notificationNum = notificationNum;
         res.locals.notification = NotificationList;
-
+    }
+    else{
+        for (let i = 0; i < articleDataArray.length; i++) {
+            const item = articleDataArray[i];
+            const articleId = item.id;
+            const likeCount = await likeDao.getLikeNumberByArticleId(articleId);
+            const likeNumberState= "likeState";
+            const likeNumberKey = "likeNumber";
+            articleDataArray[i][likeNumberKey] = likeCount;
+            articleDataArray[i][likeNumberState] = "like Number: ";
+        }
+        res.locals.articlesArray = articleDataArray;
     }
 
     res.render("home");
@@ -126,18 +161,16 @@ router.get("/go", async function (req, res) {
         const articleId = item.id;
         const likeArticle = await likeDao.getLikeStateByUserIDandArticleId(userId, articleId);
         let likeState;
-        if (likeArticle === undefined)
-        {
+        if (likeArticle === undefined) {
             likeState = "Like";
         }
-        else
-        {
+        else {
             likeState = "cancel Like"
         }
         const likeCount = await likeDao.getLikeNumberByArticleId(articleId);
         const key = "likeNumber";
         articleData[i][key] = likeCount;
-        const articleItem = {"id":item.id, "header": item.header,"content": item.content, "author": item.username, "time": item.time, "likeState": likeState, "likeNumber":likeCount}
+        const articleItem = { "id": item.id, "header": item.header, "content": item.content, "author": item.username, "time": item.time, "likeState": likeState, "likeNumber": likeCount }
         console.log("article: " + JSON.stringify(articleItem));
         articleList.push(articleItem);
     }
@@ -994,8 +1027,7 @@ router.get("/goNo", async function (req, res) {
             NotificationList.push(notification);
         }
     }
-    for (let i = 0; i < notReadList.length; i++)
-    {
+    for (let i = 0; i < notReadList.length; i++) {
         const item = notReadList[i];
         const notificationId = item.id;
         await notificationDao.changeNotificationReadStateById(notificationId);
@@ -1007,7 +1039,7 @@ router.get("/goNo", async function (req, res) {
     res.render("notification");
 })
 
-router.get("/addLike", async function(req, res){
+router.get("/addLike", async function (req, res) {
     const articleId = req.query.articleId;
 
     const cookies = req.cookies;
@@ -1021,7 +1053,7 @@ router.get("/addLike", async function(req, res){
     res.json("add like");
 })
 
-router.get("/cancelLike", async function(req, res){
+router.get("/cancelLike", async function (req, res) {
     const articleId = req.query.articleId;
 
     const cookies = req.cookies;
@@ -1029,7 +1061,7 @@ router.get("/cancelLike", async function(req, res){
 
     const userData = await userDao.getUserByUsername(username);
     const userId = userData.id;
-    
+
     await likeDao.deleLike(userId, articleId);
 
     res.json("dele like");

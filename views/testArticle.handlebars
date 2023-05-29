@@ -14,37 +14,6 @@
     <script src="./js/article.js"></script>
 </head>
 
-<h1>Article Page</h1>
-{{#if articleData}}
-    <p>Header: {{header}}</p>
-    <p>Author: <span id="articleAuthor">{{author}}</span></p>
-    <p>Time: {{time}}</p>
-    <p>Content:</p>
-    <p>{{content}}</p>
-    <br/>
-
-    <div class="commentContainer">
-        <p>----------------------------------submit comment----------------------------------</p>
-        <input type="hidden" id="articleId"  value="{{articleId}}">
-        <label for="textComment">Comment:</label><br/>
-        <textarea id="textComment" name="comment" row="4" cols="50"></textarea>
-        <button type="submit" id="commentButton" >send</button>
-    {{#if firstLevelCommentData}}
-        <p>----------------------------------comment----------------------------------</p>
-        {{#each firstLevelCommentData}}
-            <p>+++++++++++++++++++++++++++++++++++++++++++++++++++++</p>
-            <p>First Level comment</p>
-            <p>reply to article author:{{this.recipient}}</p>
-            <p>Content: {{this.content}}</p>
-            <p>Sender: {{this.sender}}</p>
-            <p>Time: {{this.time}}</p>
-            <div class="firstCommentDeleArea">
-                <input type="hidden" class="deleCommentId" value={{this.comment_id}}>
-                <button type="submit" class="deleCommentButton"  value={{this.sender}} style="display:none;">Delete</button>
-            </div>
-
-// Before
-
 <body>
     {{!-- nav bar --}}
     {{> nav_bar_login}}
@@ -67,10 +36,10 @@
             <div class="article">
                 {{#if articleData}}
 
-                <div class="author" id="author">Author: {{author}}</div>
+                <div class="author" id="author">Author: <span id="articleAuthor">{{author}}</span></div>
                 <div class="time article_time">Time: {{time}}</div>
                 <div class="article_header">{{header}}</div>
-                <div class="article_content">{{content}}</div>
+                <div class="article_content">{{{content}}}</div>
 
             </div>
 
