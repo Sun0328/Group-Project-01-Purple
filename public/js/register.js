@@ -22,5 +22,35 @@ window.addEventListener("load",  function () {
             warningArea.innerHTML = '';
             warningArea.appendChild(warning);
         }
-      };
+      }
+
+      let inputConfirmPassword = document.getElementById("textConfirmPassword");
+      inputConfirmPassword.oninput = async function() {
+        const confirmPassword = inputConfirmPassword.value;
+
+        const inputPassword = document.getElementById("textPassword");
+        const password = inputPassword.value;
+
+        console.log("confirmPassword: " + confirmPassword);
+        console.log("password: " + password);
+
+        if (confirmPassword !== password)
+        {
+            const warning = document.createElement("p");
+            warning.innerHTML = "Entered passwords differ!";
+            const warningArea = document.querySelector(".warningLegalPasswordArea");
+            warningArea.innerHTML = '';
+            warningArea.appendChild(warning);
+            console.log("confirmPassword: " + confirmPassword);
+            console.log("password: " + password);
+        }
+        else if (confirmPassword == password)
+        {
+            const warningArea = document.querySelector(".warningLegalPasswordArea");
+            warningArea.innerHTML = '';
+            
+            console.log("confirmPassword: " + confirmPassword);
+            console.log("password: " + password);
+        }
+    }
 });

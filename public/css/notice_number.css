@@ -1,0 +1,12 @@
+.message_number {
+    position: absolute;
+    top: 5px;
+    right: 33%;
+    height: 22px;
+    text-align: center;
+    line-height: 22px;
+    color: white;
+    background-color: red;
+    border-radius: 4px;
+    z-index: 2;
+}

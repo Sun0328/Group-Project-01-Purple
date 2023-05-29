@@ -15,12 +15,19 @@
 
         <div class="right right_login">
             <div class="user">
-                <span class="material-symbols-outlined notice_icon">
-                    circle_notifications
-                </span>
+                <a href="./goNo" class="notification_link">
+                    <span class="material-symbols-outlined notice_icon" id="notice">
+                        circle_notifications
+                    </span>
+
+                    <div class="message_number">{{notificationNum}}</div>
+                </a>
+
                 {{!-- Turn to user page when click the avatar --}}
-                <a href="./userHomePage" id="avatar_link">
-                    <img src="{{avatar}}" class="avatar">
+                <a href="./userHomePage" class="avatar_link">
+                    <div class="avatar">
+                        <img src="{{avatar}}" class="avatar">
+                    </div>
                 </a>
             </div>
 

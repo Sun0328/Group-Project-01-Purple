@@ -1,31 +1,29 @@
 <head>
-  <script
-    type="text/javascript"
-    src='https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js'
-    referrerpolicy="origin">
-  </script>
-  <script type="text/javascript">
-  tinymce.init({
-    selector: '#myTextarea',
-    init_instance_callback : function(editor) {
-    var freeTiny = document.querySelector('.tox .tox-notification--in');
-    freeTiny.style.display = 'none';
-    },
-    width: 600,
-    height: 300,
-    plugins: 'lists',
-    toolbar: 'undo redo | styles | bold italic | alignleft aligncenter alignright alignjustify | ' +
-      'bullist numlist outdent indent | preview fullscreen | ' +
-      'forecolor backcolor emoticons | help',
-    menubar: 'edit view format tools table help',
-    content_css: 'css/content.css'
-  });
-  </script>
+    <script type="text/javascript" src='https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js'
+        referrerpolicy="origin">
+        </script>
+    <script type="text/javascript">
+        tinymce.init({
+            selector: '#myTextarea',
+            init_instance_callback: function (editor) {
+                var freeTiny = document.querySelector('.tox .tox-notification--in');
+                freeTiny.style.display = 'none';
+            },
+            width: 600,
+            height: 300,
+            plugins: 'lists',
+            toolbar: 'undo redo | styles | bold italic | alignleft aligncenter alignright alignjustify | ' +
+                'bullist numlist outdent indent | preview fullscreen | ' +
+                'forecolor backcolor emoticons | help',
+            menubar: 'edit view format tools table help',
+            content_css: 'css/content.css'
+        });
+    </script>
 </head>
 
 <body>
-    <form action="./submitChange" method="POST"> 
-          
+    <form action="./submitChange" method="POST">
+
         <label for="title">Title:</label>
         <input type="text" name="title" id="title" value="{{article.header}}">
         <input type="hidden" name="id" id="id" value="{{articleID}}">
@@ -63,7 +61,7 @@
                 <div class="form-group">
                     <label for="inpFile">Upload an image here!</label>
                     <input id="inpFile" type="file" name="imageFile" accept=".png,.jpg,.jpeg,.bmp">
-                    
+
                 </div>
 
                 <div class="form-group align-start">
@@ -72,6 +70,16 @@
 
             </form>
         </div>
+
+        {{#if fileName}}
+        <div class="container">
+            <h1>Image upload complete!</h1>
+            <div class="flex-col align-center">
+                <p><strong>File name:</strong> {{fileName}}</p>
+                <p><img src="uploadedFiles/{{fileName}}"></p>
+            </div>
+        </div>
+        {{/if}}
     </div>
 </div>
 <script>

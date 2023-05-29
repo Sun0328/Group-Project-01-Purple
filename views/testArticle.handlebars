@@ -1,101 +1,186 @@
 <head>
+    <!-- Add CSS files -->
+    <link rel="stylesheet" href="/css/nav_bar.css">
+    <link rel="stylesheet" href="/css/home_main.css">
+    <link rel="stylesheet" href="/css/notice_number.css">
+    <link rel="stylesheet" href="/css/notice_detail.css">
+    <link rel="stylesheet" href="/css/function.css">
+    <link rel="stylesheet" href="/css/article.css">
+    <link rel="stylesheet" href="/css/comment.css">
+    {{!-- Add fonts link from google fonts--}}
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+
     <script src="./js/article.js"></script>
 </head>
-<h1>Article Page</h1>
-{{#if articleData}}
-    <p>Header: {{header}}</p>
-    <p>Author: {{author}}</p>
-    <p>Time: {{time}}</p>
-    <p>Content:</p>
-    <p>{{content}}</p>
-    <br/>
 
-    <div class="commentContainer">
-        <p>----------------------------------submit comment----------------------------------</p>
-        <input type="hidden" id="articleId"  value="{{articleId}}">
-        <label for="textComment">Comment:</label><br/>
-        <textarea id="textComment" name="comment" row="4" cols="50"></textarea>
-        <button type="submit" id="commentButton" >send</button>
-    {{#if firstLevelCommentData}}
-        <p>----------------------------------comment----------------------------------</p>
-        {{#each firstLevelCommentData}}
-            <p>+++++++++++++++++++++++++++++++++++++++++++++++++++++</p>
-            <p>First Level comment</p>
-            <p>reply to article author:{{this.recipient}}</p>
-            <p>Content: {{this.content}}</p>
-            <p>Sender: {{this.sender}}</p>
-            <p>Time: {{this.time}}</p>
-            <div class="firstCommentDeleArea">
-                <input type="hidden" class="deleCommentId" value={{this.comment_id}}>
-                <button type="submit" class="deleCommentButton"  value={{this.sender}} style="display:none;">Delete</button>
-            </div>
+<body>
+    {{!-- nav bar --}}
+    {{> nav_bar_login}}
 
-            <div class="secondSubmitContainer">
-                <input type="hidden" class="secondReciptientCommentId" value={{this.comment_id}}>
-                <button type="submit" class="showSecondSubmitTextarea">comment it</button>
-            </div>
-            {{#if this.nextLevelComment}}
-                <div class="secondCommentContainer">
-                    {{#each this.nextLevelComment}}
-                        <p>---------------------------------------------</p>
-                        <p>→Second level comment</p>
-                        <p>→Second level reply to: {{this.recipient}}</p>
-                        <p>→Second level content:{{this.content}}</p>
-                        <p>→Second level sender: {{this.sender}}</p>
-                        <p>→Second level time:{{this.time}}</p>
-                        <div class="secondCommentDeleArea">
-                            <input type="hidden" class="deleCommentId" value={{this.comment_id}}>
-                            <button type="submit" class="deleCommentButton"  value={{this.sender}} style="display:none;">Delete</button>
-                        </div>
-
-                        <div class="thirdSubmitContainer">
-                            <input type="hidden" class="thirdReciptientCommentId" value={{this.comment_id}}>
-                            <button type="submit" class="showThirdSubmitTextarea">comment it</button>
-                        </div>
-                        {{#if this.nextLevelComment}}   
-                            {{#each this.nextLevelComment}}
-                                <p>%%%%%%%%%%%%%</p>
-                                <p>→→Third level reply to: {{this.recipient}}</p>
-                                <p>→→Third level content:{{this.content}}</p>
-                                <p>→→third level sender: {{this.sender}}</p>
-                                <p>→→third level time:{{this.time}}</p>
-                                <div class="thirdCommentDeleArea">
-                                    <input type="hidden" class="deleCommentId" value={{this.comment_id}}>
-                                    <button type="submit" class="deleCommentButton"  value={{this.sender}} style="display:none;">Delete</button>
-                                </div>
-
-                                <div class="forthSubmitContainer">
-                                    <input type="hidden" class="otherReciptientCommentId" value={{this.comment_id}}>
-                                    <button type="submit" class="showOtherSubmitTextarea">comment it</button>
-                                </div>
-
-                                {{#if this.nextLevelComment}}
-                                    {{#each this.nextLevelComment}}
-                                        <p>→→Other level reply to: {{this.recipient}}</p>
-                                        <p>→→other level content:{{this.content}}</p>
-                                        <p>→→Other level sender: {{this.sender}}</p>
-                                        <p>→→Other third level time:{{this.time}}</p>
-
-                                        <div class="otherCommentDeleArea">
-                                            <input type="hidden" class="deleCommentId" value={{this.comment_id}}>
-                                            <button type="submit" class="deleCommentButton"  value={{this.sender}} style="display:none;">Delete</button>
-                                        </div>
-
-                                        <div class="otherSubmitContainer">
-                                            <input type="hidden" class="otherReciptientCommentId" value={{this.comment_id}}>
-                                            <button type="submit" class="showOtherSubmitTextarea">comment it</button>
-                                        </div>
-                                    {{/each}}
-                                {{/if}}
-                            <p>%%%%%%%%%%%%%</p>
-                            {{/each}}
-                        {{/if}}
-                        <p>---------------------------------------------</p>
-                    {{/each}}
-                </div>
-            {{/if}}
-            <p>+++++++++++++++++++++++++++++++++++++++++++++++++++++</p>
-        {{/each}}
+    {{#if notification}}
+    {{#each notification}}
+    {{> notice_detail}}
+    {{/each}}
     {{/if}}
+
+    <div class="main">
+
+        {{!-- Function Part (Left)--}}
+        {{> function}}
+
+        <div class="article_container">
+
+
+            <h1>Article Page</h1>
+            <div class="article">
+                {{#if articleData}}
+
+                <div class="author" id="author">Author: <span id="articleAuthor">{{author}}</span></div>
+                <div class="time article_time">Time: {{time}}</div>
+                <div class="article_header">{{header}}</div>
+                <div class="article_content">{{{content}}}</div>
+
+            </div>
+
+            <div id="comment_container">
+                <input type="hidden" id="articleId" value="{{articleId}}">
+                <label for="textComment" id="comment">
+                    Add comment
+                    <span class="material-symbols-outlined">
+                        chat_bubble
+                    </span>
+                </label>
+                <textarea id="textComment" name="comment"></textarea>
+                <button type="submit" id="commentButton">Send</button>
+                {{#if firstLevelCommentData}}
+                <span id="history">Comment History</span>
+                <button id="hide">Hide</button>
+                <button id="show">Show</button>
+                {{#each firstLevelCommentData}}
+
+                <div id="comment_detail">
+                    <div class="first_level">
+                        <p>First Level comment</p>
+                        <p>{{this.sender}} reply to author: {{this.recipient}}</p>
+                        <div class="time first_time">Time: {{this.time}}</div>
+                        <div class="content first_content">{{this.content}}</div>
+
+                        <div class="secondSubmitContainer">
+                            <input type="hidden" class="secondReciptientCommentId" value={{this.comment_id}}>
+                            <button type="submit" class="showSecondSubmitTextarea">
+                                Reply
+                            </button>
+                        </div>
+
+                        <div class="firstCommentDeleArea">
+                            <input type="hidden" class="deleCommentId" value={{this.comment_id}}>
+                            <button type="submit" class="deleCommentButton" value={{this.sender}} style="display:none;">
+                                <span class="text">Delete</span>
+                            </button>
+                        </div>
+
+                    </div>
+
+
+
+                    {{#if this.nextLevelComment}}
+                    <div class="secondCommentContainer">
+                        {{#each this.nextLevelComment}}
+
+                        <div class="second_level">
+                            <p>Second level comment</p>
+                            <p>{{this.sender}} reply to: {{this.recipient}}</p>
+                            <div class="time second_time">Time: {{this.time}}</div>
+                            <div class="content second_content">{{this.content}}</div>
+
+                            <div class="thirdSubmitContainer">
+                                <input type="hidden" class="thirdReciptientCommentId" value={{this.comment_id}}>
+                                <button type="submit" class="showThirdSubmitTextarea">
+                                    Reply
+                                </button>
+                            </div>
+
+                            <div class="secondCommentDeleArea">
+                                <input type="hidden" class="deleCommentId" value={{this.comment_id}}>
+                                <button type="submit" class="deleCommentButton" value={{this.sender}}
+                                    style="display:none;">
+                                    <span class="text">Delete</span>
+                                </button>
+                            </div>
+
+                        </div>
+
+                        {{#if this.nextLevelComment}}
+                        {{#each this.nextLevelComment}}
+
+                        <div class="third_level">
+                            <p>Third level comment</p>
+                            <p>{{this.sender}} reply to: {{this.recipient}}</p>
+                            <div class="time third_time">Time: {{this.time}}</div>
+                            <div class="content third_content">{{this.content}}</div>
+
+                            <div class="forthSubmitContainer">
+                                <input type="hidden" class="otherReciptientCommentId" value={{this.comment_id}}>
+                                <button type="submit" class="showOtherSubmitTextarea">
+                                    Reply
+                                </button>
+                            </div>
+
+                            <div class="thirdCommentDeleArea">
+                                <input type="hidden" class="deleCommentId" value={{this.comment_id}}>
+                                <button type="submit" class="deleCommentButton" value={{this.sender}}
+                                    style="display:none;">
+                                    <span class="text">Delete</span>
+                                </button>
+                            </div>
+
+                        </div>
+
+                        {{#if this.nextLevelComment}}
+                        {{#each this.nextLevelComment}}
+
+                        <div class="other_level">
+                            <p>Other level comment</p>
+                            <p>{{this.sender}} reply to: {{this.recipient}}</p>
+                            <div class="time other_time">Time: {{this.time}}</div>
+                            <div class="content other_content">{{this.content}}</div>
+
+                            <div class="otherSubmitContainer">
+                                <input type="hidden" class="otherReciptientCommentId" value={{this.comment_id}}>
+                                <button type="submit" class="showOtherSubmitTextarea">
+                                    Reply
+                                </button>
+                            </div>
+
+                            <div class="otherCommentDeleArea">
+                                <input type="hidden" class="deleCommentId" value={{this.comment_id}}>
+                                <button type="submit" class="deleCommentButton" value={{this.sender}}
+                                    style="display:none;">
+                                    <span class="text">Delete</span>
+                                </button>
+                            </div>
+                        </div>
+
+
+                        {{/each}}
+                        {{/if}}
+                        {{!-- <p>%%%%%%%%%%%%%</p> --}}
+                        {{/each}}
+                        {{/if}}
+                        {{!-- <p>----------------------2----------------------</p> --}}
+                        {{/each}}
+                    </div>
+
+
+                </div>
+
+                {{/if}}
+                {{!-- <p>+++++++++++++++++++++++++++++++++++++++++++++++++++++</p> --}}
+                {{/each}}
+                {{/if}}
+            </div>
+            {{/if}}
+        </div>
     </div>
-{{/if}}
+</body>

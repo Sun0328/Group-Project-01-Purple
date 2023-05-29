@@ -10,6 +10,7 @@ const app = express();
 const path = require("path");
 const port = 3000;
 const jimp = require("jimp");
+const userDao = require("./modules/user-dao.js");
 
 // Setup Handlebars
 const handlebars = require("express-handlebars");
@@ -54,11 +55,11 @@ app.post("/uploadImage", upload.single("imageFile"), async function (req, res) {
 
     const fileInfo = req.file;
     const user_id = req.body.user_id;
-    console.log("user_id is: "+user_id);
+    console.log("user_id is: " + user_id);
     // Move the file somewhere more sensible
     const oldFileName = fileInfo.path;
     const newFileName = `./public/uploadedFiles/${user_id}/${fileInfo.originalname}`;
-    console.log("File directory "+newFileName);
+    console.log("File directory " + newFileName);
     fs.renameSync(oldFileName, newFileName);
 
     // Resize image
@@ -69,10 +70,13 @@ app.post("/uploadImage", upload.single("imageFile"), async function (req, res) {
     // Get some information about the file and send it to the uploadDetails view for rendering.
     res.locals.imageName = (`${fileInfo.originalname}`);
     res.locals.fileName = (`${user_id}/${fileInfo.originalname}`);
-    res.render("uploadDetails");
+    res.render("editArticle");
 
 });
 
+// app.get("/uploadImage", function (req, res) {
+//     res.redirect("./editArticle");
+// })
 
 
 // Start the server running.
