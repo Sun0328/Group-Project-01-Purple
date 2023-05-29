@@ -1,0 +1,32 @@
+<div class="dropbox" id="dropbox">
+    <ul>
+        <li>
+            <div id="trigger">
+                <a href="./goNo">
+                    <ul id="hidden">
+
+                        <li class="notice_card first"></li>
+                        {{#each notification}}
+                        <li class="notice_card">
+                            <a href="./goNo" class="notice_link">
+
+                                <div class="notice_container">
+                                    <div class="auth_icon">
+                                        <img src="{{avatar}}" alt="">
+                                    </div>
+                                    <div class="right_container">
+                                        <div class="message">{{title}}</div>
+                                        <div class="timestamp">{{time}}</div>
+                                    </div>
+                                </div>
+                            </a>
+
+                        </li>
+                        {{/each}}
+
+                    </ul>
+                </a>
+            </div>
+        </li>
+    </ul>
+</div>

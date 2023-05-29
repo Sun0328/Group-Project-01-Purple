@@ -1,0 +1,17 @@
+/* Sort */
+
+.sort_container {
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    height: 30px;
+    padding-top: 10px;
+}
+
+.sort_container span {
+    margin-right: 10px;
+}
+
+#mySelect {
+    margin-right: 20px;
+}

@@ -41,7 +41,7 @@ ul {
     height: 60px;
     background-color: rgb(131, 33, 255);
     box-shadow: 0 6px 6px rgba(0, 0, 0, 0.1);
-    z-index: 100;
+    z-index: 2;
 }
 
 .left,
@@ -69,7 +69,10 @@ ul {
     transition: background-color .3s;
 }
 
-.nav .right a {
+.nav .right .setting_a,
+.nav .right .logout_a,
+.right .login_link,
+.right .register_a {
     display: inline-block;
     width: 135px;
     height: 45px;
@@ -80,7 +83,10 @@ ul {
     border-radius: 25px;
 }
 
-.nav .right a:hover {
+.nav .right .setting_a:hover,
+.nav .right .logout_a:hover,
+.right .login_link:hover,
+.right .register_a:hover {
     background-color: #fff;
     color: rgb(131, 33, 255);
     transition: background-color .5s;
@@ -146,4 +152,32 @@ ul {
 
 .mid_login {
     flex: 1;
+}
+
+.notification_link,
+.avatar_link {
+    /* display: block; */
+    width: 40px;
+    height: 40px;
+    margin-left: 8px;
+}
+
+.notification_link:hover {
+    color: rgb(221, 224, 229);
+    transition: color .3s;
+}
+
+.avatar {
+    position: relative;
+    display: inline-block;
+}
+
+.avatar img {
+    transition: filter .3s;
+    /* Apply a smooth transition effect */
+}
+
+.avatar:hover img {
+    filter: brightness(70%);
+    /* Adjust the brightness value as desired */
 }
