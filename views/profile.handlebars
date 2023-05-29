@@ -38,14 +38,6 @@
                     {{#each articles}}
                     <li>
                         {{> article}}
-                        <form action="./deleteArticle" method="POST">
-                            <input type="hidden" id="delete" name="delete" value="{{this.id}}">
-                            <button type="submit">Delete!</button>
-                        </form>
-                        <form action="./editArticle" method="POST">
-                            <input type="hidden" id="edit" name="edit" value="{{this.id}}">
-                            <button type="submit">Edit!</button>
-                        </form>
                     </li>
                     {{/each}}
                 </ul>
@@ -70,14 +62,6 @@
                     {{#each articles}}
                     <li>
                         {{> article}}
-                        <form action="./deleteArticle" method="POST">
-                            <input type="hidden" id="delete" name="delete" value="{{this.id}}">
-                            <button type="submit">Delete!</button>
-                        </form>
-                        <form action="./editArticle" method="POST">
-                            <input type="hidden" id="edit" name="edit" value="{{this.id}}">
-                            <button type="submit">Edit!</button>
-                        </form>
                     </li>
                     {{/each}}
                 </ul>
