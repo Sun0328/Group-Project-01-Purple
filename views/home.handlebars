@@ -6,13 +6,17 @@
   <!-- Add CSS files -->
   <link rel="stylesheet" href="/css/nav_bar.css">
   <link rel="stylesheet" href="/css/home_main.css">
+  <link rel="stylesheet" href="/css/notice_number.css">
+  <link rel="stylesheet" href="/css/notice_detail.css">
   <link rel="stylesheet" href="/css/function.css">
+  <link rel="stylesheet" href="/css/sort.css">
   <link rel="stylesheet" href="/css/article.css">
   {{!-- Add fonts link from google fonts--}}
   <link rel="stylesheet"
     href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
 
   <script src="/js/sortHome.js"></script>
+
 
 
 </head>
@@ -24,9 +28,17 @@
   {{!-- Add user avatar to the nav bar --}}
   {{> nav_bar_login}}
 
+  {{#if notification}}
+  {{> notice_detail}}
+  {{/if}}
+
+
+
   {{else}}
   {{> nav_bar}}
   {{/if}}
+
+
 
 
   <div class="main">
@@ -40,12 +52,9 @@
     {{!-- Import each article date inside partial --}}
     <div class="article_container">
 
-      <a href="./go">go comment!</a>
-      <a href="./goNo">go notification!</a>
-
 
       <div class="sort_container">
-        <span>Sort by:</span>
+        <span>Sort by </span>
         <select name="sortBy" id="mySelect">
           <option value="./homeResetSort">Default</option>
           <option value="./homeSortByTitle">Title</option>
@@ -53,27 +62,6 @@
           <option value="./homeSortByDate">Time</option>
         </select>
       </div>
-
-
-      {{!-- <form action="./homeSortByTitle" method="POST">
-        <input type="hidden" id="sort" name="sort" value="sort">
-        <button type="submit">Sort by Title!</button>
-      </form>
-
-      <form action="./homeSortByUsername" method="POST">
-        <input type="hidden" id="sort" name="sort" value="sort">
-        <button type="submit">Sort by Username</button>
-      </form>
-
-      <form action="./homeSortByDate" method="POST">
-        <input type="hidden" id="sort" name="sort" value="sort">
-        <button type="submit">Newest to Oldest</button>
-      </form>
-
-      <form action="./homeResetSort" method="POST">
-        <input type="hidden" id="sort" name="sort" value="sort">
-        <button type="submit">Reset order</button>
-      </form> --}}
 
       {{#each articlesArray}}
       {{> article}}

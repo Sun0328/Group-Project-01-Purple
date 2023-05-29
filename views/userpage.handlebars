@@ -1,7 +1,10 @@
 <link rel="stylesheet" href="/css/nav_bar.css">
 <link rel="stylesheet" href="/css/userpage.css">
+<link rel="stylesheet" href="/css/notice_number.css">
+<link rel="stylesheet" href="/css/notice_detail.css">
 <link rel="stylesheet" href="/css/function.css">
 <link rel="stylesheet" href="/css/article.css">
+<link rel="stylesheet" href="/css/sort.css">
 <link rel="stylesheet"
     href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
 
@@ -12,36 +15,25 @@
 
     {{> nav_bar_login}}
 
+    {{#if notification}}
+    {{> notice_detail}}
+    {{/if}}
+
     <div class="main">
 
         {{> function}}
 
         <div class="container">
-            <h1>Here are your own articles!</h1>
+            <h1>My Space</h1>
 
             <div class="sort_container">
-                <span>Sort by:</span>
+                <span>Sort by </span>
                 <select name="sortBy" id="mySelect">
                     <option value="./resetSort">Default</option>
                     <option value="./sortByTitle">Title</option>
                     <option value="./sortByDate">Time</option>
                 </select>
             </div>
-
-            {{!-- <form action="./sortByTitle" method="POST">
-                <input type="hidden" id="sort" name="sort" value="sort">
-                <button type="submit">Sort by title!</button>
-            </form>
-
-            <form action="./sortByDate" method="POST">
-                <input type="hidden" id="sort" name="sort" value="sort">
-                <button type="submit">Newest to Oldest</button>
-            </form>
-
-            <form action="./resetSort" method="POST">
-                <input type="hidden" id="sort" name="sort" value="sort">
-                <button type="submit">Reset order</button>
-            </form> --}}
 
             <form action="./newArticle" method="POST">
                 <input type="hidden" id="new" name="new" value="new">
@@ -70,7 +62,6 @@
             {{/if}}
 
         </div>
-
 
 
 </body>

@@ -1,12 +1,47 @@
-<h1>Notification</h1>
+<head>
+
+    <!-- Add CSS files -->
+    <link rel="stylesheet" href="/css/nav_bar.css">
+    <link rel="stylesheet" href="/css/home_main.css">
+    <link rel="stylesheet" href="/css/notice_number.css">
+    <link rel="stylesheet" href="/css/notice_detail.css">
+    <link rel="stylesheet" href="/css/function.css">
+    <link rel="stylesheet" href="/css/article.css">
+    <link rel="stylesheet" href="/css/notification.css">
+
+    {{!-- Add fonts link from google fonts--}}
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+
+</head>
+
+{{> nav_bar_login}}
 
 {{#if notification}}
-    <p>notification number: {{notificationNum}}</p>
-    {{#each notification}}
-        <p>- {{this.author}}'s new activity</p>
-        <p>- {{this.title}}</p>
-        <p>- {{this.content}}</p>
-        <p>- {{this.time}}</p>
-        <p>%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</p>
-    {{/each}}
+
+{{> notice_detail}}
+{{/if}}
+
+
+<div class="main">
+
+    {{> function}}
+
+    <div class="article_container">
+        <h2 class="notification_title">Notification</h2>
+
+        <div class="notification_container">
+            {{#if notification}}
+            {{#each notification}}
+            <p>- {{this.author}}'s new activity</p>
+            <div class="title">- {{this.title}}</div>
+            <div class="content">- {{this.content}}</div>
+            <div class="time">- {{this.time}}</div>
+            <p>%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</p>
+            {{/each}}
+            {{/if}}
+        </div>
+
+    </div>
+    
 {{/if}}

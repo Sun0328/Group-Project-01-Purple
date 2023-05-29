@@ -1,0 +1,14 @@
+.notification_title {
+    padding: 20px 0;
+    margin-left: 30px;
+}
+
+.notification_container {
+    width: 80%;
+    margin: auto;
+}
+
+.notification_container .time {
+    font-size: 14px;
+    color: gray;
+}

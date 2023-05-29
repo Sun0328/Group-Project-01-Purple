@@ -5,8 +5,8 @@ window.addEventListener("load", function () {
     const match = cookie.match(usernameRegex);
 
     if (match) {
-      currentUsername = match[1];
-      console.log("current user: " + currentUsername);
+        currentUsername = match[1];
+        console.log("current user: " + currentUsername);
     }
 
     // show dele button or not
@@ -14,13 +14,11 @@ window.addEventListener("load", function () {
     const articleAuthor = articleAuthorArea.textContent;
         
     const deleButtonArray = document.querySelectorAll(".deleCommentButton");
-    for (let i = 0; i < deleButtonArray.length; i++)
-    {
+    for (let i = 0; i < deleButtonArray.length; i++) {
         const currentButton = deleButtonArray[i];
         const deleCommentUsername = currentButton.value;
         console.log("dele comment username: " + deleCommentUsername);
-        if (currentUsername == deleCommentUsername)
-        {
+        if (currentUsername == deleCommentUsername) {
             currentButton.style.display = "block";
         }
         else if (articleAuthor == currentUsername)
@@ -29,23 +27,39 @@ window.addEventListener("load", function () {
         }
     }
 
-    document.addEventListener('click',async function(event) {
+    // Show or Hide comments history
+    const show = document.getElementById("show");
+    const hide = document.getElementById("hide");
+    const comment_detail = document.getElementById("comment_detail");
+    show.addEventListener("click", function () {
+        comment_detail.style.display = "block"
+        this.style.display = "none"
+        hide.style.display = "block"
+    })
+
+    hide.addEventListener("click", function () {
+        comment_detail.style.display = "none"
+        this.style.display = "none"
+        show.style.display = "block"
+    })
+
+    document.addEventListener('click', async function (event) {
 
         //submit comment to article
-        if (event.target.id === 'commentButton'){
+        if (event.target.id === 'commentButton') {
             const commentButton = event.target;
             let textarea = event.target.previousElementSibling;
             const commentContent = textarea.value;
             const articleId = document.querySelector("#articleId").value;
             const recipientCommentId = null;
-        
+
             const response = await fetch(`./article/comment?commentContent=${commentContent}&articleId=${articleId}`);
             const json = await response.json();
             location.reload();
         }
 
         //del comment
-        if (event.target.classList.contains("deleCommentButton")){
+        if (event.target.classList.contains("deleCommentButton")) {
             const deleButton = event.target;
             const deleCommentId = deleButton.previousElementSibling.value;
 
@@ -56,27 +70,27 @@ window.addEventListener("load", function () {
         }
 
         // show or hidden the textarea button
-        if (event.target.classList.contains("showSecondSubmitTextarea")){
+        if (event.target.classList.contains("showSecondSubmitTextarea")) {
             let currentButton = event.target;
-            let addSubmitArea = '<label for="secondTextComment">Submit Comment:</label><br/>' +
-            '<textarea class="secondTextComment" name="comment" row="4" cols="50"></textarea>' +
-            '<button type="submit" class="secondCommentButton">send</button>';
+            let addSubmitArea = '<label for="secondTextComment" style="margin-top: 20px">Reply:</label>' +
+                '<textarea class="secondTextComment" name="comment" row="4" cols="30"></textarea>' +
+                '<button type="submit" class="secondCommentButton">Send</button>';
             currentButton.insertAdjacentHTML('afterend', addSubmitArea);
             currentButton.remove();
         }
-        else if (event.target.classList.contains("showThirdSubmitTextarea")){
+        else if (event.target.classList.contains("showThirdSubmitTextarea")) {
             let currentButton = event.target;
-            let addSubmitArea = '<label for="thirdTextComment">Submit Comment:</label><br/>' +
-            '<textarea class="thirdTextComment" name="comment" row="4" cols="50"></textarea>' +
-            '<button type="submit" class="thirdCommentButton">send</button>';
+            let addSubmitArea = '<label for="thirdTextComment" style="margin-top: 20px">Reply:</label>' +
+                '<textarea class="thirdTextComment" name="comment" row="4" cols="30"></textarea>' +
+                '<button type="submit" class="thirdCommentButton">Send</button>';
             currentButton.insertAdjacentHTML('afterend', addSubmitArea);
             currentButton.remove();
         }
-        else if (event.target.classList.contains("showOtherSubmitTextarea")){
+        else if (event.target.classList.contains("showOtherSubmitTextarea")) {
             let currentButton = event.target;
-            let addSubmitArea = '<label for="otherTextComment">Submit Comment:</label><br/>' +
-            '<textarea class="otherTextComment" name="comment" row="4" cols="50"></textarea>' +
-            '<button type="submit" class="otherCommentButton">send</button>';
+            let addSubmitArea = '<label for="otherTextComment" style="margin-top: 20px">Reply:</label>' +
+                '<textarea class="otherTextComment" name="comment" row="4" cols="30"></textarea>' +
+                '<button type="submit" class="otherCommentButton">Send</button>';
             currentButton.insertAdjacentHTML('afterend', addSubmitArea);
             currentButton.remove();
         }
@@ -92,28 +106,28 @@ window.addEventListener("load", function () {
             const json = await response.json();
             location.reload();
         }
-        else if (event.target.classList.contains("thirdCommentButton")){
+        else if (event.target.classList.contains("thirdCommentButton")) {
             let textarea = event.target.previousElementSibling;
             const commentContent = textarea.value;
             console.log("current third comment: " + commentContent);
-            
+
             const recipientCommentId = document.querySelector(".thirdReciptientCommentId").value;
-            
+
             const articleId = document.querySelector("#articleId").value;
-            
+
             const response = await fetch(`./article/comment?commentContent=${commentContent}&articleId=${articleId}&recipientCommentId=${recipientCommentId}`);
             const json = await response.json();
             location.reload();
         }
-        else if (event.target.classList.contains("otherCommentButton")){
+        else if (event.target.classList.contains("otherCommentButton")) {
             let textarea = event.target.previousElementSibling;
             const commentContent = textarea.value;
             console.log("current other comment: " + commentContent);
-            
+
             const recipientCommentId = document.querySelector(".otherReciptientCommentId").value;
 
             const articleId = document.querySelector("#articleId").value;
-            
+
             const response = await fetch(`./article/comment?commentContent=${commentContent}&articleId=${articleId}&recipientCommentId=${recipientCommentId}`);
             const json = await response.json();
             location.reload();
