@@ -10,6 +10,9 @@ window.addEventListener("load", function () {
     }
 
     // show dele button or not
+    const articleAuthorArea = document.querySelector("#articleAuthor");
+    const articleAuthor = articleAuthorArea.textContent;
+        
     const deleButtonArray = document.querySelectorAll(".deleCommentButton");
     for (let i = 0; i < deleButtonArray.length; i++)
     {
@@ -17,6 +20,10 @@ window.addEventListener("load", function () {
         const deleCommentUsername = currentButton.value;
         console.log("dele comment username: " + deleCommentUsername);
         if (currentUsername == deleCommentUsername)
+        {
+            currentButton.style.display = "block";
+        }
+        else if (articleAuthor == currentUsername)
         {
             currentButton.style.display = "block";
         }
