@@ -30,7 +30,7 @@
         <input type="text" name="title" id="title" value="{{article.header}}">
         <input type="hidden" name="id" id="id" value="{{articleID}}">
         <br>
-        <textarea id="myTextarea" name="content"><p>{{{article.content}}}</p></textarea>
+        <textarea id="myTextarea" name="content">{{{article.content}}}</textarea>
 
         <label for="image">Choose your article image:</label>
         <br>
@@ -74,3 +74,9 @@
         </div>
     </div>
 </div>
+<script>
+    if (sessionStorage.getItem('refreshPage')){
+        sessionStorage.removeItem('refreshPage');
+        location.reload();
+    }
+</script>

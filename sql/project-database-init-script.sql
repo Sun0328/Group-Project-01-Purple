@@ -40,6 +40,7 @@ CREATE TABLE subscribe (
   id integer NOT NULL PRIMARY KEY,
   author_id integer NOT NULL,
   subscriber_id integer NOT NULL,
+  time time NOT NULL,
   FOREIGN KEY (author_id) REFERENCES user(id) ON DELETE CASCADE,
   FOREIGN KEY (subscriber_id) REFERENCES user(id) ON DELETE CASCADE
 );
@@ -93,10 +94,10 @@ INSERT INTO article (id, header, content, time, user_id, image) VALUES
   (4, 'Cat', 'Content4', '2023-02-01 12:30:02', 3, 'realCat.png'),
   (5, 'Eva', 'Content5', '2023-03-01 12:30:02', 3, 'realCat.png');
 
-INSERT INTO subscribe (id, author_id, subscriber_id) VALUES
-  (1, 1, 3),
-  (2, 1, 2),
-  (3, 2, 3);
+INSERT INTO subscribe (id, author_id, subscriber_id, time) VALUES
+  (1, 1, 3, '2022-06-11 09:42:13'),
+  (2, 1, 2, '2022-07-03 13:11:54'),
+  (3, 2, 3, '2022-08-21 19:23:03');
   
 INSERT INTO likes (id, user_id, article_id) VALUES
   (1, 1, 3),

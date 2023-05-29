@@ -3,5 +3,12 @@
     <div class="flex-col align-center">
         <p><strong>File name:</strong> {{fileName}}</p>
         <p><img src="uploadedFiles/{{fileName}}"></p>
+        <a href="#" onclick="goBackAndRefresh()">Click here to go back to previous page</a>
+        <script>
+            function goBackAndRefresh(){
+                sessionStorage.setItem('refreshPage', 'true');
+                history.go(-1);
+            }
+        </script>
     </div>
 </div>
