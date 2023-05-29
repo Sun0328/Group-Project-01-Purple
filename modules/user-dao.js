@@ -182,10 +182,12 @@ async function retrieveArticleData() {
         select * from user
     `);
     let index=0;
-    user.forEach(element => {
-        userID.forEach(idElement => {
+    userID.forEach(idElement => {
+        user.forEach(element => {
             if (element.id == JSON.stringify(idElement.user_id)){
+                console.log(element.id+" is equal to "+idElement.user_id);
                 username[index] = element.username;
+                console.log("Username is "+username[index]);
                 index += 1;
             }
         });
@@ -194,8 +196,8 @@ async function retrieveArticleData() {
     // get user avatar from user id
     let userAvatar = [];
     let index2 = 0;
-    user.forEach(element => {
-        userID.forEach(idElement => {
+    userID.forEach(idElement => {
+        user.forEach(element => {
             if (element.id == JSON.stringify(idElement.user_id)){
                 userAvatar[index2] = element.avatar;
                 index2 += 1;
@@ -383,12 +385,25 @@ async function getAuthorsByUserName(username) {
             }
         });
     });
+    // Create Avatar list
+    let userAvatarList = [];
+    let index3 = 0;
+    user.forEach(element => {
+        author_id.forEach(idElement => {
+            if (JSON.stringify(element.id) == JSON.stringify(idElement.author_id)){
+                let variable = JSON.stringify(element.avatar);
+                userAvatarList[index2] = variable.slice(1,-1);
+                index3 += 1;
+            }
+        });
+    });
     // assign properties to author
     let author = []
     for(let i = 0; i<userNameList.length;i++){
-        let item = {username:null, profile:null};
+        let item = {username:null, profile:null, avatar: null};
         item.username = userNameList[i];
         item.profile = userProfileList[i];
+        item.avatar = userAvatarList[i];
         author.push(item);
     }
     
@@ -433,12 +448,27 @@ async function getSubscribersByUserName(username) {
             }
         });
     });
+    
+    // Create Avatar list
+    let userAvatarList = [];
+    let index3 = 0;
+    user.forEach(element => {
+        subscriber_id.forEach(idElement => {
+            if (JSON.stringify(element.id) == JSON.stringify(idElement.author_id)){
+                let variable = JSON.stringify(element.avatar);
+                userAvatarList[index2] = variable.slice(1,-1);
+                index3 += 1;
+            }
+        });
+    });
+
     // assign properties to subscriber
     let subscriber = []
     for(let i = 0; i<userNameList.length;i++){
-        let item = {username:null, profile:null};
+        let item = {username:null, profile:null, avatar:null};
         item.username = userNameList[i];
         item.profile = userProfileList[i];
+        item.avatar = userAvatarList[i];
         subscriber.push(item);
     }
 
@@ -478,8 +508,8 @@ async function createNewSubscribe(subscriber_name, author_name){
         console.log("subscriber_id"+JSON.stringify(subscriber_id));
         console.log("author_id"+JSON.stringify(author_id));
         return await db.run(SQL`
-        insert into subscribe (author_id, subscriber_id) 
-        VALUES(${author_id.id}, ${subscriber_id.id}) RETURNING *;`);
+        insert into subscribe (author_id, subscriber_id, time) 
+        VALUES(${author_id.id}, ${subscriber_id.id}, DATETIME('now')) RETURNING *;`);
     }
     
 }
@@ -514,6 +544,105 @@ async function getUserByUserId(inputUserId){
     return userData;
 }
 
+async function getTimeBySubscribeID(subscribe_id){
+    const db = await dbPromise;
+
+    const userData = await db.get(SQL`
+        select * from subscribe
+        where id = ${subscribe_id}`)
+    return userData.time;
+}
+
+async function getSubscribeId(author, subscriber){
+    const db = await dbPromise;
+    const author_id = await getUserIdByUserName(author);
+    const subscriber_id = await getUserIdByUserName(subscriber);
+    const check = await checkSubscription(subscriber, author);
+    console.log("check: "+check);
+    // if subscribe exist
+    if (check == 1){
+    const subscribe = await db.get(SQL`
+        select * from subscribe
+        where author_id = ${author_id.id} AND subscriber_id = ${subscriber_id.id}
+        `);
+    return subscribe.id;
+    }else{
+        return 0;
+    }
+}
+
+async function getLikesByUserId(user_id){
+    const db = await dbPromise;
+
+    const likes = await db.all(SQL`
+    select * from likes
+    where user_id = ${user_id}
+    `);
+    return likes;
+}
+
+async function retrieveArticleDataByIdList(userID) {
+    const db = await dbPromise;
+
+    let article = await db.all(SQL`
+        select * from article
+    `);
+    let article_list = [];
+    for (let index = 0; index < userID.length; index ++){
+        const likeArticleListItem = userID[index];
+        for(let index2 = 0; index2 < article.length; index2 ++){
+            const allArticleListItem = article[index2];
+            console.log("allArticleListItem"+JSON.stringify(allArticleListItem));
+            if (allArticleListItem.id == likeArticleListItem)
+            {
+                article_list.push(allArticleListItem);
+            }
+        }
+    }
+    console.log("Article id list: "+JSON.stringify(article_list));
+    // get user name from user id
+    let username = [];
+    const user = await db.all(SQL`
+        select * from user
+    `);
+    let index=0;
+    userID.forEach(idElement => {
+        user.forEach(element => {
+            if (element.id == idElement){
+                console.log(element.id+" is equal to "+idElement);
+                username[index] = element.username;
+                console.log("Username is "+username[index]);
+                index += 1;
+            }
+        });
+    });
+    console.log("user id: "+ userID);
+    // get user avatar from user id
+    let userAvatar = [];
+    let index2 = 0;
+    userID.forEach(idElement => {
+        user.forEach(element => {
+            if (element.id == idElement){
+                userAvatar[index2] = element.avatar;
+                index2 += 1;
+            }
+        });
+    });
+    console.log("list of user avatar: "+ userAvatar);
+    // manually assign user name to article array
+    
+    for (let i = 0; i < username.length; i++) {
+        article_list[i].username = username[i];
+    }
+    // manually assign user avatar to article array
+    for (let i = 0; i < userAvatar.length; i++) {
+        article_list[i].avatar = userAvatar[i];
+    }
+    console.log("=================");
+    console.log("article_list : "+JSON.stringify(article_list));
+    return article_list;
+}
+
 module.exports = {
     getAriticlesByUser,
     deleteArticleById,
@@ -546,5 +675,9 @@ module.exports = {
     getProfileByName,
     checkSubscription,
     createNewSubscribe,
-    deleteSubscribe
+    deleteSubscribe,
+    getTimeBySubscribeID,
+    getSubscribeId,
+    getLikesByUserId,
+    retrieveArticleDataByIdList
 }

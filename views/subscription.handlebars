@@ -22,7 +22,7 @@
             <ul>
                 {{#each authors}}
                 <li>
-                    {{this.username}}
+                    <img src="{{this.avatar}}" width = "40">{{this.username}}
                     <br>
                     Profile: <a href="./subscription/author?name={{this.username}}">{{this.profile}}</a>
                     <br>=======
@@ -39,7 +39,7 @@
             <ul>
                 {{#each subscribers}}
                 <li>
-                    {{this.username}}
+                    <img src="{{this.avatar}}" width = "40">{{this.username}}
                     <br>
                     Profile: <a href="./subscription/subscriber?name={{this.username}}">{{this.profile}}</a>
                     <br>=======

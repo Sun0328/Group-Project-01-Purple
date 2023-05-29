@@ -49,9 +49,11 @@ async function changeNotificationReadStateById(notificationId){
         WHERE id = ${id}`);
 }
 
+
 module.exports={
     addNotification,
     getNotificationByUserId,
+    deleNotification,
     deleNotification,
     changeNotificationReadStateById
 }

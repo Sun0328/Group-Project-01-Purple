@@ -21,6 +21,9 @@ router.get("/", async function (req, res) {
 
     res.locals.title = "Purple";
     let articleDataArray = await userDao.retrieveArticleData();
+    console.log(JSON.stringify(articleDataArray));
+    res.locals.articlesArray = articleDataArray;
+    
     const cookies = req.cookies;
 
 
@@ -347,7 +350,11 @@ router.post("/deleteArticle", async function (req, res) {
     let articleID = JSON.stringify(req.body.delete);
     articleID = articleID.slice(1, -1);
     res.locals.articleID = articleID;
+
+    const type = "article";
+    await notificationDao.deleNotification(type, articleID);
     await userDao.deleteArticleById(articleID);
+
     res.redirect("./userHomePage");
 
 });
@@ -1012,16 +1019,18 @@ router.get("/goNo", async function (req, res) {
             const notification = { "title": title, "content": content, "author": sender, "avatar": avatar, "time": time };
             NotificationList.push(notification);
         }
-        else if (type == "subscribe") {
-            const beFollowedId = item.content;
-            const beFollowedUsername = await userDao.getUserByUserId(beFollowedId);
-            const sender = item.sender;
-            // Pass author's avatar
-            const sender_id = await userDao.getUserIdByUserName(sender);
-            const sender_avatar = await userDao.getAvatarByUserId(sender_id.id);
-            const avatar = sender_avatar[0].avatar;
-
-            const title = "Newly followed"
+        else if (type == "subscribe")
+        {
+            const beFollowedId = item.receiver_id;
+            let beFollowedUsername = await userDao.getUserByUserId(beFollowedId);
+            beFollowedUsername = beFollowedUsername.username;
+            console.log("receiver is: " + beFollowedUsername);
+            let sender = item.sender_id;
+            sender = await userDao.getUserByUserId(sender);
+            sender = sender.username;
+            console.log("sender is: "+ sender);
+            const title = "Newly followed";
+            const time = item.time;
             const content = sender + " followed " + beFollowedUsername;
             const notification = { "title": title, "content": content, "author": sender, "avatar": avatar, "time": time };
             NotificationList.push(notification);
@@ -1136,8 +1145,13 @@ router.get("/subscription/author", async function (req, res) {
 
     // do a check to check whether user are still following author
     const result = await userDao.checkSubscription(username, author_name);
-    console.log("user name is: " + username + "author is " + author_name);
-    console.log("result is: " + result);
+    const author_id = await userDao.getUserIdByUserName(author_name);
+    const profileAvatar = await userDao.getAvatarByUserId(author_id.id);
+    res.locals.profileAvatar = profileAvatar[0].avatar;
+    res.locals.articles = await userDao.getAriticlesByUser(author_name);
+    const userData = await userDao.getUserByUsername(username);
+    const user_avatar = userData.avatar;
+    res.locals.avatar = user_avatar;
     if (username !== author_name) {
         res.locals.NotSameUser = 1;
     }
@@ -1165,8 +1179,15 @@ router.get("/subscription/subscriber", async function (req, res) {
 
     // do a check to check whether user are still following author
     const result = await userDao.checkSubscription(subscriber_name, username);
-    console.log("user name is: " + username + "subscriber is " + subscriber_name);
-    console.log("result is: " + result);
+
+    const subscriber_id = await userDao.getUserIdByUserName(subscriber_name);
+    const profileAvatar = await userDao.getAvatarByUserId(subscriber_id.id);
+    res.locals.profileAvatar = profileAvatar[0].avatar;
+    res.locals.articles = await userDao.getAriticlesByUser(subscriber_name);
+    const userData = await userDao.getUserByUsername(username);
+    const user_avatar = userData.avatar;
+    res.locals.avatar = user_avatar;
+
     if (username !== subscriber_name) {
         res.locals.NotSameUser = 1;
     }
@@ -1189,6 +1210,20 @@ router.get("/subscription/subsribe", async function (req, res) {
         // add to subscribe table
         const testResult = await userDao.createNewSubscribe(subscriber, author);
         const subscribe_id = JSON.stringify(testResult.lastID);
+        console.log("subscribe id inside subscribe "+subscribe_id);
+
+        // add notification to notify the author
+        let senderId = await userDao.getUserIdByUserName(subscriber);
+        senderId = JSON.stringify(senderId.id);
+        console.log("senderID: "+ senderId);
+        let receiverId = await userDao.getUserIdByUserName(author);
+        receiverId = JSON.stringify(receiverId.id);
+        console.log("receiverID: "+ receiverId);
+        const type = "subscribe";
+        const content = subscribe_id;
+        const time = await userDao.getTimeBySubscribeID(subscribe_id);
+
+        await notificationDao.addNotification(receiverId, senderId, type, content, time);
     }
     const author_name = req.query.author;
     // get author username
@@ -1200,6 +1235,13 @@ router.get("/subscription/subsribe", async function (req, res) {
     profile = profile.slice(1, -1);
     res.locals.profile = profile;
 
+    const author_id = await userDao.getUserIdByUserName(author_name);
+    const profileAvatar = await userDao.getAvatarByUserId(author_id.id);
+    res.locals.profileAvatar = profileAvatar[0].avatar;
+    res.locals.articles = await userDao.getAriticlesByUser(author_name);
+    const userData = await userDao.getUserByUsername(username);
+    const user_avatar = userData.avatar;
+    res.locals.avatar = user_avatar;
     // do a check to check whether user are still following author
     const result = await userDao.checkSubscription(username, author_name);
 
@@ -1224,7 +1266,9 @@ router.get("/subscription/unsubsribe", async function (req, res) {
 
         // delete subscribe table
         const testResult = await userDao.deleteSubscribe(subscriber, author);
-        const subscribe_id = JSON.stringify(testResult.lastID);
+        const subscribe_id = await userDao.getSubscribeId(author, subscriber);
+        console.log("unsubscribe");
+        await notificationDao.deleNotification("subscribe", subscribe_id);
         const author_name = req.query.author;
         // set subscriber username
         res.locals.author = author_name;
@@ -1239,6 +1283,13 @@ router.get("/subscription/unsubsribe", async function (req, res) {
 
         // do a check to check whether subscriber is still following author
         const result = await userDao.checkSubscription(username, author_name);
+        const author_id = await userDao.getUserIdByUserName(author_name);
+        const profileAvatar = await userDao.getAvatarByUserId(author_id.id);
+        res.locals.profileAvatar = profileAvatar[0].avatar;
+        res.locals.articles = await userDao.getAriticlesByUser(author_name);
+        const userData = await userDao.getUserByUsername(username);
+        const user_avatar = userData.avatar;
+        res.locals.avatar = user_avatar;
 
         if (username !== author_name) {
             res.locals.NotSameUser = 1;
@@ -1266,7 +1317,13 @@ router.get("/subscription/unsubsribe", async function (req, res) {
         profile = (JSON.stringify(profile[0].profile))
         profile = profile.slice(1, -1);
         res.locals.profile = profile;
-
+        const subscriber_id = await userDao.getUserIdByUserName(subscriber);
+        const profileAvatar = await userDao.getAvatarByUserId(subscriber_id.id);
+        res.locals.profileAvatar = profileAvatar[0].avatar;
+        res.locals.articles = await userDao.getAriticlesByUser(subscriber);
+        const userData = await userDao.getUserByUsername(username);
+        const user_avatar = userData.avatar;
+        res.locals.avatar = user_avatar;
 
         // do a check to check whether subscriber is still following author
         const result = await userDao.checkSubscription(subscriber, username);
@@ -1280,5 +1337,34 @@ router.get("/subscription/unsubsribe", async function (req, res) {
         res.render("profile");
     }
 })
+
+router.get("/favorite", async function (req, res) {
+    // Get user favorite articles by username from cookies
+    const cookies = req.cookies;
+    const username = cookies.username;
+    // Get user id
+    const user_id = await userDao.getUserByUsername(username);
+    console.log("here");
+
+    // get user liked article list
+    const like_list = await userDao.getLikesByUserId(user_id.id);
+    console.log("here2");
+    let article_id_list = [];
+    for (let index = 0; index < like_list.length; index++) {
+        console.log("likelist : "+JSON.stringify(like_list[index].article_id));
+        article_id_list[index] = like_list[index].article_id;
+    }
+
+    console.log("article id list : "+article_id_list);
+    res.locals.articles = await userDao.retrieveArticleDataByIdList(article_id_list);
+    console.log("here3");
+
+    // Get user avatar by username from cookies
+    const userData = await userDao.getUser(username);
+    const user_avatar = userData.avatar;
+    res.locals.avatar = user_avatar;
+
+    res.render("favorite");
+});
 
 module.exports = router;

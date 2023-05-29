@@ -18,7 +18,7 @@
             <h1>Profile Page</h1>
             {{#if author}}
                 <h2>Author Profile:</h2>
-                <p>Author: {{author}}</p>
+                <p><img src="{{profileAvatar}}" width = "40">Author: {{author}}</p>
                 <p>Profile: {{profile}}</p>
                 {{#if NotSameUser}}
                     {{#if subscribe}}
@@ -33,10 +33,29 @@
                         </form>
                     {{/if}}
                 {{/if}}
+                {{#if articles}}
+                <ul name="articleUL">
+                    {{#each articles}}
+                    <li>
+                        {{> article}}
+                        <form action="./deleteArticle" method="POST">
+                            <input type="hidden" id="delete" name="delete" value="{{this.id}}">
+                            <button type="submit">Delete!</button>
+                        </form>
+                        <form action="./editArticle" method="POST">
+                            <input type="hidden" id="edit" name="edit" value="{{this.id}}">
+                            <button type="submit">Edit!</button>
+                        </form>
+                    </li>
+                    {{/each}}
+                </ul>
+                {{else}}
+                    <p>No matching articles</p>
+                {{/if}}
             {{/if}}
             {{#if subscriber}}
                 <h2>Subscriber Profile:</h2>
-                <p>Subscriber: {{subscriber}}</p>
+                <p><img src="{{profileAvatar}}" width = "40">Subscriber: {{subscriber}}</p>
                 <p>Profile: {{profile}}</p>
                 {{#if NotSameUser}}
                     {{#if subscribe}}
@@ -44,9 +63,26 @@
                             <input type="hidden" id="subscriber" name="subscriber" value="{{subscriber}}">
                             <button type="submit">Remove subscriber</button>
                         </form>
-                    {{else}}
-
                     {{/if}}
+                {{/if}}
+                {{#if articles}}
+                <ul name="articleUL">
+                    {{#each articles}}
+                    <li>
+                        {{> article}}
+                        <form action="./deleteArticle" method="POST">
+                            <input type="hidden" id="delete" name="delete" value="{{this.id}}">
+                            <button type="submit">Delete!</button>
+                        </form>
+                        <form action="./editArticle" method="POST">
+                            <input type="hidden" id="edit" name="edit" value="{{this.id}}">
+                            <button type="submit">Edit!</button>
+                        </form>
+                    </li>
+                    {{/each}}
+                </ul>
+                {{else}}
+                    <p>No matching articles</p>
                 {{/if}}
             {{/if}}
         </div>
