@@ -113,19 +113,35 @@ router.get("/", async function (req, res) {
 });
 
 router.get("/go", async function (req, res) {
+    const cookies = req.cookies;
+    const username = cookies.username;
+
+    const userData = await userDao.getUserByUsername(username);
+    const userId = userData.id;
+
+    let articleList = [];
     const articleData = await articleDao.getAllArticle();
     for (let i = 0; i < articleData.length; i++) {
-        const articleItem = articleData[i];
-        console.log("item:" + articleItem);
-        const articleID = articleItem.id;
-        console.log("article id: " + articleID);
-        const likeCount = await likeDao.getLikeNumberByArticleId(articleID);
+        const item = articleData[i];
+        const articleId = item.id;
+        const likeArticle = await likeDao.getLikeStateByUserIDandArticleId(userId, articleId);
+        let likeState;
+        if (likeArticle === undefined)
+        {
+            likeState = "Like";
+        }
+        else
+        {
+            likeState = "cancel Like"
+        }
+        const likeCount = await likeDao.getLikeNumberByArticleId(articleId);
         const key = "likeNumber";
         articleData[i][key] = likeCount;
+        const articleItem = {"id":item.id, "header": item.header,"content": item.content, "author": item.username, "time": item.time, "likeState": likeState, "likeNumber":likeCount}
+        console.log("article: " + JSON.stringify(articleItem));
+        articleList.push(articleItem);
     }
-
-    res.locals.article = articleData;
-    console.log(articleData);
+    res.locals.article = articleList;
     res.render("commentArticle");
 });
 
@@ -978,11 +994,46 @@ router.get("/goNo", async function (req, res) {
             NotificationList.push(notification);
         }
     }
+    for (let i = 0; i < notReadList.length; i++)
+    {
+        const item = notReadList[i];
+        const notificationId = item.id;
+        await notificationDao.changeNotificationReadStateById(notificationId);
+    }
     res.locals.notificationNum = notificationNum;
     // console.log("NotificationList--" + JSON.stringify(NotificationList));
     res.locals.notification = NotificationList;
 
     res.render("notification");
+})
+
+router.get("/addLike", async function(req, res){
+    const articleId = req.query.articleId;
+
+    const cookies = req.cookies;
+    const username = cookies.username;
+
+    const userData = await userDao.getUserByUsername(username);
+    const userId = userData.id;
+
+    await likeDao.addLike(userId, articleId);
+
+    res.json("add like");
+})
+
+router.get("/cancelLike", async function(req, res){
+    const articleId = req.query.articleId;
+
+    const cookies = req.cookies;
+    const username = cookies.username;
+
+    const userData = await userDao.getUserByUsername(username);
+    const userId = userData.id;
+    
+    await likeDao.deleLike(userId, articleId);
+
+    res.json("dele like");
+
 })
 
 
@@ -1196,7 +1247,6 @@ router.get("/subscription/unsubsribe", async function (req, res) {
         }
         res.render("profile");
     }
-
 })
 
 module.exports = router;

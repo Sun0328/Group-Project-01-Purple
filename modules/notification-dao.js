@@ -26,10 +26,32 @@ async function getNotificationByUserId(inputUserId){
         where receiver_id = ${userId}
         order by time DESC`)
     return notificationData;
+}
 
+async function deleNotification(inputType, inputContent){
+    const db = await dbPromise;
+    
+    const type = inputType;
+    const content = inputContent;
+    await db.run(SQL`
+        DELETE FROM notification
+        WHERE type = ${type} AND content = ${content}`);
+}
+
+async function changeNotificationReadStateById(notificationId){
+    const db = await dbPromise;
+
+    const id = notificationId;
+    const hasRead = 1;
+    await db.run(SQL`
+        UPDATE notification
+        SET read = ${hasRead}
+        WHERE id = ${id}`);
 }
 
 module.exports={
     addNotification,
-    getNotificationByUserId
+    getNotificationByUserId,
+    deleNotification,
+    changeNotificationReadStateById
 }
