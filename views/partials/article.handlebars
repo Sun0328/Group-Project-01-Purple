@@ -11,7 +11,7 @@
 
             <div class="user_detail">
                 <div class="user_name">
-                    {{username}}
+                    <a href="../subscription/author?name={{username}}">{{username}}</a>
                     {{! --<button type="submit" class="subscribe">Subscribe</button>}}
                 </div>
                 <div class="article_date">{{time}}</div>
@@ -20,7 +20,7 @@
         </div>
         <div class="content">
             <div class="title">
-                <a href="./article?id={{id}}">
+                <a href="../article?id={{id}}">
                     {{header}}
                 </a>
             </div>
@@ -47,7 +47,7 @@
 
 
                 <div class="comment_container">
-                    <a href="./article?id={{id}}">
+                    <a href="../article?id={{id}}">
                         <span class="material-symbols-outlined">
                             mode_comment
                         </span>

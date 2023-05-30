@@ -5,6 +5,7 @@ const fs = require("fs");
 //add to use salt
 const crypto = require('crypto');
 
+
 //const testDao = require("../modules/test-dao.js");
 const userDao = require("../modules/user-dao.js");
 const articleDao = require("../modules/article-dao.js");
@@ -319,15 +320,15 @@ router.get("/userHomePage", async function (req, res) {
 });
 
 router.post("/deleteArticle", async function (req, res) {
+
     let articleID = req.body.delete;
     res.locals.articleID = articleID;
 
     const type = "article";
+    console.log("here0");
     await notificationDao.deleNotification(type, articleID);
-    console.log("dele notification");
-    
     await userDao.deleteArticleById(articleID);
-    console.log("dele article");
+
     res.redirect("./userHomePage");
 
 });
@@ -711,6 +712,10 @@ router.post("/delete", async function (req, res) {
     console.log("username:" + cookies.username);
     const username = cookies.username;
 
+    const user = await userDao.getUserByUsername(username);
+    const user_id = user.id;
+    deleteFolder(JSON.stringify(user_id));
+
     res.clearCookie("authToken");
     res.clearCookie("username");
     await userDao.deleteTheUser(username);
@@ -988,7 +993,9 @@ router.get("/goNotificationDetail", async function (req, res) {
         await notificationDao.changeNotificationReadStateById(notificationId);
         res.redirect(`./subscription/subscriber?name=${FollowerName}`);
     }
+
 });
+
 
 router.get("/addLike", async function (req, res) {
     const articleId = req.query.articleId;
@@ -1031,11 +1038,9 @@ const hashPassword = function (password, salt) {
 
 function addNewFolder(user_id) {
     const folderName = `./public/uploadedFiles/${user_id}`;
-    console.log("Folder name is: " + folderName);
     try {
         if (!fs.existsSync(folderName)) {
             fs.mkdirSync(folderName);
-            console.log("Create folder successful");
         }
     } catch (err) {
         console.error(err);
@@ -1061,10 +1066,8 @@ router.get("/subscription", async function (req, res) {
     const user_avatar = userData.avatar;
     res.locals.avatar = user_avatar;
     const authors = await userDao.getAuthorsByUserName(username);
-    console.log("author passed: " + JSON.stringify(authors));
     res.locals.authors = authors;
     const subscribers = await userDao.getSubscribersByUserName(username);
-    console.log("subscriber passed: " + JSON.stringify(subscribers));
     res.locals.subscribers = subscribers;
     res.render("subscription");
 });
@@ -1156,7 +1159,6 @@ router.get("/subscription/subsribe", async function (req, res) {
         // add notification to notify the author
         let senderId = await userDao.getUserIdByUserName(subscriber);
         senderId = JSON.stringify(senderId.id);
-        console.log("senderID: "+ senderId);
         let receiverId = await userDao.getUserIdByUserName(author);
         receiverId = JSON.stringify(receiverId.id);
         const type = "subscribe";
@@ -1208,7 +1210,6 @@ router.get("/subscription/unsubsribe", async function (req, res) {
         // delete subscribe table
         const testResult = await userDao.deleteSubscribe(subscriber, author);
         const subscribe_id = await userDao.getSubscribeId(author, subscriber);
-        console.log("unsubscribe");
         await notificationDao.deleNotification("subscribe", subscribe_id);
         const author_name = req.query.author;
         // set subscriber username
@@ -1242,10 +1243,8 @@ router.get("/subscription/unsubsribe", async function (req, res) {
     else {
         const author = username;
         const subscriber = req.query.subscriber;
-        console.log("author is " + author + " subscriber is " + subscriber);
         // delete subscribe table
         const testResult = await userDao.deleteSubscribe(subscriber, author);
-        console.log("test result: " + JSON.stringify(testResult));
         const subscribe_id = JSON.stringify(testResult.lastID);
         const subscriber_name = req.query.subscriber;
         // set subscriber username
@@ -1284,22 +1283,20 @@ router.get("/favorite", async function (req, res) {
     const cookies = req.cookies;
     const username = cookies.username;
     // Get user id
+
     const userData = await userDao.getUserByUsername(username);
     const user_id = userData.id;
-    console.log("here");
 
     // get user liked article list
     const like_list = await userDao.getLikesByUserId(user_id);
-    console.log("here2");
+
     let article_id_list = [];
     for (let index = 0; index < like_list.length; index++) {
-        console.log("likelist : "+JSON.stringify(like_list[index].article_id));
         article_id_list[index] = like_list[index].article_id;
     }
 
-    console.log("article id list : "+article_id_list);
-    res.locals.articles = await userDao.retrieveArticleDataByIdList(article_id_list);
-    console.log("here3");
+    const articles = await userDao.retrieveArticleDataByIdList(article_id_list);
+    res.locals.articles = articles;
 
     // Get user avatar by username from cookies
     const user_avatar = userData.avatar;
@@ -1307,6 +1304,23 @@ router.get("/favorite", async function (req, res) {
 
     res.render("favorite");
 });
+
+
+function deleteFolder(user_id){
+    const path = `./public/uploadedFiles/${user_id}`;
+    if( fs.existsSync(path) ) {
+        fs.readdirSync(path).forEach(function(file,index){
+        var curPath = path + "/" + file;
+        if(fs.lstatSync(curPath).isDirectory()) { // recurse
+            deleteFolderRecursive(curPath);
+        } else { // delete file
+            fs.unlinkSync(curPath);
+        }
+        });
+        fs.rmdirSync(path);
+    }
+};
+
 
 router.get("/analytics", async function (req, res) {
     const cookies = req.cookies;
@@ -1457,5 +1471,6 @@ router.get("/analytics", async function (req, res) {
 
     res.render("analytics");
 })
+
 
 module.exports = router;

@@ -28,20 +28,24 @@ window.addEventListener("load", function () {
     }
 
     // Show or Hide comments history
-    const show = document.getElementById("show");
-    const hide = document.getElementById("hide");
-    const comment_detail = document.getElementById("comment_detail");
-    show.addEventListener("click", function () {
-        comment_detail.style.display = "block"
-        this.style.display = "none"
-        hide.style.display = "block"
-    })
+    const history = document.getElementById("history");
+    if (history !== null){
+        const show = document.getElementById("show");
+        const hide = document.getElementById("hide");
+        const comment_detail = document.getElementById("comment_detail");
+        show.addEventListener("click", function () {
+            comment_detail.style.display = "block"
+            this.style.display = "none"
+            hide.style.display = "block"
+        })
 
-    hide.addEventListener("click", function () {
-        comment_detail.style.display = "none"
-        this.style.display = "none"
-        show.style.display = "block"
-    })
+        hide.addEventListener("click", function () {
+            comment_detail.style.display = "none"
+            this.style.display = "none"
+            show.style.display = "block"
+        })
+    }
+    
 
     document.addEventListener('click', async function (event) {
 
@@ -73,7 +77,7 @@ window.addEventListener("load", function () {
         if (event.target.classList.contains("showSecondSubmitTextarea")) {
             let currentButton = event.target;
             let addSubmitArea = '<label for="secondTextComment" style="margin-top: 20px">Reply:</label>' +
-                '<textarea class="secondTextComment" name="comment" row="4" cols="30"></textarea>' +
+                '<textarea class="secondTextComment" name="comment" row="4" cols="30" maxlength="108"></textarea>' +
                 '<button type="submit" class="secondCommentButton">Send</button>';
             currentButton.insertAdjacentHTML('afterend', addSubmitArea);
             currentButton.remove();
@@ -81,7 +85,7 @@ window.addEventListener("load", function () {
         else if (event.target.classList.contains("showThirdSubmitTextarea")) {
             let currentButton = event.target;
             let addSubmitArea = '<label for="thirdTextComment" style="margin-top: 20px">Reply:</label>' +
-                '<textarea class="thirdTextComment" name="comment" row="4" cols="30"></textarea>' +
+                '<textarea class="thirdTextComment" name="comment" row="4" cols="30" maxlength="108"></textarea>' +
                 '<button type="submit" class="thirdCommentButton">Send</button>';
             currentButton.insertAdjacentHTML('afterend', addSubmitArea);
             currentButton.remove();
@@ -89,7 +93,7 @@ window.addEventListener("load", function () {
         else if (event.target.classList.contains("showOtherSubmitTextarea")) {
             let currentButton = event.target;
             let addSubmitArea = '<label for="otherTextComment" style="margin-top: 20px">Reply:</label>' +
-                '<textarea class="otherTextComment" name="comment" row="4" cols="30"></textarea>' +
+                '<textarea class="otherTextComment" name="comment" row="4" cols="30" maxlength="108"></textarea>' +
                 '<button type="submit" class="otherCommentButton">Send</button>';
             currentButton.insertAdjacentHTML('afterend', addSubmitArea);
             currentButton.remove();
