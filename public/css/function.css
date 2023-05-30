@@ -1,9 +1,9 @@
 /* Function Part */
 .function_container {
     position: absolute;
+    width: 15%;
     margin-top: 5px;
     color: black;
-    width: 224px;
     /* background-color: antiquewhite; */
 }
 
@@ -11,7 +11,7 @@
     display: flex;
     justify-content: start;
     align-items: center;
-    width: 204px;
+    width: 100%;
     height: 50px;
     padding-left: 20px;
     border-radius: 6px;
@@ -33,4 +33,27 @@
 
 .function_container p {
     margin-left: 10px;
+}
+
+
+@media only screen and (max-width: 1100px) {
+    .function_container p {
+        font-size: 15px;
+    }
+}
+
+@media only screen and (max-width: 760px) {
+    .function_container p {
+        font-size: 10px;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .function_container p {
+        display: none;
+    }
+
+    .function_container {
+        width: 10%;
+    }
 }

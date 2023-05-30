@@ -35,9 +35,14 @@
                 </select>
             </div>
 
-            <form action="./newArticle" method="POST">
+            <form action="./newArticle" method="POST" id="createForm">
                 <input type="hidden" id="new" name="new" value="new">
-                <button type="submit">Create new article!</button>
+                <button type="submit" id="createNew">
+                    <span class="material-symbols-outlined">
+                        edit_square
+                    </span>
+                    <span>Create a new article!</span>
+                </button>
             </form>
 
 
@@ -46,14 +51,26 @@
                 {{#each articles}}
                 <li>
                     {{> article}}
-                    <form action="./deleteArticle" method="POST">
-                        <input type="hidden" id="delete" name="delete" value="{{this.id}}">
-                        <button type="submit">Delete!</button>
-                    </form>
-                    <form action="./editArticle" method="POST">
-                        <input type="hidden" id="edit" name="edit" value="{{this.id}}">
-                        <button type="submit">Edit!</button>
-                    </form>
+                    <div class="author_button">
+                        <form action="./editArticle" method="POST">
+                            <input type="hidden" id="edit" name="edit" value="{{this.id}}">
+                            <button type="submit">
+                                <span class="material-symbols-outlined">
+                                    edit
+                                </span>
+                                Edit
+                            </button>
+                        </form>
+                        <form action="./deleteArticle" method="POST">
+                            <input type="hidden" id="delete" name="delete" value="{{this.id}}">
+                            <button type="submit">
+                                <span class="material-symbols-outlined">
+                                    delete
+                                </span>
+                                Delete
+                            </button>
+                        </form>
+                    </div>
                 </li>
                 {{/each}}
             </ul>

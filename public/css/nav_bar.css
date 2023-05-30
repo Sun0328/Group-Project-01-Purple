@@ -181,3 +181,60 @@ ul {
     filter: brightness(70%);
     /* Adjust the brightness value as desired */
 }
+
+@media only screen and (max-width: 1100px) {
+
+    .nav .right .setting_a,
+    .nav .right .logout_a,
+    .right .login_link,
+    .right .register_a {
+        width: 100px;
+        font-size: 15px;
+    }
+
+    .setting_icon,
+    .logout_icon {
+        font-size: 15px;
+    }
+}
+
+@media only screen and (max-width: 1100px) {
+
+    .nav .right .setting_a,
+    .nav .right .logout_a,
+    .right .login_link,
+    .right .register_a {
+        width: 50px;
+    }
+
+    .nav .right .setting_a span:nth-child(2),
+    .nav .right .logout_a span:nth-child(2) {
+        display: none;
+    }
+
+    .nav .right .setting_a {
+        margin-right: -5px;
+    }
+
+    .right .notice_icon,
+    .right .avatar_link {
+        margin-left: -10px;
+    }
+}
+
+@media only screen and (max-width: 800px) {
+    .nav .right .setting_a {
+        margin-right: 5px;
+    }
+
+    .right .notice_icon {
+        margin-left: -20px;
+    }
+
+}
+
+@media only screen and (max-width: 680px) {
+    .right .avatar_link  {
+        display: none;
+    }
+}

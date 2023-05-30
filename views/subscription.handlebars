@@ -1,7 +1,10 @@
 <link rel="stylesheet" href="/css/nav_bar.css">
 <link rel="stylesheet" href="/css/userpage.css">
+<link rel="stylesheet" href="/css/notice_number.css">
+<link rel="stylesheet" href="/css/notice_detail.css">
 <link rel="stylesheet" href="/css/function.css">
 <link rel="stylesheet" href="/css/article.css">
+<link rel="stylesheet" href="/css/subscription.css">
 <link rel="stylesheet"
     href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
 
@@ -10,45 +13,55 @@
 
     {{> nav_bar_login}}
 
+    {{#if notification}}
+    {{> notice_detail}}
+    {{/if}}
+
     <div class="main">
 
         {{> function}}
 
         <div class="container">
-            <h2>List of authors and the list of subscribers</h2>
-            <br>
-            <h3>Author List</h3>
-            {{#if authors}}
-            <ul>
-                {{#each authors}}
-                <li>
-                    <img src="{{this.avatar}}" width = "40">{{this.username}}
-                    <br>
-                    Profile: <a href="./subscription/author?name={{this.username}}">{{this.profile}}</a>
-                    <br>=======
-                </li>
-                {{/each}}
-            </ul>
-            {{else}}
-            <p>No existing authors</p>
-            {{/if}}
-            <br>
+            <div class="subscription_container">
+                <div class="left">
+                    <h2>List of Following</h2>
+                    <h3>Author</h3>
+                    {{#if authors}}
+                    <ul>
+                        {{#each authors}}
+                        <li>
+                            <div>
+                                <img src="{{this.avatar}}" width="40">
+                            </div>
+                            <span>{{this.username}}</span>
+                            <a href="./subscription/author?name={{this.username}}">Profile: {{this.profile}}</a>
+                            <br>=======
+                        </li>
+                        {{/each}}
+                    </ul>
+                    {{else}}
+                    <p>No existing authors</p>
+                    {{/if}}
+                </div>
+                <div class="right">
+                    <h2>List of Followers</h2>
+                    {{#if subscribers}}
+                    <ul>
+                        {{#each subscribers}}
+                        <li>
+                            <img src="{{this.avatar}}" width="40">{{this.username}}
+                            <br>
+                            Profile: <a href="./subscription/subscriber?name={{this.username}}">{{this.profile}}</a>
+                            <br>=======
+                        </li>
+                        {{/each}}
+                    </ul>
+                    {{else}}
+                    <p>No existing subscribers</p>
+                    {{/if}}
+                </div>
+            </div>
 
-            <h3>Subscriber List</h3>
-            {{#if subscribers}}
-            <ul>
-                {{#each subscribers}}
-                <li>
-                    <img src="{{this.avatar}}" width = "40">{{this.username}}
-                    <br>
-                    Profile: <a href="./subscription/subscriber?name={{this.username}}">{{this.profile}}</a>
-                    <br>=======
-                </li>
-                {{/each}}
-            </ul>
-            {{else}}
-            <p>No existing subscribers</p>
-            {{/if}}
 
         </div>
 

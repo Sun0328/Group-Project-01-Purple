@@ -156,3 +156,27 @@ button:hover {
 #comment_detail {
     /* display: none; */
 }
+
+@media only screen and (max-width: 840px) {
+
+    .first_level,
+    .second_level,
+    .third_level,
+    .other_level {
+        width: 300px;
+    }
+}
+
+@media only screen and (max-width: 700px) {
+
+    .first_level,
+    .second_level,
+    .third_level,
+    .other_level {
+        width: 250px;
+    }
+
+    .article_img img {
+        width: 250px;
+    }
+}
