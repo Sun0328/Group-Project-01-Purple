@@ -26,7 +26,19 @@ async function getArticleById(articleId){
     return articleData;
 }
 
+async function getAuthorAllArticle(inputUserId){
+    const db = await dbPromise;
+
+    const authorId = inputUserId;
+    const articleData = await db.all(SQL`
+        SELECT * FROM article
+        WHERE user_id = ${authorId}`);
+    return articleData;
+}
+
+
 module.exports={
     getAllArticle,
-    getArticleById
+    getArticleById,
+    getAuthorAllArticle
 }

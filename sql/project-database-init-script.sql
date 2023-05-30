@@ -62,7 +62,7 @@ CREATE TABLE comment (
   time time NOT NULL,
   parent_id integer DEFAULT NULL,
   FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE,
-  FOREIGN KEY (article_id) REFERENCES article(id),
+  FOREIGN KEY (article_id) REFERENCES article(id) ON DELETE CASCADE,
   FOREIGN KEY(parent_id) REFERENCES comment(id)
   ON DELETE CASCADE
 );

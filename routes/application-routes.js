@@ -5,6 +5,7 @@ const fs = require("fs");
 //add to use salt
 const crypto = require('crypto');
 
+
 //const testDao = require("../modules/test-dao.js");
 const userDao = require("../modules/user-dao.js");
 const articleDao = require("../modules/article-dao.js");
@@ -31,6 +32,7 @@ router.get("/", async function (req, res) {
         const username = cookies.username;
         const userData = await userDao.getUserByUsername(username);
         const userId = userData.id;
+        res.locals.userId = userId;
 
         for (let i = 0; i < articleDataArray.length; i++) {
             const item = articleDataArray[i];
@@ -52,8 +54,6 @@ router.get("/", async function (req, res) {
             articleDataArray[i][likeNumberKey] = likeCount;
         }
 
-
-        console.log("articleDataArray---" + JSON.stringify(articleDataArray));
         res.locals.articlesArray = articleDataArray;
 
         // console.log("cookies: " + JSON.stringify(cookies));
@@ -87,19 +87,22 @@ router.get("/", async function (req, res) {
             const type = item.type;
             if (type == "comment") {
                 const commentId = item.content;
+
                 const commentData = await commentDao.getCommentByCommentId(commentId);
                 const content = commentData.content;
                 const sender = commentData.username;
-                const sender_id = commentData.id;
+
+                const senderData = await userDao.getUserByUsername(sender);
 
                 // Pass author's avatar
-                const sender_avatar = await userDao.getAvatarByUserId(sender_id);
-                const avatar = sender_avatar[0].avatar;
-                const articleData = await articleDao.getArticleById(commentData.id);
+                //const sender_avatar = await userDao.getAvatarByUserId(sender_id);
+                const sender_id = senderData.id;
+                const avatar = senderData.avatar;
+                const articleData = await articleDao.getArticleById(commentData.article_id);
                 const articleHeader = articleData.header;
                 const title = sender + " send a comment on Article: " + articleHeader;
                 const time = commentData.time;
-                const notification = { "title": title, "content": content, "author": sender, "avatar": avatar, "time": time };
+                const notification = {"id":item.id, "title": title, "content": content, "author": sender, "avatar": avatar, "time": time, "type":type, "typeId": commentId};
                 NotificationList.push(notification);
             }
             else if (type == "article") {
@@ -107,31 +110,32 @@ router.get("/", async function (req, res) {
                 const articleData = await articleDao.getArticleById(articleId);
                 const content = articleData.content;
                 const sender = articleData.username;
-                // Pass author's avatar
-                const sender_id = await userDao.getUserIdByUserName(sender);
-                const sender_avatar = await userDao.getAvatarByUserId(sender_id.id);
-                const avatar = sender_avatar[0].avatar;
 
+                const senderData = await userDao.getUserByUsername(sender);
+                const avatar = senderData.avatar;
                 const title = sender + " published an article";
                 const time = articleData.time;
-                const notification = { "title": title, "content": content, "author": sender, "avatar": avatar, "time": time };
+                const notification = {"id":item.id, "title": title, "content": content, "author": sender, "avatar": avatar, "time": time, "type":type,"typeId": articleId};
                 NotificationList.push(notification);
             }
             else if (type == "subscribe") {
-                const beFollowedId = item.content;
+                console.log("item: " + JSON.stringify(item));
+                const beFollowedId = item.receiver_id;
                 const beFollowedUsername = await userDao.getUserByUserId(beFollowedId);
-                const sender = item.sender;
-                // Pass author's avatar
-                const sender_id = await userDao.getUserIdByUserName(sender);
-                const sender_avatar = await userDao.getAvatarByUserId(sender_id.id);
-                const avatar = sender_avatar[0].avatar;
+                const sender_id = item.sender_id;
+                const subscribeId = item.content;
+                const senderData = await userDao.getUserByUsername(sender);
+                const avatar = senderData.avatar;
+                const sender = await userDao.getUserByUserId(sender_id);
+                const time = item.time;
+                const title = "Newly followed";
+                const content = sender.username + " followed " + beFollowedUsername.username;
+                const notification = {"id":item.id, "title": title, "content": content, "author": sender, "avatar": avatar, "time": time, "type":type,"typeId": subscribeId};
 
-                const title = "Newly followed"
-                const content = sender + " followed " + beFollowedUsername;
-                const notification = { "title": title, "content": content, "author": sender, "avatar": avatar, "time": time };
                 NotificationList.push(notification);
             }
         }
+        console.log("NotificationList: " + JSON.stringify(NotificationList));
         res.locals.notificationNum = notificationNum;
         res.locals.notification = NotificationList;
     }
@@ -151,36 +155,6 @@ router.get("/", async function (req, res) {
     res.render("home");
 });
 
-router.get("/go", async function (req, res) {
-    const cookies = req.cookies;
-    const username = cookies.username;
-
-    const userData = await userDao.getUserByUsername(username);
-    const userId = userData.id;
-
-    let articleList = [];
-    const articleData = await articleDao.getAllArticle();
-    for (let i = 0; i < articleData.length; i++) {
-        const item = articleData[i];
-        const articleId = item.id;
-        const likeArticle = await likeDao.getLikeStateByUserIDandArticleId(userId, articleId);
-        let likeState;
-        if (likeArticle === undefined) {
-            likeState = "Like";
-        }
-        else {
-            likeState = "Unlike"
-        }
-        const likeCount = await likeDao.getLikeNumberByArticleId(articleId);
-        const key = "likeNumber";
-        articleData[i][key] = likeCount;
-        const articleItem = { "id": item.id, "header": item.header, "content": item.content, "author": item.username, "time": item.time, "likeState": likeState, "likeNumber": likeCount }
-        console.log("article: " + JSON.stringify(articleItem));
-        articleList.push(articleItem);
-    }
-    res.locals.article = articleList;
-    res.render("commentArticle");
-});
 
 router.get("/login", async function (req, res) {
     res.render("login");
@@ -254,9 +228,12 @@ router.post("/signupMessage", async function (req, res) {
         };
         userDao.createNewUser(user);
         console.log("user name is: " + user.username);
-        const user_id = await userDao.getUserIdByUserName(user.username);
-        console.log("user id is: " + JSON.stringify(user_id.id));
-        addNewFolder(JSON.stringify(user_id.id));
+
+        const username = user.username;
+        const userData = await userDao.getUserByUsername(username);
+        const user_id = userData.id;
+        addNewFolder(user_id);
+
         const toastMessage = "You have successfully registered";
         res.locals.toastMessage = toastMessage;
         res.render("login");
@@ -278,16 +255,18 @@ router.get("/userHomePage", async function (req, res) {
 
     // For notification
     const userId = userData.id;
+
     const allNotificationData = await notificationDao.getNotificationByUserId(userId);
     let notReadList = [];
-    for (let i = 0; i < allNotificationData.length; i++) {
+    for (let i = 0; i < allNotificationData.length; i++) 
+    {
         const item = allNotificationData[i];
         const hasRead = item.read;
         if (hasRead == 0) {
             notReadList.push(item);
         }
     }
-
+    
     let NotificationList = [];
     const notificationNum = notReadList.length;
     for (let i = 0; i < notReadList.length; i++) {
@@ -298,15 +277,15 @@ router.get("/userHomePage", async function (req, res) {
             const commentData = await commentDao.getCommentByCommentId(commentId);
             const content = commentData.content;
             const sender = commentData.username;
-            const sender_id = commentData.id;
+            const senderData = await userDao.getUserByUsername(sender);
             // Pass author's avatar
-            const sender_avatar = await userDao.getAvatarByUserId(sender_id);
-            const avatar = sender_avatar[0].avatar;
-            const articleData = await articleDao.getArticleById(commentData.id);
+            const sender_id = senderData.id;
+            const avatar = senderData.avatar;
+            const articleData = await articleDao.getArticleById(commentData.article_id);
             const articleHeader = articleData.header;
             const title = sender + " send a comment on Article: " + articleHeader;
             const time = commentData.time;
-            const notification = { "title": title, "content": content, "author": sender, "avatar": avatar, "time": time };
+            const notification = {"id":item.id, "title": title, "content": content, "author": sender, "avatar": avatar, "time": time, "type":type, "typeId": commentId};
             NotificationList.push(notification);
         }
         else if (type == "article") {
@@ -314,45 +293,44 @@ router.get("/userHomePage", async function (req, res) {
             const articleData = await articleDao.getArticleById(articleId);
             const content = articleData.content;
             const sender = articleData.username;
-            // Pass author's avatar
-            const sender_id = await userDao.getUserIdByUserName(sender);
-            const sender_avatar = await userDao.getAvatarByUserId(sender_id.id);
-            const avatar = sender_avatar[0].avatar;
-
+    
+            const senderData = await userDao.getUserByUsername(sender);
+            const avatar = senderData.avatar;
             const title = sender + " published an article";
             const time = articleData.time;
-            const notification = { "title": title, "content": content, "author": sender, "avatar": avatar, "time": time };
+            const notification = {"id":item.id, "title": title, "content": content, "author": sender, "avatar": avatar, "time": time, "type":type,"typeId": articleId};
             NotificationList.push(notification);
         }
         else if (type == "subscribe") {
-            const beFollowedId = item.content;
+            console.log("item: " + JSON.stringify(item));
+            const beFollowedId = item.receiver_id;
             const beFollowedUsername = await userDao.getUserByUserId(beFollowedId);
-            const sender = item.sender;
-            // Pass author's avatar
-            const sender_id = await userDao.getUserIdByUserName(sender);
-            const sender_avatar = await userDao.getAvatarByUserId(sender_id.id);
-            const avatar = sender_avatar[0].avatar;
-
-            const title = "Newly followed"
-            const content = sender + " followed " + beFollowedUsername;
-            const notification = { "title": title, "content": content, "author": sender, "avatar": avatar, "time": time };
+            const sender_id = item.sender_id;
+            const subscribeId = item.content;
+            const senderData = await userDao.getUserByUsername(sender);
+            const avatar = senderData.avatar;
+            const sender = await userDao.getUserByUserId(sender_id);
+            const time = item.time;
+            const title = "Newly followed";
+            const content = sender.username + " followed " + beFollowedUsername.username;
+            const notification = {"id":item.id, "title": title, "content": content, "author": sender, "avatar": avatar, "time": time, "type":type,"typeId": subscribeId};
+    
             NotificationList.push(notification);
         }
     }
+    console.log("NotificationList: " + JSON.stringify(NotificationList));
     res.locals.notificationNum = notificationNum;
     res.locals.notification = NotificationList;
-
-
     res.render("userpage");
 });
 
 router.post("/deleteArticle", async function (req, res) {
 
-    let articleID = JSON.stringify(req.body.delete);
-    articleID = articleID.slice(1, -1);
+    let articleID = req.body.delete;
     res.locals.articleID = articleID;
 
     const type = "article";
+    console.log("here0");
     await notificationDao.deleNotification(type, articleID);
     await userDao.deleteArticleById(articleID);
 
@@ -361,7 +339,6 @@ router.post("/deleteArticle", async function (req, res) {
 });
 
 router.post("/editArticle", async function (req, res) {
-
     let articleID = JSON.stringify(req.body.edit);
     articleID = articleID.slice(1, -1);
     res.locals.articleID = articleID;
@@ -740,6 +717,10 @@ router.post("/delete", async function (req, res) {
     console.log("username:" + cookies.username);
     const username = cookies.username;
 
+    const user = await userDao.getUserByUsername(username);
+    const user_id = user.id;
+    deleteFolder(JSON.stringify(user_id));
+
     res.clearCookie("authToken");
     res.clearCookie("username");
     await userDao.deleteTheUser(username);
@@ -782,7 +763,7 @@ router.get("/article", async function (req, res) {
     res.locals.image = img;
 
     const allCommentData = await commentDao.getCommentByArticleId(articleId);
-
+    
     let firstLevelCommentData = [];
     let s_t_o_ChildrenCommentData = [];
     let t_o_ChildrenCommentData = [];
@@ -791,80 +772,109 @@ router.get("/article", async function (req, res) {
     let secondLevelCommentData = [];
     let thirdLevelCommentData = [];
     let otherLevelCommentData = [];
-
-    for (let i = 0; i < allCommentData.length; i++) {
+    
+    for (let i = 0; i < allCommentData.length; i++)
+    {
         const item = allCommentData[i];
         const parentId = item.parent_id;
-        if (parentId === null) {
+        if (parentId === null)
+        {
             console.log("item: " + JSON.stringify(item));
-            const comment = { "comment_id": item.id, "sender": item.username, "recipient": author, "content": item.content, "time": item.time, "nextLevelComment": [] }
+            const comment = {"comment_id":item.id,"sender":item.username,"recipient":author, "content":item.content, "time":item.time, "nextLevelComment": []}
             firstLevelCommentData.push(comment);
         }
-        else {
-            const comment = { "comment_id": item.id, "parent_id": parentId, "sender": item.username, "recipient": null, "content": item.content, "time": item.time, "nextLevelComment": [] }
+        else
+        {
+            const comment = {"comment_id":item.id, "parent_id":parentId, "sender":item.username,"recipient":null, "content":item.content, "time":item.time, "nextLevelComment": []}
             s_t_o_ChildrenCommentData.push(comment);
         }
     }
     console.log("firstLevelComment: " + JSON.stringify(firstLevelCommentData));
     console.log("all children comment: " + JSON.stringify(s_t_o_ChildrenCommentData));
-
-    for (let i = 0; i < s_t_o_ChildrenCommentData.length; i++) {
+    
+    for (let i = 0; i < s_t_o_ChildrenCommentData.length; i++)
+    {
         const child = s_t_o_ChildrenCommentData[i];
         const parentId = child.parent_id;
-        for (let j = 0; j < firstLevelCommentData.length; j++) {
+        for (let j = 0; j < firstLevelCommentData.length; j++)
+        {
             const parent = firstLevelCommentData[j];
             const id = parent.comment_id;
-            if (parentId === id) {
+            if (parentId === id)
+            {
                 child.recipient = parent.sender;
                 parent.nextLevelComment.push(child);
                 secondLevelCommentData.push(child);
             }
-            else {
-                t_o_ChildrenCommentData.push(child);
+            else
+            {
+                if (t_o_ChildrenCommentData.indexOf(child) === -1) 
+                {
+                    t_o_ChildrenCommentData.push(child);
+                }
+
             }
         }
     }
-
+    console.log("-----------------")
+    console.log("t_o_ChildrenCommentData: " + JSON.stringify(t_o_ChildrenCommentData));
     console.log("second: " + JSON.stringify(secondLevelCommentData));
 
-    for (let i = 0; i < t_o_ChildrenCommentData.length; i++) {
+    for (let i = 0; i < t_o_ChildrenCommentData.length; i++)
+    {
         const child = t_o_ChildrenCommentData[i];
         const parentId = child.parent_id;
-        for (let j = 0; j < secondLevelCommentData.length; j++) {
+        for (let j = 0; j < secondLevelCommentData.length; j++)
+        {
             const secondLevelComment = secondLevelCommentData[j];
             const id = secondLevelComment.comment_id;
-            if (parentId === id) {
+            if (parentId === id)
+            {
                 child.recipient = secondLevelComment.sender;
                 secondLevelComment.nextLevelComment.push(child);
                 thirdLevelCommentData.push(child);
             }
-            else {
-                o_ChildrenCommentData.push(child);
+            else
+            {
+                if (o_ChildrenCommentData.indexOf(child) === -1) 
+                {
+                    o_ChildrenCommentData.push(child);
+                }
             }
         }
     }
-
-    for (let i = 0; i < thirdLevelCommentData.length; i++) {
+    console.log("third: " + JSON.stringify(thirdLevelCommentData));
+    for (let i = 0; i < thirdLevelCommentData.length; i++)
+    {
         const thirdComment = thirdLevelCommentData[i];
         const thirdCommentId = thirdComment.comment_id;
         const otherCommentData = await commentDao.getAllOtherCommentByCommentId(thirdCommentId);
 
         console.log("other Comment data: " + JSON.stringify(otherCommentData));
-        for (let j = 0; j < otherCommentData.length; j++) {
+        for (let j = 0; j < otherCommentData.length; j++)
+        {
             const item = otherCommentData[j];
-            if (item.id != thirdCommentId) {
+            if (item.id != thirdCommentId)
+            {
                 const parentId = item.parent_id;
                 const recipient = (await commentDao.getSenderByCommentId(parentId)).username;
-                const otherComment = { "comment_id": item.id, "sender": item.username, "recipient": recipient, "content": item.content, "time": item.time, "nextLevelComment": [] }
+                const otherComment = {"comment_id":item.id,"sender":item.username,"recipient":recipient, "content":item.content, "time":item.time, "nextLevelComment": []}
                 otherLevelCommentData.push(otherComment);
                 thirdComment.nextLevelComment.push(otherComment);
             }
         }
     }
 
+    res.locals.firstLevelCommentData = firstLevelCommentData;
+    console.log("----------------------first level comment data------------");
+    console.log("firstLevelCommentData: "+ JSON.stringify(firstLevelCommentData));
+
     // For notification
     const userId = userData.id;
+
+    // For notification
     const allNotificationData = await notificationDao.getNotificationByUserId(userId);
+    // console.log("allNotificationData--" + JSON.stringify(allNotificationData));
     let notReadList = [];
     for (let i = 0; i < allNotificationData.length; i++) {
         const item = allNotificationData[i];
@@ -884,15 +894,16 @@ router.get("/article", async function (req, res) {
             const commentData = await commentDao.getCommentByCommentId(commentId);
             const content = commentData.content;
             const sender = commentData.username;
-            const sender_id = commentData.id;
+            const senderData = await userDao.getUserByUsername(sender);
             // Pass author's avatar
-            const sender_avatar = await userDao.getAvatarByUserId(sender_id);
-            const avatar = sender_avatar[0].avatar;
-            const articleData = await articleDao.getArticleById(commentData.id);
+            //const sender_avatar = await userDao.getAvatarByUserId(sender_id);
+            const sender_id = senderData.id;
+            const avatar = senderData.avatar;
+            const articleData = await articleDao.getArticleById(commentData.article_id);
             const articleHeader = articleData.header;
             const title = sender + " send a comment on Article: " + articleHeader;
             const time = commentData.time;
-            const notification = { "title": title, "content": content, "author": sender, "avatar": avatar, "time": time };
+            const notification = {"id":item.id, "title": title, "content": content, "author": sender, "avatar": avatar, "time": time, "type":type, "typeId": commentId};
             NotificationList.push(notification);
         }
         else if (type == "article") {
@@ -900,35 +911,35 @@ router.get("/article", async function (req, res) {
             const articleData = await articleDao.getArticleById(articleId);
             const content = articleData.content;
             const sender = articleData.username;
-            // Pass author's avatar
-            const sender_id = await userDao.getUserIdByUserName(sender);
-            const sender_avatar = await userDao.getAvatarByUserId(sender_id.id);
-            const avatar = sender_avatar[0].avatar;
 
+            const senderData = await userDao.getUserByUsername(sender);
+            const avatar = senderData.avatar;
             const title = sender + " published an article";
             const time = articleData.time;
-            const notification = { "title": title, "content": content, "author": sender, "avatar": avatar, "time": time };
+            const notification = {"id":item.id, "title": title, "content": content, "author": sender, "avatar": avatar, "time": time, "type":type,"typeId": articleId};
             NotificationList.push(notification);
         }
         else if (type == "subscribe") {
-            const beFollowedId = item.content;
+            console.log("item: " + JSON.stringify(item));
+            const beFollowedId = item.receiver_id;
             const beFollowedUsername = await userDao.getUserByUserId(beFollowedId);
-            const sender = item.sender;
-            // Pass author's avatar
-            const sender_id = await userDao.getUserIdByUserName(sender);
-            const sender_avatar = await userDao.getAvatarByUserId(sender_id.id);
-            const avatar = sender_avatar[0].avatar;
+            const sender_id = item.sender_id;
+            const subscribeId = item.content;
+            const senderData = await userDao.getUserByUsername(sender);
+            const avatar = senderData.avatar;
+            const sender = await userDao.getUserByUserId(sender_id);
+            const time = item.time;
+            const title = "Newly followed";
+            const content = sender.username + " followed " + beFollowedUsername.username;
+            const notification = {"id":item.id, "title": title, "content": content, "author": sender, "avatar": avatar, "time": time, "type":type,"typeId": subscribeId};
 
-            const title = "Newly followed"
-            const content = sender + " followed " + beFollowedUsername;
-            const notification = { "title": title, "content": content, "author": sender, "avatar": avatar, "time": time };
             NotificationList.push(notification);
         }
     }
+    console.log("NotificationList: " + JSON.stringify(NotificationList));
     res.locals.notificationNum = notificationNum;
     res.locals.notification = NotificationList;
 
-    res.locals.firstLevelCommentData = firstLevelCommentData;
     res.render("testArticle");
 });
 
@@ -963,93 +974,36 @@ router.get("/article/deleComment", async function (req, res) {
     const deleCommentId = req.query.deleCommentId;
     await commentDao.deleCommentByCommentId(deleCommentId);
     res.json();
-})
+});
 
-router.get("/goNo", async function (req, res) {
-
-    const cookies = req.cookies;
-    const username = cookies.username;
-
-    const userData = await userDao.getUserByUsername(username);
-    const userId = userData.id;
-
-    // Get user avatar by username from cookies
-    const user_avatar = userData.avatar;
-    res.locals.avatar = user_avatar;
-
-    const allNotificationData = await notificationDao.getNotificationByUserId(userId);
-    let notReadList = [];
-    for (let i = 0; i < allNotificationData.length; i++) {
-        const item = allNotificationData[i];
-        const hasRead = item.read;
-        if (hasRead == 0) {
-            notReadList.push(item);
-        }
-    }
-
-    let NotificationList = [];
-    const notificationNum = notReadList.length;
-    for (let i = 0; i < notReadList.length; i++) {
-        const item = notReadList[i];
-        const type = item.type;
-        if (type == "comment") {
-            const commentId = item.content;
-            const commentData = await commentDao.getCommentByCommentId(commentId);
-            const content = commentData.content;
-            const sender = commentData.username;
-            const sender_id = commentData.id;
-            // Pass author's avatar
-            const sender_avatar = await userDao.getAvatarByUserId(sender_id);
-            const avatar = sender_avatar[0].avatar;
-            const articleData = await articleDao.getArticleById(commentData.id);
-            const articleHeader = articleData.header;
-            const title = sender + " send a comment on Article: " + articleHeader;
-            const time = commentData.time;
-            const notification = { "title": title, "content": content, "author": sender, "avatar": avatar, "time": time };
-            NotificationList.push(notification);
-        }
-        else if (type == "article") {
-            const articleId = item.content;
-            const articleData = await articleDao.getArticleById(articleId);
-            const content = articleData.content;
-            const sender = articleData.username;
-            // Pass author's avatar
-            const sender_id = await userDao.getUserIdByUserName(sender);
-            const sender_avatar = await userDao.getAvatarByUserId(sender_id.id);
-            const avatar = sender_avatar[0].avatar;
-
-            const title = sender + " published an article";
-            const time = articleData.time;
-            const notification = { "title": title, "content": content, "author": sender, "avatar": avatar, "time": time };
-            NotificationList.push(notification);
-        }
-        else if (type == "subscribe") {
-            const beFollowedId = item.receiver_id;
-            let beFollowedUsername = await userDao.getUserByUserId(beFollowedId);
-            beFollowedUsername = beFollowedUsername.username;
-            console.log("receiver is: " + beFollowedUsername);
-            let sender = item.sender_id;
-            sender = await userDao.getUserByUserId(sender);
-            sender = sender.username;
-            console.log("sender is: " + sender);
-            const title = "Newly followed";
-            const time = item.time;
-            const content = sender + " followed " + beFollowedUsername;
-            const notification = { "title": title, "content": content, "author": sender, "avatar": avatar, "time": time };
-            NotificationList.push(notification);
-        }
-    }
-    for (let i = 0; i < notReadList.length; i++) {
-        const item = notReadList[i];
-        const notificationId = item.id;
+router.get("/goNotificationDetail", async function (req, res) {
+    const username = req.query.userId;
+    const notificationType = req.query.type;
+    const notificationTypeId = req.query.content;
+    const notificationId = req.query.notificationId;
+    if (notificationType == "comment"){
+        const articleData = await commentDao.getArticleByCommentId(notificationTypeId);
+        const articleId = articleData.article_id;
         await notificationDao.changeNotificationReadStateById(notificationId);
+        res.redirect(`./article?id=${articleId}`);
     }
-    res.locals.notificationNum = notificationNum;
-    // console.log("NotificationList--" + JSON.stringify(NotificationList));
-    res.locals.notification = NotificationList;
+    else if (notificationType == "article"){
+        const articleId = notificationTypeId;
+        await notificationDao.changeNotificationReadStateById(notificationId);
+        res.redirect(`./article?id=${articleId}`);
+    }
+    else if (notificationType == "subscribe"){
+        const subscribeId = notificationTypeId;
+        const subscribeData = await subscribeDao.getSubscribeDataBySubscribeId(subscribeId);
+        const FollowerId = subscribeData.subscriber_id;
+        const FollowerData= await userDao.getUserByUserID(FollowerId);
+        const FollowerName = FollowerData.username;
+        await notificationDao.changeNotificationReadStateById(notificationId);
+        res.redirect(`./subscription/subscriber?name=${FollowerName}`);
+    }
 
-    res.render("notification");
-})
+});
+
 
 router.get("/addLike", async function (req, res) {
     const articleId = req.query.articleId;
@@ -1092,11 +1046,9 @@ const hashPassword = function (password, salt) {
 
 function addNewFolder(user_id) {
     const folderName = `./public/uploadedFiles/${user_id}`;
-    console.log("Folder name is: " + folderName);
     try {
         if (!fs.existsSync(folderName)) {
             fs.mkdirSync(folderName);
-            console.log("Create folder successful");
         }
     } catch (err) {
         console.error(err);
@@ -1122,10 +1074,8 @@ router.get("/subscription", async function (req, res) {
     const user_avatar = userData.avatar;
     res.locals.avatar = user_avatar;
     const authors = await userDao.getAuthorsByUserName(username);
-    console.log("author passed: " + JSON.stringify(authors));
     res.locals.authors = authors;
     const subscribers = await userDao.getSubscribersByUserName(username);
-    console.log("subscriber passed: " + JSON.stringify(subscribers));
     res.locals.subscribers = subscribers;
 
     // For notification
@@ -1215,10 +1165,12 @@ router.get("/subscription/author", async function (req, res) {
 
     // do a check to check whether user are still following author
     const result = await userDao.checkSubscription(username, author_name);
-    const author_id = await userDao.getUserIdByUserName(author_name);
-    const profileAvatar = await userDao.getAvatarByUserId(author_id.id);
-    res.locals.profileAvatar = profileAvatar[0].avatar;
-    res.locals.articles = await userDao.getAriticlesByUser(author_name);
+    const authorData = await userDao.getUserIdByUserName(author_name);
+    const profileAvatar = authorData.avatar;
+    res.locals.profileAvatar = profileAvatar;
+    const articles = await userDao.getAriticlesByUser(author_name);
+    res.locals.articles = articles;
+
     const userData = await userDao.getUserByUsername(username);
     const user_avatar = userData.avatar;
     res.locals.avatar = user_avatar;
@@ -1237,10 +1189,8 @@ router.get("/subscription/subscriber", async function (req, res) {
     res.locals.subscriber = subscriber_name;
 
     // get subscriber profile by subscriber name
-    let profile = await userDao.getProfileByName(subscriber_name);
-
-    profile = (JSON.stringify(profile[0].profile))
-    profile = profile.slice(1, -1);
+    const subscriberData = await userDao.getUserByUsername(subscriber_name);
+    const profile = subscriberData.profile;
     res.locals.profile = profile;
 
     // Get user name from cookies
@@ -1280,15 +1230,15 @@ router.get("/subscription/subsribe", async function (req, res) {
         // add to subscribe table
         const testResult = await userDao.createNewSubscribe(subscriber, author);
         const subscribe_id = JSON.stringify(testResult.lastID);
-        console.log("subscribe id inside subscribe " + subscribe_id);
+
 
         // add notification to notify the author
         let senderId = await userDao.getUserIdByUserName(subscriber);
         senderId = JSON.stringify(senderId.id);
-        console.log("senderID: " + senderId);
+
         let receiverId = await userDao.getUserIdByUserName(author);
         receiverId = JSON.stringify(receiverId.id);
-        console.log("receiverID: " + receiverId);
+
         const type = "subscribe";
         const content = subscribe_id;
         const time = await userDao.getTimeBySubscribeID(subscribe_id);
@@ -1300,15 +1250,16 @@ router.get("/subscription/subsribe", async function (req, res) {
     res.locals.author = author_name;
 
     // get author profile by author name
-    let profile = await userDao.getProfileByName(author_name);
-    profile = (JSON.stringify(profile[0].profile))
-    profile = profile.slice(1, -1);
+    const authorData = await userDao.getUserByUsername(author_name);
+    const profile = authorData.profile;
     res.locals.profile = profile;
+    const author_id = authorData.id;
+    const profileAvatar = authorData.avatar;
+    res.locals.profileAvatar = profileAvatar;
+    
+    const articles = await userDao.getAriticlesByUser(author_name);
+    res.locals.articles = articles;
 
-    const author_id = await userDao.getUserIdByUserName(author_name);
-    const profileAvatar = await userDao.getAvatarByUserId(author_id.id);
-    res.locals.profileAvatar = profileAvatar[0].avatar;
-    res.locals.articles = await userDao.getAriticlesByUser(author_name);
     const userData = await userDao.getUserByUsername(username);
     const user_avatar = userData.avatar;
     res.locals.avatar = user_avatar;
@@ -1337,26 +1288,24 @@ router.get("/subscription/unsubsribe", async function (req, res) {
         // delete subscribe table
         const testResult = await userDao.deleteSubscribe(subscriber, author);
         const subscribe_id = await userDao.getSubscribeId(author, subscriber);
-        console.log("unsubscribe");
         await notificationDao.deleNotification("subscribe", subscribe_id);
         const author_name = req.query.author;
         // set subscriber username
         res.locals.author = author_name;
 
         // set author profile by author_name
-        let profile = await userDao.getProfileByName(author_name);
-
-        profile = (JSON.stringify(profile[0].profile))
-        profile = profile.slice(1, -1);
+        const authorData = await userDao.getUserByUsername(author_name);
+        const profile = authorData.profile;
         res.locals.profile = profile;
-
 
         // do a check to check whether subscriber is still following author
         const result = await userDao.checkSubscription(username, author_name);
-        const author_id = await userDao.getUserIdByUserName(author_name);
-        const profileAvatar = await userDao.getAvatarByUserId(author_id.id);
-        res.locals.profileAvatar = profileAvatar[0].avatar;
-        res.locals.articles = await userDao.getAriticlesByUser(author_name);
+        const avatar = authorData.avatar;
+        res.locals.profileAvatar = avatar;
+
+        const articles = await userDao.getAriticlesByUser(author_name);
+        res.locals.articles = articles;
+
         const userData = await userDao.getUserByUsername(username);
         const user_avatar = userData.avatar;
         res.locals.avatar = user_avatar;
@@ -1372,25 +1321,24 @@ router.get("/subscription/unsubsribe", async function (req, res) {
     else {
         const author = username;
         const subscriber = req.query.subscriber;
-        console.log("author is " + author + " subscriber is " + subscriber);
         // delete subscribe table
         const testResult = await userDao.deleteSubscribe(subscriber, author);
-        console.log("test result: " + JSON.stringify(testResult));
         const subscribe_id = JSON.stringify(testResult.lastID);
         const subscriber_name = req.query.subscriber;
         // set subscriber username
         res.locals.subscriber = subscriber;
 
         // set author profile by author_name
-        let profile = await userDao.getProfileByName(subscriber);
-
-        profile = (JSON.stringify(profile[0].profile))
-        profile = profile.slice(1, -1);
+        const subscriberData = await userDao.getUserByUsername(subscriber);
+        const profile = subscriberData.profile;
         res.locals.profile = profile;
-        const subscriber_id = await userDao.getUserIdByUserName(subscriber);
-        const profileAvatar = await userDao.getAvatarByUserId(subscriber_id.id);
-        res.locals.profileAvatar = profileAvatar[0].avatar;
-        res.locals.articles = await userDao.getAriticlesByUser(subscriber);
+
+        const profileAvatar = subscriberData.avatar;
+        res.locals.profileAvatar = profileAvatar;
+        
+        const articles = await userDao.getAriticlesByUser(subscriber);
+        res.locals.articles = articles;
+
         const userData = await userDao.getUserByUsername(username);
         const user_avatar = userData.avatar;
         res.locals.avatar = user_avatar;
@@ -1413,8 +1361,9 @@ router.get("/favorite", async function (req, res) {
     const cookies = req.cookies;
     const username = cookies.username;
     // Get user id
-    const user_id = await userDao.getUserByUsername(username);
-    console.log("here");
+
+    const userData = await userDao.getUserByUsername(username);
+    const user_id = userData.id;
 
     // Get user avatar by username from cookies
     const userData = await userDao.getUser(username);
@@ -1488,10 +1437,11 @@ router.get("/favorite", async function (req, res) {
     res.locals.notification = NotificationList;
 
     // get user liked article list
-    const like_list = await userDao.getLikesByUserId(user_id.id);
-    console.log("here2");
+    const like_list = await userDao.getLikesByUserId(user_id);
+
     let article_id_list = [];
     for (let index = 0; index < like_list.length; index++) {
+
         console.log("likelist : " + JSON.stringify(like_list[index].article_id));
         article_id_list[index] = like_list[index].article_id;
     }
@@ -1523,5 +1473,173 @@ router.get("/favorite", async function (req, res) {
 
     res.render("favorite");
 });
+
+
+function deleteFolder(user_id){
+    const path = `./public/uploadedFiles/${user_id}`;
+    if( fs.existsSync(path) ) {
+        fs.readdirSync(path).forEach(function(file,index){
+        var curPath = path + "/" + file;
+        if(fs.lstatSync(curPath).isDirectory()) { // recurse
+            deleteFolderRecursive(curPath);
+        } else { // delete file
+            fs.unlinkSync(curPath);
+        }
+        });
+        fs.rmdirSync(path);
+    }
+};
+
+
+router.get("/analytics", async function (req, res) {
+    const cookies = req.cookies;
+    const username = cookies.username;
+    res.locals.currentUser = username;
+    const userData = await userDao.getUserByUsername(username);
+    const userId = userData.id;
+
+    const topNumber = 3;
+
+    const subscribeData = await subscribeDao.getSubscribeDataByAuthorId(userId);
+    const followerNumber = subscribeData.length;
+    res.locals.followerNumber = followerNumber;
+
+    const articleData = await articleDao.getAuthorAllArticle(userId);
+    const articleNumber = articleData.length;
+    let commentNumber = 0;
+    let likeNumber = 0;
+    let hasPopularIndexList = [];
+    let hasNoPopularIndexList = [];
+    for (let i = 0; i < articleNumber; i++)
+    {
+        const item = articleData[i];
+        const articleId = item.id;
+        const currentArticleCommentData = await commentDao.getCommentByArticleId(articleId);
+        const currentArticleCommentNumber = currentArticleCommentData.length;
+
+        const currentArticleLikeNumber = await likeDao.getLikeNumberByArticleId(articleId);
+        
+        commentNumber = commentNumber + currentArticleCommentNumber;
+        likeNumber = likeNumber + currentArticleLikeNumber;
+
+        const popularIndex = currentArticleCommentNumber * 2 + currentArticleLikeNumber;
+        item["popularIndex"] = popularIndex;
+        item["likeNumber"] = currentArticleLikeNumber;
+        item["commentNumber"] = currentArticleCommentNumber;
+        if ( popularIndex == 0)
+        {
+            item["hasPopularIndex"] = false;
+            hasNoPopularIndexList.push(item);
+        }
+        else
+        {
+            item["hasPopularIndex"] = true;
+            hasPopularIndexList.push(item);
+        }
+    }
+    res.locals.allCommentNumber = commentNumber;
+    res.locals.allLikeNumber = likeNumber;
+
+    if (articleNumber >= 3)
+    {
+        if (hasPopularIndexList >= 3)
+        {
+            let mostPopularList = [];
+            for (let i = 0; i < hasPopularIndexList.length; i++)
+            {
+                for (let j = i + 1; j < hasPopularIndexList.length; j++)
+                {
+                    if (hasPopularIndexList[j].popularIndex > hasPopularIndexList[i].popularIndex)
+                    {
+                        let temp = hasPopularIndexList[i];
+                        hasPopularIndexList[i] = hasPopularIndexList[j];
+                        hasPopularIndexList[j] = temp;
+                    }
+                }
+            }
+    
+            for (let i = 0; i < 3; i++)
+            {
+                const item = hasPopularIndexList[i];
+                mostPopularList.push(item);
+            }
+            res.locals.mostPopularList = mostPopularList;
+
+            let dailyCommentDataList = [];
+            for (let i = 0; i < mostPopularList.length; i++)
+            {
+                const item = mostPopularList[i];
+                const commentId = item.id;
+                const dateStr = item.time;
+                const dateObj = new Date(dateStr);
+
+                const year = dateObj.getFullYear();
+                const month = dateObj.getMonth() + 1;
+                const day = dateObj.getDate();
+
+                const time = `${year}-${month < 10 ? '0' + month : month}-${day < 10 ? '0' + day : day}`;
+                const dailyComment = {"commentId": commentId, "time": time};
+                dailyCommentDataList.push(dailyComment);
+            }
+            res.locals.dailyCommentDataList = dailyCommentDataList;
+        }
+        else if (hasPopularIndexList <= 0)
+        {
+            let noArticleHasPopularIndex= [];
+            for (let i = 0; i < 3; i++)
+            {
+                const item = hasNoPopularIndexList[i];
+                noArticleHasPopularIndex.push(item);
+            }
+            res.locals.noArticleHasPopularIndex = noArticleHasPopularIndex;
+        }
+        else if (hasPopularIndexList > 0 && hasPopularIndexList < 3)
+        {
+            let mostPopularList = [];
+            let defaultList = [];
+            const hasPopularIndexArticleNumber = hasPopularIndexList.length;
+            const restSpace = topNumber - hasPopularIndexArticleNumber;
+            for (let i = 0; i < hasPopularIndexList.length; i++)
+            {
+                const hasIndexArticle = hasPopularIndexList[i];
+                mostPopularList.push(hasIndexArticle);
+            }
+            for (let i = 0; i < restSpace; i++)
+            {
+                const noIndexArticle = hasNoPopularIndexList[i];
+                defaultList.push(noIndexArticle);
+            }
+            res.locals.mostPopularList = mostPopularList;
+            res.locals.defaultList = defaultList;
+
+            let dailyCommentDataList = [];
+            for (let i = 0; i < mostPopularList.length; i++)
+            {
+                const item = mostPopularList[i];
+                const commentId = item.id;
+                const dateStr = item.time;
+                const dateObj = new Date(dateStr);
+
+                const year = dateObj.getFullYear();
+                const month = dateObj.getMonth() + 1;
+                const day = dateObj.getDate();
+
+                const time = `${year}-${month < 10 ? '0' + month : month}-${day < 10 ? '0' + day : day}`;
+                const dailyComment = {"commentId": commentId, "time": time};
+                dailyCommentDataList.push(dailyComment);
+            }
+            res.locals.dailyCommentDataList = dailyCommentDataList;
+        }
+    }
+    else if (articleNumber == 0)
+    {
+        const noArticle= "has no article";
+        res.locals.noArticle = noArticle;
+    }
+
+
+    res.render("analytics");
+})
+
 
 module.exports = router;

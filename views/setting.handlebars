@@ -25,21 +25,21 @@
     </div>
     <form action="./changeUsername" method="post">
         <label for="textUsername">Username:</label>
-        <input type="text" id="textUsername" name="username" required>
+        <input type="text" id="textUsername" name="username" maxlength="32" required>
         <button type="submit" name="settingButton" id="settingUsernameButton">Save</button>
 
     </form>
 
     <form action="./changeLastName" method="post">
         <label for="textLastName">Last Name:</label>
-        <input type="text" id="textLastName" name="lastName" required>
+        <input type="text" id="textLastName" name="lastName" maxlength="32" required>
         <button type="submit" name="settingButton">Save</button>
     </form>
 
 
     <form action="./changeFirstName" method="post">
         <label for="textFirstName">First Name:</label>
-        <input type="text" id="textFirstName" name="firstName" required>
+        <input type="text" id="textFirstName" name="firstName" maxlength="32" required>
         <button type="submit" name="settingButton">Save</button>
     </form>
 
@@ -52,7 +52,7 @@
 
     <form action="./changeDescription" method="post">
         <label for="textDescription">Description</label><br />
-        <textarea id="textDescription" name="description" row="4" cols="50"></textarea>
+        <textarea id="textDescription" name="description" row="4" cols="50" maxlength="64"></textarea>
         <button type="submit" name="settingButton">Save</button>
     </form>
 
