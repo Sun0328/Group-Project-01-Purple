@@ -36,7 +36,7 @@
             <div class="article">
                 {{#if articleData}}
 
-                <div class="author" id="author">Author: <span id="articleAuthor">{{author}}</span></div>
+                <div class="author" id="author">Author: <span id="articleAuthor"><a href="./subscription/author?name={{author}}">{{author}}</a></span></div>
                 <div class="time article_time">Time: {{time}}</div>
                 <div class="article_header">{{header}}</div>
                 <div class="article_content">{{{content}}}</div>
@@ -51,7 +51,7 @@
                         chat_bubble
                     </span>
                 </label>
-                <textarea id="textComment" name="comment"></textarea>
+                <textarea id="textComment" name="comment" maxlength="108"></textarea>
                 <button type="submit" id="commentButton">Send</button>
                 {{#if firstLevelCommentData}}
                 <span id="history">Comment History</span>
