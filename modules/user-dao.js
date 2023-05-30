@@ -79,12 +79,13 @@ async function getAriticlesByUser(username){
 
 async function deleteArticleById(id) {
     const db = await dbPromise;
-    console.log("here");
-    let newId = id.slice(1,-1);
-    console.log("article id: "+newId);
+    console.log("-----in dao------");
+    console.log("id:" + id);
     await db.run(SQL`
     delete from article
-    where id = ${newId};`);
+    where id = ${id}`);
+
+    console.log("dele succ");
 }
 
 async function getUser(username){
@@ -95,8 +96,6 @@ async function getUser(username){
         select * from user
         where username = ${testUsername}`);
 
-    console.log(JSON.stringify(username));    
-    console.log(userData);    
     return userData;
 }
 

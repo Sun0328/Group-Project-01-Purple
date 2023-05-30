@@ -5,8 +5,6 @@ async function getSubscribeDataByAuthorId(inputSenderId){
     const db = await dbPromise;
     
     const senderId = inputSenderId;
-    console.log("-----------------in dao------------");
-    console.log("senderId: " + senderId);
     const subscribeData = await db.all(SQL`
     select * from subscribe
     where author_id = ${senderId}`);
@@ -14,6 +12,21 @@ async function getSubscribeDataByAuthorId(inputSenderId){
     return subscribeData;
 }
 
+async function getSubscribeDataBySubscribeId(inputSubscribeId){
+    const db = await dbPromise;
+
+    const subscribeId = inputSubscribeId;
+    const subscribeData =  await db.get(SQL`
+        select * from subscribe
+        where id=${subscribeId}`);
+
+    console.log("subscribeData: " + JSON.stringify(subscribeData));
+
+    return subscribeData;
+}
+
+
 module.exports={
-    getSubscribeDataByAuthorId
+    getSubscribeDataByAuthorId,
+    getSubscribeDataBySubscribeId
 }

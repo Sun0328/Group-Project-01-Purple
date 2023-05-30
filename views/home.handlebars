@@ -49,12 +49,9 @@
     {{#if hasLogin}}
     {{> function}}
     {{/if}}
-
     {{!-- Article Part --}}
     {{!-- Import each article date inside partial --}}
     <div class="article_container">
-
-
       <div class="sort_container">
         <span>Sort by </span>
         <select name="sortBy" id="mySelect">
@@ -68,6 +65,8 @@
       {{#each articlesArray}}
       {{> article}}
       {{/each}}
+
+        <a href="/analytics">Go analytics!</a>
     </div>
 
   </div>
