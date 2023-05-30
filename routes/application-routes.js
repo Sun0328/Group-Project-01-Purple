@@ -121,16 +121,16 @@ router.get("/", async function (req, res) {
             else if (type == "subscribe") {
                 console.log("item: " + JSON.stringify(item));
                 const beFollowedId = item.receiver_id;
-                const beFollowedUsername = await userDao.getUserByUserId(beFollowedId);
+                const beFollowedData = await userDao.getUserByUserId(beFollowedId);
+                const beFollowedUsername = beFollowedData.username;
                 const sender_id = item.sender_id;
                 const subscribeId = item.content;
-                const senderData = await userDao.getUserByUsername(sender);
+                const senderData = await userDao.getUserByUserId(sender_id);
                 const avatar = senderData.avatar;
-                const sender = await userDao.getUserByUserId(sender_id);
                 const time = item.time;
                 const title = "Newly followed";
-                const content = sender.username + " followed " + beFollowedUsername.username;
-                const notification = {"id":item.id, "title": title, "content": content, "author": sender, "avatar": avatar, "time": time, "type":type,"typeId": subscribeId};
+                const content = senderData.username + " followed " + beFollowedUsername;
+                const notification = {"id":item.id, "title": title, "content": content, "author": senderData.username, "avatar": avatar, "time": time, "type":type,"typeId": subscribeId};
 
                 NotificationList.push(notification);
             }
@@ -304,17 +304,17 @@ router.get("/userHomePage", async function (req, res) {
         else if (type == "subscribe") {
             console.log("item: " + JSON.stringify(item));
             const beFollowedId = item.receiver_id;
-            const beFollowedUsername = await userDao.getUserByUserId(beFollowedId);
+            const beFollowedData = await userDao.getUserByUserId(beFollowedId);
+            const beFollowedUsername = beFollowedData.username;
             const sender_id = item.sender_id;
             const subscribeId = item.content;
-            const senderData = await userDao.getUserByUsername(sender);
+            const senderData = await userDao.getUserByUserId(sender_id);
             const avatar = senderData.avatar;
-            const sender = await userDao.getUserByUserId(sender_id);
             const time = item.time;
             const title = "Newly followed";
-            const content = sender.username + " followed " + beFollowedUsername.username;
-            const notification = {"id":item.id, "title": title, "content": content, "author": sender, "avatar": avatar, "time": time, "type":type,"typeId": subscribeId};
-    
+            const content = senderData.username + " followed " + beFollowedUsername;
+            const notification = {"id":item.id, "title": title, "content": content, "author": senderData.username, "avatar": avatar, "time": time, "type":type,"typeId": subscribeId};
+
             NotificationList.push(notification);
         }
     }
@@ -755,11 +755,14 @@ router.get("/article", async function (req, res) {
     const time = articleData.time;
     const content = articleData.content;
     const img = articleData.image;
+    const author_data = await userDao.getUserByUsername(author);
+    const author_id = author_data.id;
     res.locals.header = header;
     res.locals.author = author;
     res.locals.time = time;
     res.locals.content = content;
     res.locals.articleId = articleId;
+    res.locals.authorId = author_id;
     res.locals.image = img;
 
     const allCommentData = await commentDao.getCommentByArticleId(articleId);
@@ -922,16 +925,16 @@ router.get("/article", async function (req, res) {
         else if (type == "subscribe") {
             console.log("item: " + JSON.stringify(item));
             const beFollowedId = item.receiver_id;
-            const beFollowedUsername = await userDao.getUserByUserId(beFollowedId);
+            const beFollowedData = await userDao.getUserByUserId(beFollowedId);
+            const beFollowedUsername = beFollowedData.username;
             const sender_id = item.sender_id;
             const subscribeId = item.content;
-            const senderData = await userDao.getUserByUsername(sender);
+            const senderData = await userDao.getUserByUserId(sender_id);
             const avatar = senderData.avatar;
-            const sender = await userDao.getUserByUserId(sender_id);
             const time = item.time;
             const title = "Newly followed";
-            const content = sender.username + " followed " + beFollowedUsername.username;
-            const notification = {"id":item.id, "title": title, "content": content, "author": sender, "avatar": avatar, "time": time, "type":type,"typeId": subscribeId};
+            const content = senderData.username + " followed " + beFollowedUsername;
+            const notification = {"id":item.id, "title": title, "content": content, "author": senderData.username, "avatar": avatar, "time": time, "type":type,"typeId": subscribeId};
 
             NotificationList.push(notification);
         }
@@ -1127,17 +1130,19 @@ router.get("/subscription", async function (req, res) {
             NotificationList.push(notification);
         }
         else if (type == "subscribe") {
-            const beFollowedId = item.content;
-            const beFollowedUsername = await userDao.getUserByUserId(beFollowedId);
-            const sender = item.sender;
-            // Pass author's avatar
-            const sender_id = await userDao.getUserIdByUserName(sender);
-            const sender_avatar = await userDao.getAvatarByUserId(sender_id.id);
-            const avatar = sender_avatar[0].avatar;
+            console.log("item: " + JSON.stringify(item));
+            const beFollowedId = item.receiver_id;
+            const beFollowedData = await userDao.getUserByUserId(beFollowedId);
+            const beFollowedUsername = beFollowedData.username;
+            const sender_id = item.sender_id;
+            const subscribeId = item.content;
+            const senderData = await userDao.getUserByUserId(sender_id);
+            const avatar = senderData.avatar;
+            const time = item.time;
+            const title = "Newly followed";
+            const content = senderData.username + " followed " + beFollowedUsername;
+            const notification = {"id":item.id, "title": title, "content": content, "author": senderData.username, "avatar": avatar, "time": time, "type":type,"typeId": subscribeId};
 
-            const title = "Newly followed"
-            const content = sender + " followed " + beFollowedUsername;
-            const notification = { "title": title, "content": content, "author": sender, "avatar": avatar, "time": time };
             NotificationList.push(notification);
         }
     }
@@ -1366,7 +1371,6 @@ router.get("/favorite", async function (req, res) {
     const user_id = userData.id;
 
     // Get user avatar by username from cookies
-    const userData = await userDao.getUser(username);
     const user_avatar = userData.avatar;
     res.locals.avatar = user_avatar;
 
@@ -1419,17 +1423,19 @@ router.get("/favorite", async function (req, res) {
             NotificationList.push(notification);
         }
         else if (type == "subscribe") {
-            const beFollowedId = item.content;
-            const beFollowedUsername = await userDao.getUserByUserId(beFollowedId);
-            const sender = item.sender;
-            // Pass author's avatar
-            const sender_id = await userDao.getUserIdByUserName(sender);
-            const sender_avatar = await userDao.getAvatarByUserId(sender_id.id);
-            const avatar = sender_avatar[0].avatar;
+            console.log("item: " + JSON.stringify(item));
+            const beFollowedId = item.receiver_id;
+            const beFollowedData = await userDao.getUserByUserId(beFollowedId);
+            const beFollowedUsername = beFollowedData.username;
+            const sender_id = item.sender_id;
+            const subscribeId = item.content;
+            const senderData = await userDao.getUserByUserId(sender_id);
+            const avatar = senderData.avatar;
+            const time = item.time;
+            const title = "Newly followed";
+            const content = senderData.username + " followed " + beFollowedUsername;
+            const notification = {"id":item.id, "title": title, "content": content, "author": senderData.username, "avatar": avatar, "time": time, "type":type,"typeId": subscribeId};
 
-            const title = "Newly followed"
-            const content = sender + " followed " + beFollowedUsername;
-            const notification = { "title": title, "content": content, "author": sender, "avatar": avatar, "time": time };
             NotificationList.push(notification);
         }
     }
