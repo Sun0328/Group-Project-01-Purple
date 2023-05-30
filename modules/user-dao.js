@@ -188,9 +188,9 @@ async function retrieveArticleData() {
     userID.forEach(idElement => {
         user.forEach(element => {
             if (element.id == JSON.stringify(idElement.user_id)){
-                console.log(element.id+" is equal to "+idElement.user_id);
+                // console.log(element.id+" is equal to "+idElement.user_id);
                 username[index] = element.username;
-                console.log("Username is "+username[index]);
+                // console.log("Username is "+username[index]);
                 index += 1;
             }
         });

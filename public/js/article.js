@@ -12,7 +12,7 @@ window.addEventListener("load", function () {
     // show dele button or not
     const articleAuthorArea = document.querySelector("#articleAuthor");
     const articleAuthor = articleAuthorArea.textContent;
-        
+
     const deleButtonArray = document.querySelectorAll(".deleCommentButton");
     for (let i = 0; i < deleButtonArray.length; i++) {
         const currentButton = deleButtonArray[i];
@@ -21,15 +21,15 @@ window.addEventListener("load", function () {
         if (currentUsername == deleCommentUsername) {
             currentButton.style.display = "block";
         }
-        else if (articleAuthor == currentUsername)
-        {
+        else if (articleAuthor == currentUsername) {
             currentButton.style.display = "block";
         }
     }
 
     // Show or Hide comments history
     const history = document.getElementById("history");
-    if (history !== null){
+
+    if (history !== null) {
         const show = document.getElementById("show");
         const hide = document.getElementById("hide");
         const comment_detail = document.getElementById("comment_detail");
@@ -45,12 +45,13 @@ window.addEventListener("load", function () {
             show.style.display = "block"
         })
     }
-    
+
 
     document.addEventListener('click', async function (event) {
 
         //submit comment to article
         if (event.target.id === 'commentButton') {
+            console.log("test");
             const commentButton = event.target;
             let textarea = event.target.previousElementSibling;
             const commentContent = textarea.value;
