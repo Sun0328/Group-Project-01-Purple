@@ -9,13 +9,11 @@ async function getLikeNumberByArticleId(inputArticleID){
         select * from likes
         where article_id = ${articleID}`);
 
-    console.log("likeData: " + JSON.stringify(likeData));
     let counter = 0;
     for (let i = 0; i < likeData.length; i++)
     {
         counter = counter + 1;
     }
-    console.log("like number: " + counter);
     return counter;
 }
 

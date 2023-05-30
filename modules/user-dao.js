@@ -79,10 +79,16 @@ async function getAriticlesByUser(username){
 
 async function deleteArticleById(id) {
     const db = await dbPromise;
+    
+    console.log("-----in dao------");
+    console.log("id:" + id);
     await db.run(SQL`
     delete from article
-    where id = ${id};`);
+    where id = ${id}`);
+
+    console.log("dele succ");
 }
+
 async function getUser(username){
     const db = await dbPromise;
 
@@ -91,8 +97,6 @@ async function getUser(username){
         select * from user
         where username = ${testUsername}`);
 
-    console.log(JSON.stringify(username));    
-    console.log(userData);    
     return userData;
 }
 
