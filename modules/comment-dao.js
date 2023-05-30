@@ -98,11 +98,23 @@ async function deleCommentByCommentId(inputDeleCommentId){
         DELETE FROM comment WHERE id IN (SELECT id FROM subcomments)`);
 }
 
+async function getArticleByCommentId(notificationId){
+    const db = await dbPromise;
+
+    const commentId = notificationId;
+    const commentData = await db.get(SQL `
+        select * from comment
+        where id=${commentId}`);
+        
+    return commentData;
+}
+
 module.exports={
     getCommentByArticleId,
     addCommentIntoCommentTable,
     getCommentByCommentId,
     getAllOtherCommentByCommentId,
     getSenderByCommentId,
-    deleCommentByCommentId
+    deleCommentByCommentId,
+    getArticleByCommentId
 };
