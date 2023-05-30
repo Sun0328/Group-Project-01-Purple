@@ -755,11 +755,14 @@ router.get("/article", async function (req, res) {
     const time = articleData.time;
     const content = articleData.content;
     const img = articleData.image;
+    const author_data = await userDao.getUserByUsername(author);
+    const author_id = author_data.id;
     res.locals.header = header;
     res.locals.author = author;
     res.locals.time = time;
     res.locals.content = content;
     res.locals.articleId = articleId;
+    res.locals.authorId = author_id;
     res.locals.image = img;
 
     const allCommentData = await commentDao.getCommentByArticleId(articleId);

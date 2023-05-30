@@ -1,21 +1,21 @@
 <!-- from new to old -->
-  <head>
 
-    <script src="./js/articleLike.js"></script>
-  </head>
-    
-    {{#if article}}
-      {{#each article}}
-        <a href="./article?id={{this.id}}">{{this.header}}</a><br/>
-        <p>{{this.time}}</p>
-        <p>{{this.author}}</p>
-        <p>{{this.content}}</p>
-        {{!-- Bug img --}}
-        <a href="./article?id={{this.id}}">comment</a><br/>
-        <div class="likeArea" id={{this.id}}>
-          <span class="likeSpan">{{this.likeState}}</span>
-          <span class="likeNumber">{{this.likeNumber}}</span>
-        </div>
-        <p>----------------</p>
-      {{/each}}
-    {{/if}}
+<head>
+
+  <script src="./js/articleLike.js"></script>
+</head>
+
+{{#if article}}
+{{#each article}}
+<a href="./article?id={{this.id}}">{{this.header}}</a><br />
+<p>{{this.time}}</p>
+<p>{{this.author}}</p>
+<p>{{this.content}}</p>
+<a href="./article?id={{this.id}}">comment</a><br />
+<div class="likeArea" id={{this.id}}>
+  <span class="likeSpan">{{this.likeState}}</span>
+  <span class="likeNumber">{{this.likeNumber}}</span>
+</div>
+<p>----------------</p>
+{{/each}}
+{{/if}}
