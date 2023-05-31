@@ -34,13 +34,16 @@
             <div class="article">
                 {{#if articleData}}
 
-                <div class="author" id="author">Author: <span id="articleAuthor"><a href="./subscription/author?name={{author}}">{{author}}</a></span></div>
+                <div class="author" id="author">Author: <span id="articleAuthor"><a
+                            href="./subscription/author?name={{author}}">{{author}}</a></span></div>
                 <div class="time article_time">Time: {{time}}</div>
                 <div class="article_header">{{header}}</div>
                 <div class="article_content">{{{content}}}</div>
+                {{#if image}}
                 <div class="article_img">
                     <img src="/uploadedFiles/{{authorId}}/{{image}}" width="300px">
                 </div>
+                {{/if}}
 
             </div>
 

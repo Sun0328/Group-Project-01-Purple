@@ -467,7 +467,7 @@ async function getSubscribersByUserName(username) {
     let index3 = 0;
     user.forEach(element => {
         subscriber_id.forEach(idElement => {
-            if (JSON.stringify(element.id) == JSON.stringify(idElement.author_id)){
+            if (JSON.stringify(element.id) == JSON.stringify(idElement.subscriber_id)){
                 let variable = JSON.stringify(element.avatar);
                 userAvatarList[index3] = variable.slice(1,-1);
                 index3 += 1;

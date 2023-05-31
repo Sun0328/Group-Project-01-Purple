@@ -1,7 +1,12 @@
+<!-- Add CSS files -->
 <link rel="stylesheet" href="/css/nav_bar.css">
-<link rel="stylesheet" href="/css/userpage.css">
+<link rel="stylesheet" href="/css/home_main.css">
+<link rel="stylesheet" href="/css/notice_number.css">
+<link rel="stylesheet" href="/css/notice_detail.css">
 <link rel="stylesheet" href="/css/function.css">
+<link rel="stylesheet" href="/css/userpage.css">
 <link rel="stylesheet" href="/css/article.css">
+<link rel="stylesheet" href="/css/profile.css">
 <link rel="stylesheet"
     href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
 
@@ -11,64 +16,107 @@
 
     {{> nav_bar_login}}
 
+    {{#if notification}}
+    {{> notice_detail}}
+    {{/if}}
+
     <div class="main">
 
         {{> function}}
 
         <div class="container">
             <h1>Profile Page</h1>
+
             {{#if author}}
-                <h2>Author Profile:</h2>
-                <p><img src="{{profileAvatar}}" width = "40">Author: {{author}}</p>
-                <p>Profile: {{profile}}</p>
+            <div class="author_container">
+                <div class="author">
+                    <img src="{{profileAvatar}}" width="40">
+                    Author: {{author}}
+                </div>
+
                 {{#if NotSameUser}}
-                    {{#if subscribe}}
-                        <form action="./unsubsribe" method="GET">
-                            <input type="hidden" id="author" name="author" value="{{author}}">
-                            <button type="submit">Unsubsribe</button>
-                        </form>
-                    {{else}}
-                        <form action="./subsribe" method="GET">
-                            <input type="hidden" id="author" name="author" value="{{author}}">
-                            <button type="submit">Subsribe</button>
-                        </form>
-                    {{/if}}
-                {{/if}}
-                {{#if articles}}
-                <ul name="articleUL">
-                    {{#each articles}}
-                    <li>
-                        {{> article}}
-                    </li>
-                    {{/each}}
-                </ul>
+                {{#if subscribe}}
+                <form action="./unsubscribe" method="GET">
+                    <input type="hidden" id="author" name="author" value="{{author}}">
+                    <button type="submit">
+                        <span class="material-symbols-outlined unsubscribe_icon">
+                            unsubscribe
+                        </span>
+                        Unsubscribe
+                    </button>
+                </form>
                 {{else}}
-                    <p>No matching articles</p>
+                <form action="./subscribe" method="GET">
+                    <input type="hidden" id="author" name="author" value="{{author}}">
+                    <button type="submit">
+                        <span class="material-symbols-outlined subscribe_icon">
+                            subscriptions
+                        </span>
+                        Subscribe
+                    </button>
+                </form>
                 {{/if}}
+                {{/if}}
+            </div>
+
+            <div id="author_profile">Profile: {{profile}}</div>
+
+            <div id="line1"></div>
+
+
+
+            {{#if articles}}
+            <ul name="articleUL">
+                {{#each articles}}
+                <li>
+                    {{> article}}
+                </li>
+                {{/each}}
+            </ul>
+            {{else}}
+            <div class="NoMatch">No matching articles</d>
             {{/if}}
+            {{/if}}
+
+
             {{#if subscriber}}
-                <h2>Subscriber Profile:</h2>
-                <p><img src="{{profileAvatar}}" width = "40">Subscriber: {{subscriber}}</p>
-                <p>Profile: {{profile}}</p>
+            <div class="subscriber_container">
+                <img src="{{profileAvatar}}" width="40">
+                Subscriber: {{subscriber}}
+
                 {{#if NotSameUser}}
-                    {{#if subscribe}}
-                        <form action="./unsubsribe" method="GET">
-                            <input type="hidden" id="subscriber" name="subscriber" value="{{subscriber}}">
-                            <button type="submit">Remove subscriber</button>
-                        </form>
-                    {{/if}}
+                {{#if subscribe}}
+                <form action="./unsubscribe" method="GET">
+                    <input type="hidden" id="subscriber" name="subscriber" value="{{subscriber}}">
+                    <button type="submit">
+                        <span class="material-symbols-outlined unsubscribe_icon">
+                            unsubscribe
+                        </span>
+                        Remove subscriber
+                    </button>
+                </form>
                 {{/if}}
-                {{#if articles}}
-                <ul name="articleUL">
-                    {{#each articles}}
-                    <li>
-                        {{> article}}
-                    </li>
-                    {{/each}}
-                </ul>
-                {{else}}
-                    <p>No matching articles</p>
                 {{/if}}
+            </div>
+
+            <div id="sub_profile">Profile: {{profile}}</div>
+
+            <div id="line2"></div>
+
+            {{#if articles}}
+            <ul name="articleUL">
+                {{#each articles}}
+                <li>
+                    {{> article}}
+                </li>
+                {{/each}}
+            </ul>
+            {{else}}
+            <div class="NoMatch">No matching articles</div>
             {{/if}}
+            {{/if}}
+
+
+
         </div>
 </body>

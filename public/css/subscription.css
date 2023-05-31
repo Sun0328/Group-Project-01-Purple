@@ -2,10 +2,57 @@
     display: flex;
     flex-direction: row;
     justify-content: center;
+    height: 100vh;
+    padding-top: 40px;
+    background-color: white;
 }
 
 .subscription_container .left,
 .subscription_container .right {
     display: flex;
     flex-direction: column;
+    align-items: center;
+}
+
+.author_card,
+.subscriber_card {
+    width: 300px;
+    margin: 20px 0;
+    background-color: rgb(236, 239, 243);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    border-radius: 6px;
+}
+
+.author_card a,
+.subscriber_card a {
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
+}
+
+.author_card:hover,
+.subscriber_card:hover {
+    background-color: rgb(131, 33, 255);
+    color: white;
+    transition: background-color .5s;
+}
+
+.author_card img,
+.subscriber_card img {
+    margin: 0 10px;
+}
+
+.author_card .author_detail,
+.subscriber_card .subscriber_detail {
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: start;
+    margin: 5px 0px;
+}
+
+.author_card .author_profile,
+.subscriber_card .subscriber_profile {
+    font-size: 18px;
 }
