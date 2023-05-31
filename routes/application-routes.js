@@ -159,7 +159,7 @@ router.get("/", async function (req, res) {
 });
 
 
-router.get("/login", async function (req, res) {
+router.get("/loginPage", async function (req, res) {
     res.render("login");
 });
 
@@ -286,6 +286,7 @@ router.get("/userHomePage", async function (req, res) {
             articleDataArray[i][likeNumberKey] = likeCount;
     }
     
+    console.log("articleDataArray------" + JSON.stringify(articleDataArray));
     res.locals.articles = articleDataArray;
 
     const allNotificationData = await notificationDao.getNotificationByUserId(userId);
@@ -365,7 +366,7 @@ router.post("/deleteArticle", async function (req, res) {
     await notificationDao.deleNotification(type, articleID);
     await userDao.deleteArticleById(articleID);
 
-    res.redirect("./userHomePage");
+    res.redirect("./login");
 
 });
 
@@ -418,12 +419,14 @@ router.post("/newArticle", async function (req, res) {
     const folderPath = `./public/uploadedFiles/${article.user_id}`;
     getFileNames(folderPath, function (files) {
         res.locals.files = files;
-        res.render("newArticle");
+        res.render("editArticle");
     });
 });
 
 
 router.post("/submitChange", async function (req, res) {
+    const content = req.body.content;
+    console.log("req.body.content: " + req.body.content);
     let title = req.body.title;
     if (title == "") {
         title = "default title";
@@ -431,7 +434,7 @@ router.post("/submitChange", async function (req, res) {
 
     const id = req.body.id;
     await userDao.updateArticletitle(title, id);
-    let content = req.body.content;
+    console.log(" content : " + content);
     if (content == "") {
         content = "default content";
     }
@@ -1030,7 +1033,7 @@ router.get("/resetSort", async function (req, res) {
 // Sorting ends ------------------------------
 
 
-router.post("/userHomePage", async function (req, res) {
+router.post("/login", async function (req, res) {
     const username = req.body.username;
     const inputPassword = req.body.password;
 
@@ -1038,6 +1041,7 @@ router.post("/userHomePage", async function (req, res) {
     if (hasUsername == undefined) {
         const toastMessage = "Has no such user or enter the wrong username!";
         res.locals.toastMessage = toastMessage;
+        res.status(401);
         res.render("login");
     }
     else {
@@ -1071,11 +1075,13 @@ router.post("/userHomePage", async function (req, res) {
             }
 
             // Back to home page After login
+            res.status(204);
             res.redirect("/");
         }
         else {
             const toastMessage = "Wrong Password!";
             res.locals.toastMessage = toastMessage;
+            res.status(401);
             res.render("login");
         }
     }
@@ -1093,6 +1099,7 @@ router.get("/logout", async function (req, res) {
     });
     const toastMessage = "Successfully logged out!";
     res.locals.toastMessage = toastMessage;
+    res.status(204);
     res.render("login");
 });
 
@@ -2561,5 +2568,46 @@ function formatDate(date) {
     const formattedDate = `${year}-${month < 10 ? '0' + month : month}-${day < 10 ? '0' + day : day}`;
     return formattedDate;
 }
+
+router.get("/users", async function (req, res) {
+
+    const cookies = req.cookies;
+    if (Object.keys(cookies).length > 0) {
+        const username = cookies.username;
+        res.locals.currentUser = username;
+        const userData = await userDao.getUserByUsername(username);
+        if (userData.admin == 1){
+            const users = await userDao.getAllUser();
+            res.locals.users = users;
+            res.render("users");
+        }else{
+            res.status(401);
+        }
+    }else{
+        res.status(401);
+    }
+});
+
+
+
+router.delete("/users/:id", async function (req, res) {
+    const cookies = req.cookies;
+    if (Object.keys(cookies).length > 0) {
+        const username = cookies.username;
+        res.locals.currentUser = username;
+        const userData = await userDao.getUserByUsername(username);
+        if (userData.admin == 1){
+            const deleteUserId = req.params.userId;
+            const deleteUser = await userDao.getUserByUserID(deleteUserId);
+            if (userData.username !== deleteUser.username){
+                await userDao.deleteTheUser(deleteUser.username);
+                res.status(204);
+                res.redirect("users");
+            }
+        }
+    }else{
+        res.status(401);
+    }
+});
 
 module.exports = router;

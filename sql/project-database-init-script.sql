@@ -22,7 +22,8 @@ CREATE TABLE user (
   day integer NOT NULL,
   salt varchar(32) NOT NUll,
   profile varchar(64),
-  avatar varchar(32) NOT NUll
+  avatar varchar(32) NOT NUll,
+  admin integer
 );
 
 CREATE TABLE article (
@@ -80,10 +81,10 @@ CREATE TABLE notification (
 );
 
 
-INSERT INTO user (id, username, password, fname, lname, year, month, day, salt, profile, avatar) VALUES
-  (1, 'David', '24bd9c2e960b808e7beae43e4e69e8df4e4af3b24cd77ee08f4d622b01d137ed96ac014b998f8747cd75362642c0a94e0cfd0e789f8064620563a6ce0149c7a5', 'David', 'Smith', 1980, 12, 6, '79569a35e7d35e6c5f95010e3889a810', 'Hello', '/images/bird.png'),
-  (2, 'Geoff', '24bd9c2e960b808e7beae43e4e69e8df4e4af3b24cd77ee08f4d622b01d137ed96ac014b998f8747cd75362642c0a94e0cfd0e789f8064620563a6ce0149c7a5', 'Geoff', 'MIller', 1990, 6, 19, '79569a35e7d35e6c5f95010e3889a810', 'Hello.','/images/cat.png'),
-  (3, 'Annika', '24bd9c2e960b808e7beae43e4e69e8df4e4af3b24cd77ee08f4d622b01d137ed96ac014b998f8747cd75362642c0a94e0cfd0e789f8064620563a6ce0149c7a5', 'Annika', 'Lee', 1975, 2, 23, '79569a35e7d35e6c5f95010e3889a810', 'Hello!!','/images/deer.png');
+INSERT INTO user (id, username, password, fname, lname, year, month, day, salt, profile, avatar, admin) VALUES
+  (1, 'David', '24bd9c2e960b808e7beae43e4e69e8df4e4af3b24cd77ee08f4d622b01d137ed96ac014b998f8747cd75362642c0a94e0cfd0e789f8064620563a6ce0149c7a5', 'David', 'Smith', 1980, 12, 6, '79569a35e7d35e6c5f95010e3889a810', 'Hello', '/images/bird.png',NULL),
+  (2, 'Geoff', '24bd9c2e960b808e7beae43e4e69e8df4e4af3b24cd77ee08f4d622b01d137ed96ac014b998f8747cd75362642c0a94e0cfd0e789f8064620563a6ce0149c7a5', 'Geoff', 'MIller', 1990, 6, 19, '79569a35e7d35e6c5f95010e3889a810', 'Hello.','/images/cat.png',NULL),
+  (3, 'Annika', '24bd9c2e960b808e7beae43e4e69e8df4e4af3b24cd77ee08f4d622b01d137ed96ac014b998f8747cd75362642c0a94e0cfd0e789f8064620563a6ce0149c7a5', 'Annika', 'Lee', 1975, 2, 23, '79569a35e7d35e6c5f95010e3889a810', 'Hello!!','/images/deer.png', 1);
 
 
 

@@ -61,9 +61,18 @@
         </select>
       </div>
 
+      {{#if hasLogin}}
+
       {{#each articlesArray}}
       {{> article}}
       {{/each}}
+
+      {{else}}
+      {{#each articlesArray}}
+      {{> articleBefore}}
+      {{/each}}
+
+      {{/if}}
 
     </div>
 

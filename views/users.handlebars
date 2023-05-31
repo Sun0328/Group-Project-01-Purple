@@ -1,0 +1,20 @@
+<h1>All User Data</h1>
+{{#if users}}
+<ul>
+    {{#each users}}
+    <li>
+            id: {{this.id}}
+            username: {{this.username}}
+            fname: {{this.fname}}
+            last name: {{this.lname}}
+            birth year: {{this.year}}
+            birth month: {{this.month}}
+            birth day: {{this.day}}
+            profile: {{this.profile}}
+            avatar: {{this.avatar}}
+            number of articles: {{this.articleNumber}}
+    </li>
+    <br>
+    {{/each}}
+</ul>
+{{/if}}

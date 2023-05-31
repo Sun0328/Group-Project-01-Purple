@@ -676,6 +676,33 @@ async function retrieveArticleDataByIdList(articleID) {
     return article_list;
 }
 
+async function getAllUser(){
+    const db = await dbPromise;
+    //get all users
+    let users =  await db.all(SQL`
+    select * from user
+    `);
+    //get all articles
+    let articles = await db.all(SQL`
+    select * from article
+    `);
+
+    users.forEach(userElement => {
+        userElement.articleNumber = 0;
+    });
+
+    users.forEach(userElement => {
+        articles.forEach(articleElement => {
+            if (userElement.id == articleElement.user_id){
+                userElement.articleNumber += 1;
+            }
+        });
+    });
+
+    return users;
+}
+
+
 module.exports = {
     getAriticlesByUser,
     deleteArticleById,
@@ -712,5 +739,6 @@ module.exports = {
     getTimeBySubscribeID,
     getSubscribeId,
     getLikesByUserId,
-    retrieveArticleDataByIdList
+    retrieveArticleDataByIdList,
+    getAllUser
 }

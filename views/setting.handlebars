@@ -13,11 +13,18 @@
 
     <form action="./changeAvatar" method="post">
         <label for="avatar">Change your Avatar:</label>
-        <select id="selectAvatar" name="avatar">
-            <option value="/images/cat.png">Cat</option>
-            <option value="/images/bird.png">Bird</option>
-            <option value="/images/deer.png">Deer</option>
+        <select id="selectAvatar" name="avatar" class="selectAvatar">
+            <option value="/images/cat.png" class="avatar">
+                Cat
+            </option>
+            <option value="/images/bird.png" class="avatar">
+                Bird
+            </option>
+            <option value="/images/deer.png" class="avatar">
+                Deer
+            </option>
         </select>
+        <img src="/images/cat.png" id="avatarImage" width="50px">
         <button type="submit" name="settingButton">Save</button>
     </form>
 
