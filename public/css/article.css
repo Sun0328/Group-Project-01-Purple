@@ -6,7 +6,12 @@
     margin-bottom: 40px;
     padding: 20px;
     border-radius: 6px;
-    box-shadow: 0 6px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 2px 4px 4px rgba(0, 0, 0, 0.1);
+}
+
+.home_article:hover {
+    transform: scale(1.05);
+    transition: transform .5s;
 }
 
 .user {
@@ -36,6 +41,11 @@
     width: 40px;
 }
 
+.user_photo img:hover {
+    transform: scale(1.1);
+    transition: transform .3s;
+}
+
 .user_detail {
     height: 80%;
     width: 100%;
@@ -47,6 +57,12 @@
     display: flex;
     align-items: center;
     width: 200px;
+}
+
+.user_name:hover {
+    color: rgb(110, 8, 229);
+    text-decoration: underline;
+    transition: all .5s;
 }
 
 .user_name .subscribe {

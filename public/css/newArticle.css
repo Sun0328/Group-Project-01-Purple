@@ -1,0 +1,19 @@
+body {
+    background-color: #f2f2f2;
+    color: black;
+}
+
+.main {
+    width: 100%;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: nowrap;
+    margin: auto;
+    width: 80%;
+    background-color: white;
+}

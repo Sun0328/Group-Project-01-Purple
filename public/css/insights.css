@@ -1,0 +1,150 @@
+.part1,
+.part2,
+.part3 {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: start;
+    margin: 40px;
+}
+
+.part .header {
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
+    margin-bottom: 20px;
+    font-size: 40px;
+    color: rgb(131, 33, 255);
+}
+
+.part .header span {
+    font-size: 35px;
+    margin-right: 10px;
+}
+
+/* Part1  */
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+table tr td:first-child {
+    width: 40%;
+}
+
+th,
+td {
+    padding: 8px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+.table-data {
+    color: rgb(131, 33, 255);
+    font-weight: bold;
+}
+
+tr:hover {
+    background-color: #f5f5f5;
+}
+
+/* Part2 */
+
+.popular_container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+
+.popular_detail {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: start;
+    width: 80%;
+    margin: 30px 0;
+    padding: 15px;
+    border-radius: 6px;
+    box-shadow: 2px 4px 4px rgba(0, 0, 0, 0.1);
+}
+
+.popular_detail:hover {
+    transform: scale(1.05);
+    transition: transform .5s;
+}
+
+.popular_detail .p_title {
+    font-size: 35px;
+    color: rgb(131, 33, 255);
+}
+
+.popular_detail .p_time {
+    color: gray;
+    font-size: 20px;
+}
+
+.popular_detail .p_content {
+    margin: 10px 0;
+}
+
+.popular_detail .p_img {
+    margin: 20px auto;
+}
+
+.popular_container .index {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding-top: 10px;
+    border-top: 1px dashed gray;
+}
+
+.popular_container .index span {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Part3 */
+
+#myChart2 {
+    margin: 20px auto;
+}
+
+@media only screen and (max-width: 1160px) {
+    .popular_container .index {
+        flex-direction: column;
+        align-items: start;
+    }
+
+}
+
+@media only screen and (max-width: 1000px) {
+
+    table th,
+    table td {
+        font-size: 20px;
+    }
+
+}
+
+@media only screen and (max-width: 880px) {
+
+    table th,
+    table td {
+        font-size: 16px;
+    }
+
+}
