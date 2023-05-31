@@ -26,13 +26,16 @@ router.get("/", async function (req, res) {
     res.locals.articlesArray = articleDataArray;
 
     const cookies = req.cookies;
+    console.log("cookies: " + JSON.stringify(cookies));
 
 
     if (Object.keys(cookies).length > 0) {
         const username = cookies.username;
+        console.log("username: " + username);
         const userData = await userDao.getUserByUsername(username);
         const userId = userData.id;
         res.locals.userId = userId;
+        const avatar = userData.avatar;
 
         for (let i = 0; i < articleDataArray.length; i++) {
             const item = articleDataArray[i];
@@ -247,15 +250,43 @@ router.get("/userHomePage", async function (req, res) {
     // Get user articles by username from cookies
     const cookies = req.cookies;
     const username = cookies.username;
-    res.locals.articles = await userDao.getAriticlesByUser(username);
 
-    // Get user avatar by username from cookies
-    const userData = await userDao.getUser(username);
-    const user_avatar = userData.avatar;
-    res.locals.avatar = user_avatar;
-
-    // For notification
+    const userData = await userDao.getUserByUsername(username);
+    const avatar = userData.avatar;
     const userId = userData.id;
+    res.locals.avatar = avatar;
+    const articleList = await articleDao.getAuthorAllArticle(userId);
+
+    let articleDataArray = [];
+    for (let i = 0; i <  articleList.length; i++)
+    {
+        const item = articleList[i];
+        const key = "avatar";
+        item[key] = avatar;
+        articleDataArray.push(item);
+    }
+
+    for (let i = 0; i < articleDataArray.length; i++) {
+        const item = articleDataArray[i];
+        const articleId = item.id;
+        const likeArticle = await likeDao.getLikeStateByUserIDandArticleId(userId, articleId);
+
+            let likeState;
+            if (likeArticle === undefined) {
+                likeState = "Like";
+            }
+            else {
+                likeState = "Unlike"
+            }
+            const likeCount = await likeDao.getLikeNumberByArticleId(articleId);
+            const likStateKey = "likeState";
+            const likeNumberKey = "likeNumber";
+
+            articleDataArray[i][likStateKey] = likeState;
+            articleDataArray[i][likeNumberKey] = likeCount;
+    }
+    
+    res.locals.articles = articleDataArray;
 
     const allNotificationData = await notificationDao.getNotificationByUserId(userId);
     let notReadList = [];
@@ -507,6 +538,28 @@ router.get("/homeSortByTitle", async function (req, res) {
         res.locals.hasLogin = hasLogin;
     }
 
+    for (let i = 0; i < articleDataArray.length; i++) {
+        const item = articleDataArray[i];
+        const userId = item.user_id;
+        const articleId = item.id;
+        const likeArticle = await likeDao.getLikeStateByUserIDandArticleId(userId, articleId);
+
+            let likeState;
+            if (likeArticle === undefined) {
+                likeState = "Like";
+            }
+            else {
+                likeState = "Unlike"
+            }
+            const likeCount = await likeDao.getLikeNumberByArticleId(articleId);
+            const likStateKey = "likeState";
+            const likeNumberKey = "likeNumber";
+
+            articleDataArray[i][likStateKey] = likeState;
+            articleDataArray[i][likeNumberKey] = likeCount;
+    }
+
+    console.log("articleDataArray: " + JSON.stringify(articleDataArray));
     res.locals.articlesArray = articleDataArray;
     res.render("home");
 });
@@ -599,6 +652,26 @@ router.get("/homeSortByUsername", async function (req, res) {
         // Keep login
         const hasLogin = "has login";
         res.locals.hasLogin = hasLogin;
+    }
+    for (let i = 0; i < articleDataArray.length; i++) {
+        const item = articleDataArray[i];
+        const userId = item.user_id;
+        const articleId = item.id;
+        const likeArticle = await likeDao.getLikeStateByUserIDandArticleId(userId, articleId);
+
+            let likeState;
+            if (likeArticle === undefined) {
+                likeState = "Like";
+            }
+            else {
+                likeState = "Unlike"
+            }
+            const likeCount = await likeDao.getLikeNumberByArticleId(articleId);
+            const likStateKey = "likeState";
+            const likeNumberKey = "likeNumber";
+
+            articleDataArray[i][likStateKey] = likeState;
+            articleDataArray[i][likeNumberKey] = likeCount;
     }
 
     res.locals.articlesArray = articleDataArray;
@@ -696,6 +769,26 @@ router.get("/homeSortByDate", async function (req, res) {
         res.locals.hasLogin = hasLogin;
 
     }
+    for (let i = 0; i < articleDataArray.length; i++) {
+        const item = articleDataArray[i];
+        const userId = item.user_id;
+        const articleId = item.id;
+        const likeArticle = await likeDao.getLikeStateByUserIDandArticleId(userId, articleId);
+
+            let likeState;
+            if (likeArticle === undefined) {
+                likeState = "Like";
+            }
+            else {
+                likeState = "Unlike"
+            }
+            const likeCount = await likeDao.getLikeNumberByArticleId(articleId);
+            const likStateKey = "likeState";
+            const likeNumberKey = "likeNumber";
+
+            articleDataArray[i][likStateKey] = likeState;
+            articleDataArray[i][likeNumberKey] = likeCount;
+    }
 
     res.locals.articlesArray = articleDataArray;
 
@@ -792,6 +885,33 @@ router.get("/sortByTitle", async function (req, res) {
     res.locals.notificationNum = notificationNum;
     res.locals.notification = NotificationList;
 
+
+router.get("/sortByTitle", async function (req, res) {
+    const cookie = req.cookies;
+    const username = cookie.username;
+    const articles = await userDao.getAriticlesByUser(username);
+    articles.sort(sortMethod.compareByHeader);
+    for (let i = 0; i < articles.length; i++) {
+        const item = articles[i];
+        const userId = item.user_id;
+        const articleId = item.id;
+        const likeArticle = await likeDao.getLikeStateByUserIDandArticleId(userId, articleId);
+
+            let likeState;
+            if (likeArticle === undefined) {
+                likeState = "Like";
+            }
+            else {
+                likeState = "Unlike"
+            }
+            const likeCount = await likeDao.getLikeNumberByArticleId(articleId);
+            const likStateKey = "likeState";
+            const likeNumberKey = "likeNumber";
+
+            articles[i][likStateKey] = likeState;
+            articles[i][likeNumberKey] = likeCount;
+    }
+
     res.locals.articles = articles;
 
     res.render("userpage");
@@ -802,6 +922,29 @@ router.get("/sortByDate", async function (req, res) {
     const username = cookie.username;
     const articles = await userDao.getAriticlesByUser(username);
     articles.sort(sortMethod.compareByDate);
+
+    for (let i = 0; i < articles.length; i++) {
+        const item = articles[i];
+        const userId = item.user_id;
+        const articleId = item.id;
+        const likeArticle = await likeDao.getLikeStateByUserIDandArticleId(userId, articleId);
+
+            let likeState;
+            if (likeArticle === undefined) {
+                likeState = "Like";
+            }
+            else {
+                likeState = "Unlike"
+            }
+            const likeCount = await likeDao.getLikeNumberByArticleId(articleId);
+            const likStateKey = "likeState";
+            const likeNumberKey = "likeNumber";
+
+            articles[i][likStateKey] = likeState;
+            articles[i][likeNumberKey] = likeCount;
+    }
+    res.locals.articles = articles;
+
 
     // Get user avatar by username from cookies
     const userData = await userDao.getUser(username);
@@ -1517,11 +1660,43 @@ router.get("/subscription/author", async function (req, res) {
 
     // do a check to check whether user are still following author
     const result = await userDao.checkSubscription(username, author_name);
-    const authorData = await userDao.getUserByUsername(author_name);
+
+    const authorData = await userDao.getUserByUsername(username);
+
     const profileAvatar = authorData.avatar;
     res.locals.profileAvatar = profileAvatar;
-    const articles = await userDao.getAriticlesByUser(author_name);
-    res.locals.articles = articles;
+
+    const authorId = authorData.id;
+    const authorArticleList = await articleDao.getAuthorAllArticle(authorId);
+    let articleDataArray = [];
+    for (let i = 0; i < authorArticleList.length; i++)
+    {
+        const item = authorArticleList[i];
+        const key = "avatar";
+        item[key] = profileAvatar;
+        articleDataArray.push(item);
+    }
+
+    for (let i = 0; i < articleDataArray.length; i++) {
+        const item = articleDataArray[i];
+        const articleId = item.id;
+        const likeArticle = await likeDao.getLikeStateByUserIDandArticleId(authorId, articleId);
+
+        let likeState;
+        if (likeArticle === undefined) {
+            likeState = "Like";
+        }
+        else {
+            likeState = "Unlike"
+        }
+        const likeCount = await likeDao.getLikeNumberByArticleId(articleId);
+        const likStateKey = "likeState";
+        const likeNumberKey = "likeNumber";
+
+        articleDataArray[i][likStateKey] = likeState;
+        articleDataArray[i][likeNumberKey] = likeCount;
+    }
+    res.locals.articles = articleDataArray;
 
     const userData = await userDao.getUserByUsername(username);
     const user_avatar = userData.avatar;
@@ -1698,12 +1873,53 @@ router.get("/subscription/subscriber", async function (req, res) {
             const content = senderData.username + " followed " + beFollowedUsername;
             const notification = { "id": item.id, "title": title, "content": content, "author": senderData.username, "avatar": avatar, "time": time, "type": type, "typeId": subscribeId };
 
+
             NotificationList.push(notification);
         }
     }
     console.log("NotificationList: " + JSON.stringify(NotificationList));
     res.locals.notificationNum = notificationNum;
     res.locals.notification = NotificationList;
+
+    const subscriberId = subscriberData.id;
+    const profileAvatar = subscriberData.avatar;
+    res.locals.profileAvatar = profileAvatar;
+
+    const subscriberArticleList = await articleDao.getAuthorAllArticle(subscriberId);
+    let articleDataArray = [];
+    for (let i = 0; i < subscriberArticleList.length; i++)
+    {
+        const item = subscriberArticleList[i];
+        const key = "avatar";
+        item[key] = profileAvatar;
+        articleDataArray.push(item);
+    }
+
+    for (let i = 0; i < articleDataArray.length; i++) {
+        const item = articleDataArray[i];
+        const articleId = item.id;
+        const likeArticle = await likeDao.getLikeStateByUserIDandArticleId(subscriberId, articleId);
+
+        let likeState;
+        if (likeArticle === undefined) {
+            likeState = "Like";
+        }
+        else {
+            likeState = "Unlike"
+        }
+        const likeCount = await likeDao.getLikeNumberByArticleId(articleId);
+        const likStateKey = "likeState";
+        const likeNumberKey = "likeNumber";
+
+        articleDataArray[i][likStateKey] = likeState;
+        articleDataArray[i][likeNumberKey] = likeCount;
+    }
+    res.locals.articles = articleDataArray;
+
+    const userData = await userDao.getUserByUsername(username);
+    const user_avatar = userData.avatar;
+    res.locals.avatar = user_avatar;
+
 
     if (username !== subscriber_name) {
         res.locals.NotSameUser = 1;
@@ -2232,9 +2448,11 @@ router.get("/analytics", async function (req, res) {
     const articleNumber = articleData.length;
     let commentNumber = 0;
     let likeNumber = 0;
-    let hasPopularIndexList = [];
-    let hasNoPopularIndexList = [];
-    for (let i = 0; i < articleNumber; i++) {
+
+    let popularIndexList = [];
+    for (let i = 0; i < articleNumber; i++)
+    {
+
         const item = articleData[i];
         const articleId = item.id;
         const currentArticleCommentData = await commentDao.getCommentByArticleId(articleId);
@@ -2251,102 +2469,108 @@ router.get("/analytics", async function (req, res) {
         item["commentNumber"] = currentArticleCommentNumber;
         if (popularIndex == 0) {
             item["hasPopularIndex"] = false;
-            hasNoPopularIndexList.push(item);
+            popularIndexList.push(item);
         }
         else {
             item["hasPopularIndex"] = true;
-            hasPopularIndexList.push(item);
+            popularIndexList.push(item);
         }
     }
     res.locals.allCommentNumber = commentNumber;
     res.locals.allLikeNumber = likeNumber;
 
-    if (articleNumber >= 3) {
-        if (hasPopularIndexList >= 3) {
-            let mostPopularList = [];
-            for (let i = 0; i < hasPopularIndexList.length; i++) {
-                for (let j = i + 1; j < hasPopularIndexList.length; j++) {
-                    if (hasPopularIndexList[j].popularIndex > hasPopularIndexList[i].popularIndex) {
-                        let temp = hasPopularIndexList[i];
-                        hasPopularIndexList[i] = hasPopularIndexList[j];
-                        hasPopularIndexList[j] = temp;
-                    }
-                }
-            }
 
-            for (let i = 0; i < 3; i++) {
-                const item = hasPopularIndexList[i];
-                mostPopularList.push(item);
-            }
-            res.locals.mostPopularList = mostPopularList;
-
-            let dailyCommentDataList = [];
-            for (let i = 0; i < mostPopularList.length; i++) {
-                const item = mostPopularList[i];
-                const commentId = item.id;
-                const dateStr = item.time;
-                const dateObj = new Date(dateStr);
-
-                const year = dateObj.getFullYear();
-                const month = dateObj.getMonth() + 1;
-                const day = dateObj.getDate();
-
-                const time = `${year}-${month < 10 ? '0' + month : month}-${day < 10 ? '0' + day : day}`;
-                const dailyComment = { "commentId": commentId, "time": time };
-                dailyCommentDataList.push(dailyComment);
-            }
-            res.locals.dailyCommentDataList = dailyCommentDataList;
+    if (articleNumber >= topNumber)
+    {
+        let mostPopularArticleList = [];
+        for (let i = 0; i < topNumber; i++)
+        {
+            const item = popularIndexList[i];
+            mostPopularArticleList.push(item);
         }
-        else if (hasPopularIndexList <= 0) {
-            let noArticleHasPopularIndex = [];
-            for (let i = 0; i < 3; i++) {
-                const item = hasNoPopularIndexList[i];
-                noArticleHasPopularIndex.push(item);
-            }
-            res.locals.noArticleHasPopularIndex = noArticleHasPopularIndex;
+        res.locals.mostPopularArticleList = mostPopularArticleList;
+    }
+    else if (articleNumber > 0 && articleNumber < topNumber)
+    {
+        let mostPopularArticleList = [];
+        for (let i = 0; i < popularIndexList.length; i ++)
+        {
+            const item = popularIndexList[i];
+            mostPopularArticleList.push(item);
+
         }
-        else if (hasPopularIndexList > 0 && hasPopularIndexList < 3) {
-            let mostPopularList = [];
-            let defaultList = [];
-            const hasPopularIndexArticleNumber = hasPopularIndexList.length;
-            const restSpace = topNumber - hasPopularIndexArticleNumber;
-            for (let i = 0; i < hasPopularIndexList.length; i++) {
-                const hasIndexArticle = hasPopularIndexList[i];
-                mostPopularList.push(hasIndexArticle);
-            }
-            for (let i = 0; i < restSpace; i++) {
-                const noIndexArticle = hasNoPopularIndexList[i];
-                defaultList.push(noIndexArticle);
-            }
-            res.locals.mostPopularList = mostPopularList;
-            res.locals.defaultList = defaultList;
-
-            let dailyCommentDataList = [];
-            for (let i = 0; i < mostPopularList.length; i++) {
-                const item = mostPopularList[i];
-                const commentId = item.id;
-                const dateStr = item.time;
-                const dateObj = new Date(dateStr);
-
-                const year = dateObj.getFullYear();
-                const month = dateObj.getMonth() + 1;
-                const day = dateObj.getDate();
-
-                const time = `${year}-${month < 10 ? '0' + month : month}-${day < 10 ? '0' + day : day}`;
-                const dailyComment = { "commentId": commentId, "time": time };
-                dailyCommentDataList.push(dailyComment);
-            }
-            res.locals.dailyCommentDataList = dailyCommentDataList;
-        }
+        res.locals.mostPopularArticleList = mostPopularArticleList;
     }
     else if (articleNumber == 0) {
         const noArticle = "has no article";
         res.locals.noArticle = noArticle;
     }
 
-
     res.render("analytics");
 })
 
+router.get("/analyticsChart", async function (req, res){
+    const allCommentData = await commentDao.getAllCommentData();
+    const today = new Date();
+    const dayLength = 10;
+    console.log("today: " + today);
+
+    let chartData = [];
+    for (let i = dayLength - 1; i >= 0; i --)
+    {
+        let counter = 0;
+        const currentDay = new Date(today).setDate(today.getDate() - i);
+        const currentDayAfterFormat = formatDate(currentDay);
+        console.log("currentDayAfterFormat: " + currentDayAfterFormat);
+        for (let j = 0; j < allCommentData.length; j++)
+        {
+            const item = allCommentData[j];
+            const commentTimeString = item.time;
+            
+            const commentTime = YMDformat(commentTimeString);
+            console.log("commentTime: " + commentTime);
+            if (commentTime == currentDayAfterFormat)
+            {
+                counter =counter + 1;
+            }
+        }
+        const currentCommentNumberData = {"data": currentDayAfterFormat, "count": counter};
+        
+        chartData.push(currentCommentNumberData);
+    }
+    console.log("chartData: " + JSON.stringify(chartData));
+    res.json(chartData);
+})
+
+
+function formatDate(date) {
+    if (typeof date === "number") {
+      date = new Date(date);
+    }
+    
+    let year = date.getFullYear();
+    let month = date.getMonth() + 1;
+    let day = date.getDate();
+    
+    if (month < 10) {
+      month = "0" + month;
+    }
+    
+    if (day < 10) {
+      day = "0" + day;
+    }
+    
+    return year + "-" + month + "-" + day;
+  }
+
+  function YMDformat(dateStr){
+    const dateObj = new Date(dateStr);
+    const year = dateObj.getFullYear();
+    const month = dateObj.getMonth() + 1; // 注意月份从0开始，需要加1
+    const day = dateObj.getDate();
+
+    const formattedDate = `${year}-${month < 10 ? '0' + month : month}-${day < 10 ? '0' + day : day}`;
+    return formattedDate;
+}
 
 module.exports = router;

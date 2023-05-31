@@ -28,9 +28,20 @@ async function addCommentIntoCommentTable(inputSender, inputRcipientCommentId, i
         rcipientCommentId = null;
     }
 
+    const currentDate = new Date();
+    const year = currentDate.getFullYear();
+    const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+    const day = String(currentDate.getDate()).padStart(2, '0');
+    const hours = String(currentDate.getHours()).padStart(2, '0');
+    const minutes = String(currentDate.getMinutes()).padStart(2, '0');
+    const seconds = String(currentDate.getSeconds()).padStart(2, '0');
+
+    const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    console.log("formattedDate: " + formattedDate);
+    
     await db.run(SQL`
         INSERT INTO comment (user_id, parent_id, content, time, article_id)
-        VALUES (${senderId}, ${rcipientCommentId}, ${comment}, datetime('now'), ${articleId})`);
+        VALUES (${senderId}, ${rcipientCommentId}, ${comment}, ${formattedDate}, ${articleId})`);
 
     const commentData = await db.all(SQL `
         select id from comment`);
@@ -109,6 +120,15 @@ async function getArticleByCommentId(notificationId){
     return commentData;
 }
 
+async function getAllCommentData(){
+    const db = await dbPromise;
+
+    const commentData = await db.all(SQL `
+        select * from comment`);
+        
+    return commentData;
+}
+
 module.exports={
     getCommentByArticleId,
     addCommentIntoCommentTable,
@@ -116,5 +136,6 @@ module.exports={
     getAllOtherCommentByCommentId,
     getSenderByCommentId,
     deleCommentByCommentId,
-    getArticleByCommentId
+    getArticleByCommentId,
+    getAllCommentData
 };

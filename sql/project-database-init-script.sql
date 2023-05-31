@@ -105,9 +105,21 @@ INSERT INTO likes (id, user_id, article_id) VALUES
   (3, 2, 3);
 
 INSERT INTO comment (id, user_id, article_id, content, time, parent_id) VALUES
-  (1, 1, 2, 'Hi', '2022-11-11 08:26:13', NULL),
-  (2, 2, 3, 'Good', '2022-11-12 16:46:25', 1),
-  (3, 3, 3, 'Lol', '2023-01-08 10:41:20', NULL);
+  (1, 1, 2, 'Hi', '2023-05-22 08:26:13', NULL),
+  (2, 2, 3, 'Good', '2023-05-23 16:46:25', 1),
+  (3, 3, 3, 'Lol', '2023-05-23 10:41:20', NULL),
+  (4, 1, 3, 'Hello', '2023-05-24 16:46:25', 1),
+  (5, 2, 3, 'Nice', '2023-05-24 16:46:25', 1),
+  (6, 3, 3, 'Love', '2023-05-25 10:41:20', NULL),
+  (7, 1, 3, 'Funny', '2023-05-26 10:41:20', NULL),
+  (8, 2, 3, 'Love', '2023-05-28 16:46:25', 1),
+  (9, 3, 3, 'Interesting', '2023-05-29 10:41:20', NULL),
+  (10, 1, 3, 'Not good', '2023-05-29 10:41:20', NULL),
+  (11, 2, 3, 'Not sure', '2023-05-30 10:41:20', NULL),
+  (12, 3, 3, 'Hi there', '2023-05-30 10:41:20', NULL),
+  (13, 2, 3, 'Cute', '2023-05-30 10:41:20', NULL),
+  (14, 1, 3, 'Love it', '2023-05-30 10:41:20', NULL),
+  (15, 3, 3, 'Want it', '2023-05-31 10:41:20', NULL);
   
   INSERT INTO notification (id, content, type, time, sender_id, receiver_id, read) VALUES
   (1, 1, 'comment', '2022-11-11 08:26:13', 1, 2, FALSE),
