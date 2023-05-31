@@ -6,17 +6,18 @@
     <div class="container">
         {{! Display a toast message if one was provided. }}
         {{#if toastMessage}}
-        <span>{{toastMessage}}</span>
+        <span class="toastMessage">{{toastMessage}}</span>
         {{/if}}
 
         <h2>Sign up</h2>
         <form action="./signupMessage" method="POST">
             <label for="avatar">Choose your Avatar:</label>
-            <select id="selectAvatar" name="avatar">
-                <option value="/images/cat.png">Cat</option>
-                <option value="/images/bird.png">Bird</option>
-                <option value="/images/deer.png">Deer</option>
+            <select id="selectAvatar" name="avatar" class="selectAvatar">
+                <option value="/images/cat.png" class="avatar">Cat</option>
+                <option value="/images/bird.png" class="avatar">Bird</option>
+                <option value="/images/deer.png" class="avatar">Deer</option>
             </select>
+            <img src="/images/cat.png" id="avatarImage" width="50px">
             <br /> <br>
 
             <div class="warningUsernameArea">

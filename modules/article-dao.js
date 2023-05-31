@@ -31,7 +31,9 @@ async function getAuthorAllArticle(inputUserId){
 
     const authorId = inputUserId;
     const articleData = await db.all(SQL`
-        SELECT * FROM article
+        SELECT article.*, user.username
+        FROM article
+        JOIN user ON article.user_id = user.id
         WHERE user_id = ${authorId}`);
     return articleData;
 }

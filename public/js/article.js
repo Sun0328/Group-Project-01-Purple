@@ -102,21 +102,27 @@ window.addEventListener("load", function () {
 
         // comment textarea js code
         if (event.target.classList.contains("secondCommentButton")) {
-            let textarea = event.target.previousElementSibling;
+            const secondCommentButton = event.target;
+            const secondSubmitContainer = secondCommentButton.parentNode;
+            const textarea = secondSubmitContainer.querySelector(".secondTextComment");
             const commentContent = textarea.value;
             console.log("current second comment: " + commentContent);
-            const recipientCommentId = document.querySelector(".secondReciptientCommentId").value;
+            const recipientCommentId = secondSubmitContainer.querySelector(".secondReciptientCommentId").value;
+            console.log("recipientCommentId: " + recipientCommentId);
             const articleId = document.querySelector("#articleId").value;
             const response = await fetch(`./article/comment?commentContent=${commentContent}&articleId=${articleId}&recipientCommentId=${recipientCommentId}`);
             const json = await response.json();
             location.reload();
         }
         else if (event.target.classList.contains("thirdCommentButton")) {
-            let textarea = event.target.previousElementSibling;
+            const thirdCommentButton = event.target;
+            const thirdSubmitContainer = thirdCommentButton.parentNode;
+
+            const textarea = thirdSubmitContainer.querySelector(".thirdTextComment")
             const commentContent = textarea.value;
             console.log("current third comment: " + commentContent);
 
-            const recipientCommentId = document.querySelector(".thirdReciptientCommentId").value;
+            const recipientCommentId = thirdSubmitContainer.querySelector(".thirdReciptientCommentId").value;
 
             const articleId = document.querySelector("#articleId").value;
 
@@ -125,11 +131,13 @@ window.addEventListener("load", function () {
             location.reload();
         }
         else if (event.target.classList.contains("otherCommentButton")) {
-            let textarea = event.target.previousElementSibling;
+            const otherCommentButton = event.target;
+            const otherSubmitContainer = otherCommentButton.parentNode;
+            const textarea = otherSubmitContainer.querySelector(".otherTextComment");
             const commentContent = textarea.value;
             console.log("current other comment: " + commentContent);
 
-            const recipientCommentId = document.querySelector(".otherReciptientCommentId").value;
+            const recipientCommentId = otherSubmitContainer.querySelector(".otherReciptientCommentId").value;
 
             const articleId = document.querySelector("#articleId").value;
 

@@ -1,0 +1,59 @@
+<body>
+    <div class="article">
+        <div class="user">
+            <div class="user_photo">
+                <img src="..{{avatar}}" alt="">
+            </div>
+
+            <div class="user_detail">
+                <div class="user_name">
+                    <a href="./loginPage">{{username}}</a>
+                    {{! --<button type="submit" class="subscribe">Subscribe</button>}}
+                </div>
+                <div class="article_date">{{time}}</div>
+            </div>
+
+        </div>
+        <div class="content">
+            <div class="title">
+                <a href="./loginPage">
+                    {{header}}
+                </a>
+            </div>
+            <div class="text">
+                <div class="content_container">
+                    {{{content}}}
+                </div>
+                <div class="image">
+                    {{#if image}}
+                    <img src="/uploadedFiles/{{user_id}}/{{image}}" width="300">
+                    {{/if}}
+                </div>
+            </div>
+            <div class="article_function">
+                <div class="like_container" name="likeContainerId" id={{id}}>
+                    <a href="./loginPage">
+                        <span class="material-symbols-outlined">
+                            favorite
+                        </span>
+                        <span class="likeSpan">{{likeState}}</span>
+                        <span class="likeNumber">{{likeNumber}}</span>
+                    </a>
+                </div>
+
+
+
+                <div class="comment_container">
+                    <a href="./loginPage">
+                        <span class="material-symbols-outlined">
+                            mode_comment
+                        </span>
+                        <span class="comment">Comment</span>
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</body>

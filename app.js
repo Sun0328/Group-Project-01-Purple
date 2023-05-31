@@ -70,7 +70,7 @@ app.post("/uploadImage", upload.single("imageFile"), async function (req, res) {
     // Get some information about the file and send it to the uploadDetails view for rendering.
     res.locals.imageName = (`${fileInfo.originalname}`);
     res.locals.fileName = (`${user_id}/${fileInfo.originalname}`);
-    res.render("editArticle");
+    res.redirect("./userHomePage");
 
 });
 
