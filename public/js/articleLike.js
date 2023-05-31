@@ -10,12 +10,12 @@ window.addEventListener("load", function () {
     });
 
     document.addEventListener('click', async function (event) {
-        if (event.target.classList.contains("likeSpan")) {
-            let currentLikeSpan = event.target;
-            const likeState = currentLikeSpan.textContent;
-
-            const likeContainer = currentLikeSpan.parentNode;
+        if (event.target.closest('.like_container') || event.target.matches('.like_container span')) {
+            let likeContainer = event.target.closest('.like_container');
             const articleId = likeContainer.getAttribute('id');
+
+            const currentLikeSpan = likeContainer.querySelector(".likeSpan");
+            const likeState = currentLikeSpan.textContent;
 
             const likeNumberSpan = likeContainer.querySelector(".likeNumber");
             let likeNumber = likeNumberSpan.textContent;

@@ -1,13 +1,15 @@
 <body>
-    <div class="article">
+    <div class="article home_article">
         <div class="user">
             <div class="user_photo">
-                <img src="..{{avatar}}" alt="">
+                <a href="../subscription/author?name={{username}}">
+                    <img src="..{{avatar}}" title="Click to Subscribe!">
+                </a>
             </div>
 
             <div class="user_detail">
                 <div class="user_name">
-                    <a href="../subscription/author?name={{username}}">{{username}}</a>
+                    <a href="../subscription/author?name={{username}}" title="Click to Subscribe!">{{username}}</a>
                     {{! --<button type="submit" class="subscribe">Subscribe</button>}}
                 </div>
                 <div class="article_date">{{time}}</div>

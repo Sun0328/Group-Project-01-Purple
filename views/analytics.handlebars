@@ -1,4 +1,3 @@
-
 <!-- Add CSS files -->
 <link rel="stylesheet" href="/css/nav_bar.css">
 <link rel="stylesheet" href="/css/home_main.css">
@@ -7,6 +6,7 @@
 <link rel="stylesheet" href="/css/function.css">
 <link rel="stylesheet" href="/css/sort.css">
 <link rel="stylesheet" href="/css/article.css">
+<link rel="stylesheet" href="/css/insights.css">
 
 {{!-- Add fonts link from google fonts--}}
 <link rel="stylesheet"
@@ -28,38 +28,81 @@
         {{> function}}
 
         <div class="article_container">
-            <h1>{{currentUser}}'s analytics page</h1>
-            <p>Follower number: {{followerNumber}}</p>
-            <p>All comment number: {{allCommentNumber}}</p>
-            <p>All article's like numebr: {{allLikeNumber}}</p>
-            <br/>
-            <h2>Popular Article Area</h2>
-            {{#if mostPopularArticleList}}
-                <p>Top Three Article</p>
-                <ol>
-                {{#each mostPopularArticleList}}
-                    <li>
-                        Header: {{this.header}}<br/>
-                        Time: {{this.time}}<br/>
-                        Content: {{this.content}}<br/>
-                        {{#if this.image}}
-                                <img src="/uploadedFiles/{{this.user_id}}/{{this.image}}" width="300"><br/>
-                        {{/if}}
-                        Popular Index: {{this.popularIndex}}<br/>
-                        Comment Number: {{this.commentNumber}}<br/>
-                        Like Number: {{this.likeNumber}}<br/>
-                    </li>
-                {{/each}}
-                </ol>
-            {{/if}}
+            <div class="part part1">
+                <div class="header">
+                    <span class="material-symbols-outlined">
+                        dashboard
+                    </span>
+                    <div class="title">
+                        {{currentUser}}'s analytics report
+                    </div>
+                </div>
+                <table>
+                    <tr>
+                        <th>Metrics</th>
+                        <th>Amount</th>
+                    </tr>
+                    <tr>
+                        <td>Followers:</td>
+                        <td class="table-data">{{followerNumber}}</td>
+                    </tr>
+                    <tr>
+                        <td>Comments on you:</td>
+                        <td class="table-data">{{allCommentNumber}}</td>
+                    </tr>
+                    <tr>
+                        <td>Your article's likes:</td>
+                        <td class="table-data">{{allLikeNumber}}</td>
+                    </tr>
+                </table>
+            </div>
 
-            <canvas id="myChart" style="width:100%;max-width:700px"></canvas>
-            <canvas id="myChart2" style="width:100%;max-width:700px"></canvas>
+            <div class="part part2">
+                <div class="header">
+                    <span class="material-symbols-outlined">
+                        local_fire_department
+                    </span>
+                    <div class="title">Popular Articles -- Top 3</div>
+                </div>
+
+                {{#if mostPopularArticleList}}
+                <div class="popular_container">
+                    {{#each mostPopularArticleList}}
+                    <div class="popular_detail">
+                        <span class="p_title">Rank ?: {{this.header}}</span>
+                        <span class="p_time">Time: {{this.time}}</span>
+                        <span class="p_content">{{{this.content}}}</span>
+
+                        {{#if this.image}}
+                        <img src="/uploadedFiles/{{this.user_id}}/{{this.image}}" width="300" class="p_img">
+                        {{/if}}
+
+                        <div class="index">
+                            <span>Popular Index: {{this.popularIndex}}</span>
+                            <span>Comment: {{this.commentNumber}}</span>
+                            <span>Like: {{this.likeNumber}}</span>
+                        </div>
+                    </div>
+
+                    {{/each}}
+                </div>
+                {{/if}}
+            </div>
+
+
+            <div class="part part3">
+                <div class="header">
+                    <span class="material-symbols-outlined">
+                        trending_up
+                    </span>
+                    <div class="title">Daily total comments</div>
+                </div>
+
+                <canvas id="myChart2" style="width:100%;max-width:700px"></canvas>
+            </div>
+
         </div>
 
     </div>
 
 </body>
-
-
-

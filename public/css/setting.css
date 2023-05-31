@@ -82,6 +82,11 @@ a:hover {
     text-decoration: underline;
 }
 
-.warningUsernameArea {
+.warningUsernameArea,
+#warning {
     color: red;
+}
+
+#avatarImage {
+    margin-left: 20px;
 }
