@@ -133,9 +133,13 @@
     background-color: rgb(131, 33, 255);
 }
 
-.like_container .like,
-.comment_container .comment {
-    margin-left: 5px;
+.like_container .material-symbols-outlined,
+.comment_container .material-symbols-outlined {
+    margin-right: 8px;
+}
+
+.like_container .likeSpan {
+    margin-right: 8px;
 }
 
 

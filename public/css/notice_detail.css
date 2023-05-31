@@ -1,9 +1,9 @@
 /* dropbox for notification */
 
 .dropbox {
-    position: absolute;
+    position: fixed;
     top: 10px;
-    right: 33%;
+    right: 34%;
     width: 50px;
     height: 50px;
     color: black;
@@ -13,6 +13,7 @@
 
 /* Show the detail of notification when touching icon */
 #trigger {
+    top: 5px;
     width: 50px;
     height: 50px;
     background-color: transparent;
@@ -23,7 +24,7 @@
 }
 
 #hidden .first {
-    cursor: pointer;
+    cursor: default;
 }
 
 #trigger:hover #hidden {
@@ -83,4 +84,22 @@
 
 .dropbox .notice_card .auth_icon img {
     width: 40px;
+}
+
+
+@media only screen and (max-width: 1000px) {
+    .dropbox {
+        width: 35px;
+    }
+}
+
+@media only screen and (max-width: 680px) {
+    .dropbox {
+        right: 32%;
+        width: 35px;
+    }
+
+    .notice_card {
+        width: 230px;
+    }
 }

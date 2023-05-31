@@ -8,7 +8,6 @@
 
 html,
 body {
-    height: 100%;
     font-family: 'Nunito', sans-serif;
     color: white;
     font-size: 25px;
@@ -141,8 +140,8 @@ ul {
 
 .user .notice_icon {
     font-size: 40px;
-    cursor: pointer;
     margin-right: 10px;
+    cursor: default;
 }
 
 .left_login,
@@ -208,7 +207,8 @@ ul {
     }
 
     .nav .right .setting_a span:nth-child(2),
-    .nav .right .logout_a span:nth-child(2) {
+    .nav .right .logout_a span:nth-child(2),
+    .nav .right .login_link span:nth-child(2) {
         display: none;
     }
 
@@ -234,7 +234,7 @@ ul {
 }
 
 @media only screen and (max-width: 680px) {
-    .right .avatar_link  {
+    .right .avatar_link {
         display: none;
     }
 }

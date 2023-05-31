@@ -1,61 +1,96 @@
+<!-- Add CSS files -->
+<link rel="stylesheet" href="/css/nav_bar.css">
+<link rel="stylesheet" href="/css/home_main.css">
+<link rel="stylesheet" href="/css/notice_number.css">
+<link rel="stylesheet" href="/css/notice_detail.css">
+<link rel="stylesheet" href="/css/function.css">
+<link rel="stylesheet" href="/css/sort.css">
+<link rel="stylesheet" href="/css/article.css">
 
-<h1>{{currentUser}}'s analytics page</h1>
-<p>Follower number: {{followerNumber}}</p>
-<p>All comment number: {{allCommentNumber}}</p>
-<p>All article's like numebr: {{allLikeNumber}}</p>
-<br/>
-<h2>Popular Article Area</h2>
-{{#if mostPopularList}}
-    <p>Most popular Article</p>
-    <ol>
-        {{#each mostPopularList}}
-            <input type="hidden" class="popularArticleId" value={{this.id}}>
-            <li>Header:{{this.header}}<br/>
-                Content: {{this.content}}<br/>
-                Time: {{this.time}}<br/>
-                {{#if image}}
-                    <img src="/uploadedFiles/{{user_id}}/{{image}}" width="300"><br/>
-                {{/if}}
-                Comment number: {{this.commentNumber}}<br/>
-                Like number: {{this.likeNumber}}<br/>
-                PopularIndex:{{this.popularIndex}}</li>
-            
-        {{/each}}
-    </ol>
-{{/if}}
+{{!-- Add fonts link from google fonts--}}
+<link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
 
-{{#if defaultList}}
-    <p>no more article has popular index</p>
-    <p>default articles below</p>
-    {{#each defaultList}}
-        <ul>
-                <li>Header:{{this.header}}<br/>
-                Content: {{this.content}}<br/>
-                Time: {{this.time}}<br/>
-                {{#if image}}
-                    <img src="/uploadedFiles/{{user_id}}/{{image}}" width="300"><br/>
-                {{/if}}
-                Comment number: {{this.commentNumber}}<br/>
-                Like number: {{this.likeNumber}}<br/>
-                PopularIndex:{{this.popularIndex}}</li>
-        </ul>
-    {{/each}}
-{{/if}}
+<script src="/js/articleLike.js"></script>
 
-{{#if noArticleHasPopularIndex}}
-    <p>no article has popular index</p>
-    <p>default articles below</p>
-    {{#each noArticleHasPopularIndex}}
-        <ul>
-                <li>Header:{{this.header}}<br/>
-                Content: {{this.content}}<br/>
-                Time: {{this.time}}<br/>
-                {{#if image}}
-                    <img src="/uploadedFiles/{{user_id}}/{{image}}" width="300"><br/>
-                {{/if}}
-                Comment number: {{this.commentNumber}}<br/>
-                Like number: {{this.likeNumber}}<br/>
-                PopularIndex:{{this.popularIndex}}</li>
-        </ul>
-    {{/each}}
-{{/if}}
+
+
+<body>
+    {{> nav_bar_login}}
+
+    {{#if notification}}
+    {{> notice_detail}}
+    {{/if}}
+
+    <div class="main">
+        {{> function}}
+
+        <div class="article_container">
+            <h1>{{currentUser}}'s analytics page</h1>
+            <p>Follower number: {{followerNumber}}</p>
+            <p>All comment number: {{allCommentNumber}}</p>
+            <p>All article's like numebr: {{allLikeNumber}}</p>
+            <br />
+            <h2>Popular Article Area</h2>
+            {{#if mostPopularList}}
+            <p>Most popular Article</p>
+            <ol>
+                {{#each mostPopularList}}
+                <input type="hidden" class="popularArticleId" value={{this.id}}>
+                <li>Header:{{this.header}}<br />
+                    Content: {{this.content}}<br />
+                    Time: {{this.time}}<br />
+                    {{#if image}}
+                    <img src="/uploadedFiles/{{user_id}}/{{image}}" width="300"><br />
+                    {{/if}}
+                    Comment number: {{this.commentNumber}}<br />
+                    Like number: {{this.likeNumber}}<br />
+                    PopularIndex:{{this.popularIndex}}
+                </li>
+
+                {{/each}}
+            </ol>
+            {{/if}}
+
+            {{#if defaultList}}
+            <p>no more article has popular index</p>
+            <p>default articles below</p>
+            {{#each defaultList}}
+            <ul>
+                <li>Header:{{this.header}}<br />
+                    Content: {{this.content}}<br />
+                    Time: {{this.time}}<br />
+                    {{#if image}}
+                    <img src="/uploadedFiles/{{user_id}}/{{image}}" width="300"><br />
+                    {{/if}}
+                    Comment number: {{this.commentNumber}}<br />
+                    Like number: {{this.likeNumber}}<br />
+                    PopularIndex:{{this.popularIndex}}
+                </li>
+            </ul>
+            {{/each}}
+            {{/if}}
+
+            {{#if noArticleHasPopularIndex}}
+            <p>no article has popular index</p>
+            <p>default articles below</p>
+            {{#each noArticleHasPopularIndex}}
+            <ul>
+                <li>Header:{{this.header}}<br />
+                    Content: {{this.content}}<br />
+                    Time: {{this.time}}<br />
+                    {{#if image}}
+                    <img src="/uploadedFiles/{{user_id}}/{{image}}" width="300"><br />
+                    {{/if}}
+                    Comment number: {{this.commentNumber}}<br />
+                    Like number: {{this.likeNumber}}<br />
+                    PopularIndex:{{this.popularIndex}}
+                </li>
+            </ul>
+            {{/each}}
+            {{/if}}
+        </div>
+
+    </div>
+
+</body>

@@ -12,6 +12,7 @@ body {
 
 .article_container {
     width: 65%;
+    height: 100%;
     margin: auto;
     color: black;
     background-color: white;

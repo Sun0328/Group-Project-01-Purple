@@ -1,0 +1,99 @@
+.container h1 {
+    display: flex;
+    justify-content: center;
+    padding-top: 20px;
+}
+
+.container button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 30px;
+    padding: 10px 15px;
+    background-color: rgb(110, 8, 229);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.container button:hover {
+    background-color: rgb(94, 4, 197);
+    transition: background-color .5s;
+}
+
+.unsubscribe_icon,
+.subscribe_icon {
+    margin-right: 5px;
+}
+
+.author_container {
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
+    width: 600px;
+    margin-left: 80px;
+    margin-top: 20px;
+    /* background-color: pink; */
+}
+
+.author_container .author {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.author_container .author img {
+    margin-right: 5px;
+}
+
+.container .author {
+    color: rgb(110, 8, 229);
+}
+
+#author_profile {
+    font-size: 20px;
+    color: gray;
+    margin-top: 10px;
+    margin-left: 80px;
+}
+
+#line1,
+#line2 {
+    width: 80%;
+    height: 2px;
+    margin: auto;
+    margin-top: 20px;
+    border-bottom: 2px dotted gray;
+}
+
+/* For subscriber */
+
+.subscriber_container {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    width: 600px;
+    margin-left: 80px;
+    margin-top: 20px;
+}
+
+.subscriber_container img {
+    margin-right: 5px;
+}
+
+#sub_profile {
+    font-size: 20px;
+    color: gray;
+    margin-top: 10px;
+    margin-left: 80px;
+}
+
+.NoMatch {
+    margin-top: 20px;
+    margin-left: 80px;
+}
+

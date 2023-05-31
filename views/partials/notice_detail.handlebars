@@ -2,23 +2,26 @@
     <ul>
         <li>
             <div id="trigger">
-                    <ul id="hidden">
-                        <li class="notice_card first"></li>
-                        {{#each notification}}
-                        <li class="notice_card">
-                                <div class="notice_container">
-                                    <div class="auth_icon">
-                                        <img src="{{avatar}}" alt="">
-                                    </div>
-                                    <div class="right_container">
-                                        <a href="./goNotificationDetail?userId={{userId}}&type={{type}}&content={{typeId}}&notificationId={{id}}" class="message">{{title}}</a>
-                                        <div class="timestamp">{{time}}</div>
-                                    </div>
+                <ul id="hidden">
+                    <li class="notice_card first"></li>
+                    {{#each notification}}
+                    <li class="notice_card">
+                        <a href="../goNotificationDetail?userId={{userId}}&type={{type}}&content={{typeId}}&notificationId={{id}}"
+                            class="message">
+                            <div class="notice_container">
+                                <div class="auth_icon">
+                                    <img src="{{avatar}}" alt="">
                                 </div>
-                        </li>
-                        {{/each}}
-                    </ul>
-                
+                                <div class="right_container">
+                                    <div>{{title}}</div>
+                                    <div class="timestamp">{{time}}</div>
+                                </div>
+                            </div>
+                        </a>
+                    </li>
+                    {{/each}}
+                </ul>
+
             </div>
         </li>
     </ul>

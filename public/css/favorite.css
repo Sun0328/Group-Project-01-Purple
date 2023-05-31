@@ -1,0 +1,15 @@
+.container {
+    background-color: white;
+}
+
+.container h1 {
+    display: flex;
+    justify-content: center;
+    padding-top: 20px;
+    height: 50px;
+}
+
+#noMatchLike {
+    margin-top: 20px;
+    margin-left: 40px;
+}
