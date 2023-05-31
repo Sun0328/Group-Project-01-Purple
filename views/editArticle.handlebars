@@ -40,9 +40,10 @@
 </head>
 
 <body>
-    {{!-- {{> nav_bar_login}} --}}
+
+    {{> nav_bar_login}}
     <div class="main">
-        {{!-- {{> function}} --}}
+        {{> function}}
         <div class="container">
 
             <form action="./submitChange" method="POST">
@@ -66,7 +67,7 @@
                 {{/if}}
                 <button type="submit">Submit changes!</button>
             </form>
-        
+
             {{#if article.image}}
             <img src="/uploadedFiles/{{article.user_id}}/{{article.image}}" width="500">
             {{else}}
@@ -74,7 +75,7 @@
             {{/if}}
 
             <div>
-                <h1>Image uploads!</h1>
+                <h3>Image uploads!</h3>
 
                 <div class="card">
                     <div class="card-body">
@@ -105,15 +106,31 @@
                     
                 </div>
             </div>
+            <br>
+
+            <form action="./submitChange" method="POST">
+
+                <label for="title">Title:</label>
+                <input type="text" name="title" id="title" maxlength="32" value="{{article.header}}">
+                <input type="hidden" name="id" id="id" value="{{articleID}}">
+                <br>
+                <textarea id="myTextarea" name="content" maxlength="108">{{{article.content}}}</textarea>
+
+                <label for="image">Choose your article image:</label>
+                <br>
+                {{#if files}}
+                <select id="selectImage" name="image">
+                    <option value="">Do not display image</option>
+                    {{#each files}}
+                    <option value="{{this}}">{{this}}</option>
+                    {{/each}}
+                </select>
+                {{else}}
+                <p>No existing images. Please Upload.</p>
+                {{/if}}
+                <button type="submit">Submit changes!</button>
+            </form>
             
         </div>
     </div>
 </body>
-<script>
-    console.log("inside script");
-                if (sessionStorage.getItem('refreshPage')){
-                    sessionStorage.removeItem('refreshPage');
-                        location.reload();
-                    
-                }
-</script>

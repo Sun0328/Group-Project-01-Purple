@@ -365,7 +365,7 @@ router.post("/deleteArticle", async function (req, res) {
     await notificationDao.deleNotification(type, articleID);
     await userDao.deleteArticleById(articleID);
 
-    res.redirect("./login");
+    res.redirect("./userHomePage");
 
 });
 
@@ -1116,7 +1116,7 @@ router.get("/logout", async function (req, res) {
     const toastMessage = "Successfully logged out!";
     res.locals.toastMessage = toastMessage;
     res.status(204);
-    res.render("login");
+    res.redirect("loginPage");
 });
 
 router.post("/changeUsername", async function (req, res) {
@@ -1504,7 +1504,9 @@ router.get("/goNotificationDetail", async function (req, res) {
     }
     else if (notificationType == "subscribe") {
         const subscribeId = notificationTypeId;
+        console.log("subscribeId: "+subscribeId);
         const subscribeData = await subscribeDao.getSubscribeDataBySubscribeId(subscribeId);
+        console.log("subscribeData: "+JSON.stringify(subscribeData));
         const FollowerId = subscribeData.subscriber_id;
         const FollowerData = await userDao.getUserByUserID(FollowerId);
         const FollowerName = FollowerData.username;
@@ -1679,6 +1681,9 @@ router.get("/subscription/author", async function (req, res) {
     // do a check to check whether user are still following author
     const result = await userDao.checkSubscription(username, author_name);
 
+    // do a check to check whether subscriber are still following user
+    const followresult = await userDao.checkSubscription(author_name, username);
+
     const authorData = await userDao.getUserByUsername(author_name);
     const profileAvatar = authorData.avatar;
     res.locals.profileAvatar = profileAvatar;
@@ -1796,6 +1801,10 @@ router.get("/subscription/author", async function (req, res) {
     if (result == 1) {
         res.locals.subscribe = result;
     }
+    if (followresult == 1){
+        res.locals.follow = followresult;
+    }
+    
     res.render("profile");
 })
 
@@ -1815,6 +1824,9 @@ router.get("/subscription/subscriber", async function (req, res) {
 
     // do a check to check whether user are still following author
     const result = await userDao.checkSubscription(subscriber_name, username);
+
+    // do a check to check whether user are still following author
+    const subscriberesult = await userDao.checkSubscription(username, subscriber_name);
 
     const subscriberId = subscriberData.id;
     const profileAvatar = subscriberData.avatar;
@@ -1932,7 +1944,10 @@ router.get("/subscription/subscriber", async function (req, res) {
         res.locals.NotSameUser = 1;
     }
     if (result == 1) {
-        res.locals.subscribe = result;
+        res.locals.follow = result;
+    }
+    if (subscriberesult == 1) {
+        res.locals.subscribe = subscriberesult;
     }
 
     res.render("profile");
@@ -2059,12 +2074,17 @@ router.get("/subscription/subscribe", async function (req, res) {
 
     // do a check to check whether user are still following author
     const result = await userDao.checkSubscription(username, author_name);
+    // do a check to check whether user are still following author
+    const result2 = await userDao.checkSubscription(author_name, username);
 
     if (username !== author_name) {
         res.locals.NotSameUser = 1;
     }
     if (result == 1) {
         res.locals.subscribe = result;
+    }
+    if (result2 == 1){
+        res.locals.follow = result2;
     }
     res.render("profile");
 
@@ -2169,6 +2189,9 @@ router.get("/subscription/unsubscribe", async function (req, res) {
 
         // do a check to check whether subscriber is still following author
         const result = await userDao.checkSubscription(username, author_name);
+
+        const result2 = await userDao.checkSubscription(author_name, username);
+
         const avatar = authorData.avatar;
         res.locals.profileAvatar = avatar;
 
@@ -2184,6 +2207,9 @@ router.get("/subscription/unsubscribe", async function (req, res) {
         }
         if (result == 1) {
             res.locals.subscribe = result;
+        }
+        if (result2 == 1){
+            res.locals.follow = result2;
         }
         res.render("profile");
     }// If you are author
@@ -2215,11 +2241,17 @@ router.get("/subscription/unsubscribe", async function (req, res) {
         // do a check to check whether subscriber is still following author
         const result = await userDao.checkSubscription(subscriber, username);
 
+        // do a check to check whether subscriber is still following author
+        const result2 = await userDao.checkSubscription(username, subscriber);
+
         if (username !== subscriber) {
             res.locals.NotSameUser = 1;
         }
         if (result == 1) {
-            res.locals.subscribe = result;
+            res.locals.follow = result;
+        }
+        if (result2 == 1){
+            res.locals.subscribe = result2;
         }
         res.render("profile");
     }

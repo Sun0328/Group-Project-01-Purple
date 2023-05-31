@@ -16,6 +16,7 @@ async function getSubscribeDataBySubscribeId(inputSubscribeId){
     const db = await dbPromise;
 
     const subscribeId = inputSubscribeId;
+    console.log("input subscribe id: "+inputSubscribeId);
     const subscribeData =  await db.get(SQL`
         select * from subscribe
         where id=${subscribeId}`);
