@@ -886,11 +886,6 @@ router.get("/sortByTitle", async function (req, res) {
     res.locals.notification = NotificationList;
 
 
-router.get("/sortByTitle", async function (req, res) {
-    const cookie = req.cookies;
-    const username = cookie.username;
-    const articles = await userDao.getAriticlesByUser(username);
-    articles.sort(sortMethod.compareByHeader);
     for (let i = 0; i < articles.length; i++) {
         const item = articles[i];
         const userId = item.user_id;
@@ -1661,8 +1656,7 @@ router.get("/subscription/author", async function (req, res) {
     // do a check to check whether user are still following author
     const result = await userDao.checkSubscription(username, author_name);
 
-    const authorData = await userDao.getUserByUsername(username);
-
+    const authorData = await userDao.getUserByUsername(author_name);
     const profileAvatar = authorData.avatar;
     res.locals.profileAvatar = profileAvatar;
 
@@ -1800,10 +1794,9 @@ router.get("/subscription/subscriber", async function (req, res) {
     // do a check to check whether user are still following author
     const result = await userDao.checkSubscription(subscriber_name, username);
 
-    const subscriber_id = await userDao.getUserIdByUserName(subscriber_name);
-    const profileAvatar = await userDao.getAvatarByUserId(subscriber_id.id);
-    res.locals.profileAvatar = profileAvatar[0].avatar;
-    res.locals.articles = await userDao.getAriticlesByUser(subscriber_name);
+    const subscriberId = subscriberData.id;
+    const profileAvatar = subscriberData.avatar;
+    res.locals.profileAvatar = profileAvatar;
     const userData = await userDao.getUserByUsername(username);
     const user_avatar = userData.avatar;
     res.locals.avatar = user_avatar;
@@ -1881,10 +1874,6 @@ router.get("/subscription/subscriber", async function (req, res) {
     res.locals.notificationNum = notificationNum;
     res.locals.notification = NotificationList;
 
-    const subscriberId = subscriberData.id;
-    const profileAvatar = subscriberData.avatar;
-    res.locals.profileAvatar = profileAvatar;
-
     const subscriberArticleList = await articleDao.getAuthorAllArticle(subscriberId);
     let articleDataArray = [];
     for (let i = 0; i < subscriberArticleList.length; i++)
@@ -1916,9 +1905,6 @@ router.get("/subscription/subscriber", async function (req, res) {
     }
     res.locals.articles = articleDataArray;
 
-    const userData = await userDao.getUserByUsername(username);
-    const user_avatar = userData.avatar;
-    res.locals.avatar = user_avatar;
 
 
     if (username !== subscriber_name) {
@@ -2300,21 +2286,26 @@ router.get("/favorite", async function (req, res) {
     res.locals.notification = NotificationList;
 
     // get user liked article list
+    // get user liked article list
     const like_list = await userDao.getLikesByUserId(user_id);
-
-    let article_id_list = [];
-    for (let index = 0; index < like_list.length; index++) {
-
-        console.log("likelist : " + JSON.stringify(like_list[index].article_id));
-        article_id_list[index] = like_list[index].article_id;
+    let articleDataArray = [];
+    for (let i = 0; i < like_list.length; i++)
+    {
+        const item = like_list[i];
+        const currentArticleId = item.article_id;
+        const currentArticleData = await articleDao.getArticleById(currentArticleId);
+        const currentAuthorId = currentArticleData.user_id;
+        const authorData = await userDao.getUserByUserId(currentAuthorId);
+        const authorAvatar = authorData.avatar;
+        const key = "avatar";
+        currentArticleData[key] = authorAvatar;
+        articleDataArray.push(currentArticleData);
     }
 
-    console.log("article id list : " + article_id_list);
-    let articlesArray = await userDao.retrieveArticleDataByIdList(article_id_list);
-    for (let i = 0; i < articlesArray.length; i++) {
-        const item = articlesArray[i];
-        const articleId = like_list[i].article_id;
-        const likeArticle = await likeDao.getLikeStateByUserIDandArticleId(user_id.id, articleId);
+    for (let i = 0; i < articleDataArray.length; i++) {
+        const item = articleDataArray[i];
+        const articleId = item.id;
+        const likeArticle = await likeDao.getLikeStateByUserIDandArticleId(userId, articleId);
 
         let likeState;
         if (likeArticle === undefined) {
@@ -2327,12 +2318,10 @@ router.get("/favorite", async function (req, res) {
         const likStateKey = "likeState";
         const likeNumberKey = "likeNumber";
 
-        articlesArray[i][likStateKey] = likeState;
-        articlesArray[i][likeNumberKey] = likeCount;
+        articleDataArray[i][likStateKey] = likeState;
+        articleDataArray[i][likeNumberKey] = likeCount;
     }
-
-    console.log("articles----" + JSON.stringify(articlesArray));
-    res.locals.articles = articlesArray;
+    res.locals.articles = articleDataArray;
 
     res.render("favorite");
 });
@@ -2540,7 +2529,7 @@ router.get("/analyticsChart", async function (req, res){
     }
     console.log("chartData: " + JSON.stringify(chartData));
     res.json(chartData);
-})
+});
 
 
 function formatDate(date) {
