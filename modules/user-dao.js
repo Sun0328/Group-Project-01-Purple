@@ -334,9 +334,19 @@ async function updateArticleImage(image, id){
 async function createNewArticle(userid) {
     const db = await dbPromise;
     console.log("user_id is: "+JSON.stringify (userid.id));
+    const currentDate = new Date();
+    const year = currentDate.getFullYear();
+    const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+    const day = String(currentDate.getDate()).padStart(2, '0');
+    const hours = String(currentDate.getHours()).padStart(2, '0');
+    const minutes = String(currentDate.getMinutes()).padStart(2, '0');
+    const seconds = String(currentDate.getSeconds()).padStart(2, '0');
+
+    const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+
     return await db.run(SQL`
         insert into article (header, content, time, user_id) 
-        VALUES("Default header", "Default content", DATETIME('now'), ${JSON.stringify (userid.id)}) RETURNING *;`);
+        VALUES("Default header", "Default content", ${formattedDate}, ${JSON.stringify (userid.id)}) RETURNING *;`);
 }
 
 async function getUserIdByUserName(username) {
@@ -510,9 +520,20 @@ async function createNewSubscribe(subscriber_name, author_name){
         author_id = await getUserIdByUserName(author_name);
         console.log("subscriber_id"+JSON.stringify(subscriber_id));
         console.log("author_id"+JSON.stringify(author_id));
+
+        const currentDate = new Date();
+        const year = currentDate.getFullYear();
+        const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+        const day = String(currentDate.getDate()).padStart(2, '0');
+        const hours = String(currentDate.getHours()).padStart(2, '0');
+        const minutes = String(currentDate.getMinutes()).padStart(2, '0');
+        const seconds = String(currentDate.getSeconds()).padStart(2, '0');
+    
+        const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+        
         return await db.run(SQL`
         insert into subscribe (author_id, subscriber_id, time) 
-        VALUES(${author_id.id}, ${subscriber_id.id}, DATETIME('now')) RETURNING *;`);
+        VALUES(${author_id.id}, ${subscriber_id.id},${formattedDate}) RETURNING *;`);
     }
     
 }

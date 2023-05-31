@@ -49,9 +49,20 @@ async function deleLike(inputUserId, inputArticleId){
         WHERE user_id = ${userId} AND article_id = ${articleId}`);
 }
 
+async function getLikeArticleByUserId(inputUserId){
+    const db = await dbPromise;
+
+    const userId = inputUserId;
+    const articleData = await db.all(SQL`
+        select * from likes
+        where user_id = ${userId}`);
+    return articleData;
+}
+
 module.exports={
     getLikeNumberByArticleId,
     getLikeStateByUserIDandArticleId,
     addLike,
-    deleLike
+    deleLike,
+    getLikeArticleByUserId
 }

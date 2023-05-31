@@ -23,7 +23,7 @@ window.addEventListener("load", function () {
 
             if (likeState == "Like") {
                 console.log("click like");
-                const response = await fetch(`./addLike?articleId=${articleId}`);
+                const response = await fetch(`../addLike?articleId=${articleId}`);
                 const json = await response.json();
                 currentLikeSpan.innerHTML = "Unlike";
                 const number = likeNumber + 1;
@@ -35,7 +35,7 @@ window.addEventListener("load", function () {
             }
             else if (likeState == "Unlike") {
                 console.log("click cancel");
-                const response = await fetch(`./cancelLike?articleId=${articleId}`);
+                const response = await fetch(`../cancelLike?articleId=${articleId}`);
                 const json = await response.json();
                 currentLikeSpan.innerHTML = "Like";
                 const number = likeNumber - 1;
