@@ -56,6 +56,17 @@
                     </button>
                 </form>
                 {{/if}}
+                {{#if follow}}
+                <form action="./unsubscribe" method="GET">
+                    <input type="hidden" id="subscriber" name="subscriber" value="{{author}}">
+                    <button type="submit">
+                        <span class="material-symbols-outlined unsubscribe_icon">
+                            unsubscribe
+                        </span>
+                        Remove subscriber
+                    </button>
+                </form>
+                {{/if}}
                 {{/if}}
             </div>
 
@@ -86,6 +97,27 @@
 
                 {{#if NotSameUser}}
                 {{#if subscribe}}
+                <form action="./unsubscribe" method="GET">
+                    <input type="hidden" id="author" name="author" value="{{subscriber}}">
+                    <button type="submit">
+                        <span class="material-symbols-outlined unsubscribe_icon">
+                            unsubscribe
+                        </span>
+                        Unsubscribe
+                    </button>
+                </form>
+                {{else}}
+                <form action="./subscribe" method="GET">
+                    <input type="hidden" id="author" name="author" value="{{subscriber}}">
+                    <button type="submit">
+                        <span class="material-symbols-outlined subscribe_icon">
+                            subscriptions
+                        </span>
+                        Subscribe
+                    </button>
+                </form>
+                {{/if}}
+                {{#if follow}}
                 <form action="./unsubscribe" method="GET">
                     <input type="hidden" id="subscriber" name="subscriber" value="{{subscriber}}">
                     <button type="submit">
