@@ -59,7 +59,7 @@
                 {{#if follow}}
                 <form action="./unsubscribe" method="GET">
                     <input type="hidden" id="subscriber" name="subscriber" value="{{author}}">
-                    <button type="submit">
+                    <button type="submit" class="removeSub">
                         <span class="material-symbols-outlined unsubscribe_icon">
                             unsubscribe
                         </span>
@@ -120,7 +120,7 @@
                 {{#if follow}}
                 <form action="./unsubscribe" method="GET">
                     <input type="hidden" id="subscriber" name="subscriber" value="{{subscriber}}">
-                    <button type="submit" id="removeSub">
+                    <button type="submit" class="removeSub">
                         <span class="material-symbols-outlined unsubscribe_icon">
                             unsubscribe
                         </span>

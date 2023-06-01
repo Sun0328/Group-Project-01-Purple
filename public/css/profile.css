@@ -24,7 +24,7 @@
     transition: background-color .5s;
 }
 
-#removeSub {
+.removeSub {
     width: 230px;
 }
 
