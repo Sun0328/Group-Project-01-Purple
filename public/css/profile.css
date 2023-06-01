@@ -24,6 +24,10 @@
     transition: background-color .5s;
 }
 
+#removeSub {
+    width: 230px;
+}
+
 .unsubscribe_icon,
 .subscribe_icon {
     margin-right: 5px;
@@ -97,3 +101,25 @@
     margin-left: 80px;
 }
 
+@media only screen and (max-width: 1050px) {
+    .subscriber_container {
+        flex-direction: column;
+        align-items: start;
+    }
+
+    .container button {
+        margin: 10px 0;
+    }
+
+}
+
+@media only screen and (max-width: 750px) {
+    .author_container {
+        flex-direction: column;
+        align-items: start;
+    }
+
+    .author {
+        margin-bottom: 10px;
+    }
+}

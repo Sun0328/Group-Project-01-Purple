@@ -36,13 +36,23 @@
                 </select>
             </div>
 
-            <form action="./newArticle" method="POST" id="createForm">
+            <form action="./newImage" method="POST" id="createForm" class="createForm uploadForm">
+                <input type="hidden" id="new" name="new" value="new">
+                <button type="submit" id="createNew">
+                    <span class="material-symbols-outlined">
+                        image
+                    </span>
+                    <span>Step 1: Upload a new image!</span>
+                </button>
+            </form>
+
+            <form action="./newArticle" method="POST" id="createForm" class="createForm createFrom">
                 <input type="hidden" id="new" name="new" value="new">
                 <button type="submit" id="createNew">
                     <span class="material-symbols-outlined">
                         edit_square
                     </span>
-                    <span>Create a new article!</span>
+                    <span>Step 2: Create a new article!</span>
                 </button>
             </form>
 

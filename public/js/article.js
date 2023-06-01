@@ -6,7 +6,6 @@ window.addEventListener("load", function () {
 
     if (match) {
         currentUsername = match[1];
-        console.log("current user: " + currentUsername);
     }
 
     // show dele button or not
@@ -17,7 +16,7 @@ window.addEventListener("load", function () {
     for (let i = 0; i < deleButtonArray.length; i++) {
         const currentButton = deleButtonArray[i];
         const deleCommentUsername = currentButton.value;
-        console.log("dele comment username: " + deleCommentUsername);
+
         if (currentUsername == deleCommentUsername) {
             currentButton.style.display = "block";
         }
@@ -51,7 +50,7 @@ window.addEventListener("load", function () {
 
         //submit comment to article
         if (event.target.id === 'commentButton') {
-            console.log("test");
+
             const commentButton = event.target;
             let textarea = event.target.previousElementSibling;
             const commentContent = textarea.value;
@@ -70,7 +69,7 @@ window.addEventListener("load", function () {
 
             const response = await fetch(`./article/deleComment?deleCommentId=${deleCommentId}`);
             await response.text();
-            console.log("dele");
+
             location.reload();
         }
 
@@ -106,9 +105,7 @@ window.addEventListener("load", function () {
             const secondSubmitContainer = secondCommentButton.parentNode;
             const textarea = secondSubmitContainer.querySelector(".secondTextComment");
             const commentContent = textarea.value;
-            console.log("current second comment: " + commentContent);
             const recipientCommentId = secondSubmitContainer.querySelector(".secondReciptientCommentId").value;
-            console.log("recipientCommentId: " + recipientCommentId);
             const articleId = document.querySelector("#articleId").value;
             const response = await fetch(`./article/comment?commentContent=${commentContent}&articleId=${articleId}&recipientCommentId=${recipientCommentId}`);
             const json = await response.json();
@@ -120,7 +117,6 @@ window.addEventListener("load", function () {
 
             const textarea = thirdSubmitContainer.querySelector(".thirdTextComment")
             const commentContent = textarea.value;
-            console.log("current third comment: " + commentContent);
 
             const recipientCommentId = thirdSubmitContainer.querySelector(".thirdReciptientCommentId").value;
 
@@ -135,7 +131,6 @@ window.addEventListener("load", function () {
             const otherSubmitContainer = otherCommentButton.parentNode;
             const textarea = otherSubmitContainer.querySelector(".otherTextComment");
             const commentContent = textarea.value;
-            console.log("current other comment: " + commentContent);
 
             const recipientCommentId = otherSubmitContainer.querySelector(".otherReciptientCommentId").value;
 

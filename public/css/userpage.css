@@ -25,6 +25,7 @@ body {
     flex-direction: row;
     justify-content: center;
     align-items: center;
+    width: 330px;
     margin-left: 40px;
     padding: 8px 15px;
     background-color: rgb(110, 8, 229);
@@ -42,13 +43,17 @@ body {
     transition: background-color .5s;
 }
 
-#createForm {
+.createForm {
     margin-top: -40px;
     margin-bottom: 20px;
 }
 
 #createNew span {
     margin-right: 8px;
+}
+
+.createFrom {
+    margin-top: 20px;
 }
 
 .author_button {
@@ -89,10 +94,26 @@ body {
 }
 
 
-@media only screen and (max-width: 700px) {
+@media only screen and (max-width: 850px) {
     #createNew {
-        margin-left: 15px;
+        width: 300px;
         font-size: 18px;
+    }
+
+}
+
+@media only screen and (max-width: 800px) {
+    #createNew {
+        width: 250px;
+        font-size: 14px;
+    }
+
+}
+
+@media only screen and (max-width: 720px) {
+    #createNew {
+        width: 200px;
+        font-size: 10px;
     }
 
 }
@@ -109,6 +130,11 @@ body {
 
     #createNew span:nth-child(2) {
         display: none;  
+    }
+
+    #createNew {
+        width: 60px;
+        margin-left: 40px;
     }
 
 }

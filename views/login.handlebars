@@ -1,6 +1,7 @@
 
 <head>
     <script src="/js/home.js" async defer></script>
+    <script src="/js/login.js"></script>
     <link rel="stylesheet" href="/css/login.css">
 </head>
 
@@ -9,7 +10,7 @@
     <div class="container">
         {{! Display a toast message if one was provided. }}
         {{#if toastMessage}}
-        <span>{{toastMessage}}</span>
+        <span id="toastMessage">{{toastMessage}}</span>
         {{/if}}
 
         <div>

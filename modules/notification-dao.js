@@ -30,8 +30,6 @@ async function getNotificationByUserId(inputUserId){
 
 async function deleNotification(inputType, inputContent){
     const db = await dbPromise;
-    console.log("inside delete notification");
-    console.log("input type: " + inputType+" input id: " + inputContent);
     const type = inputType;
     const content = inputContent;
     await db.run(SQL`

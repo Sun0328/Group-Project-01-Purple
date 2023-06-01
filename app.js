@@ -55,11 +55,10 @@ app.post("/uploadImage", upload.single("imageFile"), async function (req, res) {
 
     const fileInfo = req.file;
     const user_id = req.body.user_id;
-    console.log("user_id is: " + user_id);
+
     // Move the file somewhere more sensible
     const oldFileName = fileInfo.path;
     const newFileName = `./public/uploadedFiles/${user_id}/${fileInfo.originalname}`;
-    console.log("File directory " + newFileName);
     fs.renameSync(oldFileName, newFileName);
 
     // Resize image

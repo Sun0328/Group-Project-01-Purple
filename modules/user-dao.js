@@ -7,11 +7,11 @@ async function hasSameUsername(username){
     const db = await dbPromise;
 
     const testUsername = username;
-    console.log("testUsername: " + testUsername);
+
     const userData= await db.get(SQL`
         select username from user
         where username = ${testUsername}`);
-    console.log("user data: " + userData);
+
     return userData;
 }
 
@@ -69,7 +69,7 @@ async function getAriticlesByUser(username){
         select avatar from user 
             where username = ${username}
     `);
-    console.log("avatar is"+JSON.stringify(userAvatar));
+
     // manually assign user avatar to article array
     articleArray.forEach(element => {
         element.avatar = userAvatar[0].avatar;
@@ -79,13 +79,11 @@ async function getAriticlesByUser(username){
 
 async function deleteArticleById(id) {
     const db = await dbPromise;
-    console.log("-----in dao------");
-    console.log("id:" + id);
+
     await db.run(SQL`
     delete from article
     where id = ${id}`);
 
-    console.log("dele succ");
 }
 
 async function getUser(username){
@@ -113,7 +111,6 @@ async function getSalt(username){
     const db = await dbPromise;
 
     const testUsername = username;
-    console.log("testUsername in getSalt: " + testUsername);
     const salt= await db.get(SQL`
         select salt from user
         where username = ${testUsername}`);
@@ -124,11 +121,11 @@ async function getPassword(username){
     const db = await dbPromise;
 
     const testUsername = username;
-    console.log("testUsername in getPassword: " + testUsername);
+
     const hashedPassword= await db.get(SQL`
         select password from user
         where username = ${testUsername}`);
-    console.log("hashed password: " + hashedPassword);
+
     return hashedPassword;
 }
 
@@ -143,12 +140,11 @@ async function deleteTheUser(username){
 
 async function changeUsername(oldUsername, newUsername){
     const db = await dbPromise;
-    console.log("old user name is: "+oldUsername);
-    console.log("new user name is: "+newUsername);
+
     const user = await db.get(SQL`
         select * from user
         where username = ${oldUsername}`);
-    console.log("user is: "+user);
+
     await db.run(SQL`UPDATE user
         SET username = ${newUsername} 
         WHERE id = ${user.id}`);
@@ -178,7 +174,7 @@ async function retrieveArticleData() {
     const userID = await db.all(SQL`
         select user_id from article 
     `);
-    console.log("User id list: "+JSON.stringify(userID));
+    
     // get user name from user id
     let username = [];
     const user = await db.all(SQL`
@@ -188,14 +184,14 @@ async function retrieveArticleData() {
     userID.forEach(idElement => {
         user.forEach(element => {
             if (element.id == JSON.stringify(idElement.user_id)){
-                // console.log(element.id+" is equal to "+idElement.user_id);
+                
                 username[index] = element.username;
-                // console.log("Username is "+username[index]);
+
                 index += 1;
             }
         });
     });
-    console.log("user id: "+JSON.stringify(userID));
+
     // get user avatar from user id
     let userAvatar = [];
     let index2 = 0;
@@ -207,7 +203,7 @@ async function retrieveArticleData() {
             }
         });
     });
-    console.log("list of user avatar: "+ userAvatar);
+
     // manually assign user name to article array
     
     for (let i = 0; i < username.length; i++) {
@@ -333,7 +329,6 @@ async function updateArticleImage(image, id){
 
 async function createNewArticle(userid) {
     const db = await dbPromise;
-    console.log("user_id is: "+JSON.stringify (userid.id));
     const currentDate = new Date();
     const year = currentDate.getFullYear();
     const month = String(currentDate.getMonth() + 1).padStart(2, '0');
@@ -512,14 +507,11 @@ async function checkSubscription(subscriber_name, author_name){
 async function createNewSubscribe(subscriber_name, author_name){
     const db = await dbPromise;
     // check existence
-    console.log("inside create new");
+
     const check = await checkSubscription(subscriber_name, author_name);
-    console.log("check: "+check);
     if (check == 0){
         subscriber_id = await getUserIdByUserName(subscriber_name);
         author_id = await getUserIdByUserName(author_name);
-        console.log("subscriber_id"+JSON.stringify(subscriber_id));
-        console.log("author_id"+JSON.stringify(author_id));
 
         const currentDate = new Date();
         const year = currentDate.getFullYear();
@@ -541,15 +533,11 @@ async function createNewSubscribe(subscriber_name, author_name){
 async function deleteSubscribe(subscriber_name, author_name){
     const db = await dbPromise;
     // check existence
-    console.log("inside delete");
     const check = await checkSubscription(subscriber_name, author_name);
-    console.log("check: "+check);
     // if subscribe exist
     if (check == 1){
         subscriber_id = await getUserIdByUserName(subscriber_name);
         author_id = await getUserIdByUserName(author_name);
-        console.log("subscriber_id"+JSON.stringify(subscriber_id));
-        console.log("author_id"+JSON.stringify(author_id));
         return await db.run(SQL`
         DELETE FROM subscribe
         WHERE subscriber_id = ${subscriber_id.id} AND author_id = ${author_id.id}
@@ -582,7 +570,6 @@ async function getSubscribeId(author, subscriber){
     const author_id = await getUserIdByUserName(author);
     const subscriber_id = await getUserIdByUserName(subscriber);
     const check = await checkSubscription(subscriber, author);
-    console.log("check: "+check);
     // if subscribe exist
     if (check == 1){
     const subscribe = await db.get(SQL`
@@ -616,7 +603,6 @@ async function retrieveArticleDataByIdList(articleID) {
         const likeArticleListItem = articleID[index];
         for(let index2 = 0; index2 < article.length; index2 ++){
             const allArticleListItem = article[index2];
-            console.log("allArticleListItem"+JSON.stringify(allArticleListItem));
             if (allArticleListItem.id == likeArticleListItem)
             {
                 article_list.push(allArticleListItem);
