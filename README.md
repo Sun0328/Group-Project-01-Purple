@@ -2,6 +2,7 @@ Final project &ndash; A personal blogging system &ndash; Starter project
 ==========
 # Team name: Team 7
 ## Blog name: Purple
+### Members: Fiona Sun, Jennie Zhu, Shiyan Gong, Annie Mu
 
 1. There is no special setup instruction, beyond initializing the database and running
 our project.
