@@ -1,10 +1,13 @@
 window.addEventListener("load", function () {
 
     const toastMessage = document.getElementById("toastMessage");
-
-    if (toastMessage.innerText == "Inconsistent password input!"
-        || toastMessage.innerText == "Already has the username, please try another!") {
-        toastMessage.style.color = "red";
+    if (toastMessage == null) {
+        // console.log("null");
+    } else {
+        if (toastMessage.innerText == "Inconsistent password input!"
+            || toastMessage.innerText == "Already has the username, please try another!") {
+            toastMessage.style.color = "red";
+        }
     }
 
     let input = document.getElementById("textUsername");
