@@ -34,8 +34,7 @@
             <div class="article">
                 {{#if articleData}}
 
-                <div class="author" id="author">Author: <span id="articleAuthor"><a
-                            href="./subscription/author?name={{author}}">{{author}}</a></span></div>
+                <div class="author" id="author">Author: <span id="articleAuthor"><a href=" ">{{author}}</a></span></div>
                 <div class="time article_time">Time: {{time}}</div>
                 <div class="article_header">{{header}}</div>
                 <div class="article_content">{{{content}}}</div>
@@ -61,9 +60,8 @@
                 <span id="history">Comments History</span>
                 <button id="hide">Hide</button>
                 <button id="show">Show</button>
-                {{#each firstLevelCommentData}}
-
                 <div id="comment_detail">
+                    {{#each firstLevelCommentData}}
                     <div class="first_level">
                         <p>First Level comment</p>
                         <p>{{this.sender}} reply to author: {{this.recipient}}</p>
@@ -165,8 +163,6 @@
                                 </button>
                             </div>
                         </div>
-
-
                         {{/each}}
                         {{/if}}
                         {{!-- <p>%%%%%%%%%%%%%</p> --}}
@@ -175,16 +171,13 @@
                         {{!-- <p>----------------------2----------------------</p> --}}
                         {{/each}}
                     </div>
-
-
+                    {{/if}}
+                    {{!-- <p>+++++++++++++++++++++++++++++++++++++++++++++++++++++</p> --}}
+                    {{/each}}
+                    </div>
+                    {{/if}}
                 </div>
-
-                {{/if}}
-                {{!-- <p>+++++++++++++++++++++++++++++++++++++++++++++++++++++</p> --}}
-                {{/each}}
                 {{/if}}
             </div>
-            {{/if}}
         </div>
-    </div>
 </body>
