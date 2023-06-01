@@ -22,16 +22,13 @@ router.get("/", async function (req, res) {
 
     res.locals.title = "Purple";
     let articleDataArray = await userDao.retrieveArticleData();
-    console.log(JSON.stringify(articleDataArray));
     res.locals.articlesArray = articleDataArray;
 
     const cookies = req.cookies;
-    console.log("cookies: " + JSON.stringify(cookies));
 
 
     if (Object.keys(cookies).length > 0) {
         const username = cookies.username;
-        console.log("username: " + username);
         const userData = await userDao.getUserByUsername(username);
         const userId = userData.id;
         res.locals.userId = userId;
@@ -59,13 +56,11 @@ router.get("/", async function (req, res) {
 
         res.locals.articlesArray = articleDataArray;
 
-        // console.log("cookies: " + JSON.stringify(cookies));
 
         const hasLogin = "has login";
         res.locals.hasLogin = hasLogin;
 
         // Get user avatar by username from cookies
-        console.log("userData: " + JSON.stringify(userData));
 
         const user_avatar = userData.avatar;
         res.locals.avatar = user_avatar;
@@ -73,7 +68,7 @@ router.get("/", async function (req, res) {
 
         // For notification
         const allNotificationData = await notificationDao.getNotificationByUserId(userId);
-        // console.log("allNotificationData--" + JSON.stringify(allNotificationData));
+    
         let notReadList = [];
         for (let i = 0; i < allNotificationData.length; i++) {
             const item = allNotificationData[i];
@@ -122,7 +117,7 @@ router.get("/", async function (req, res) {
                 NotificationList.push(notification);
             }
             else if (type == "subscribe") {
-                console.log("item: " + JSON.stringify(item));
+        
                 const beFollowedId = item.receiver_id;
                 const beFollowedData = await userDao.getUserByUserId(beFollowedId);
                 const beFollowedUsername = beFollowedData.username;
@@ -138,7 +133,7 @@ router.get("/", async function (req, res) {
                 NotificationList.push(notification);
             }
         }
-        console.log("NotificationList: " + JSON.stringify(NotificationList));
+
         res.locals.notificationNum = notificationNum;
         res.locals.notification = NotificationList;
     }
@@ -170,7 +165,6 @@ router.get("/register", async function (req, res) {
 
 router.get("/testUsername", async function (req, res) {
     const testUsername = req.query.username;
-    console.log("testusername: " + testUsername);
     const userData = await userDao.hasSameUsername(testUsername);
     if (userData === undefined) {
         const message = "unique"
@@ -202,13 +196,11 @@ router.post("/signupMessage", async function (req, res) {
 
 
     if (password != confirmPassword) {
-        console.log("password not fit")
         const toastMessage = "Inconsistent password input!";
         res.locals.toastMessage = toastMessage;
         res.render("register");
     }
     else if (userData !== undefined) {
-        console.log("has same username");
         const toastMessage = "Already has the username, please try another!";
         res.locals.toastMessage = toastMessage;
         res.render("register");
@@ -231,7 +223,6 @@ router.post("/signupMessage", async function (req, res) {
             "description": description
         };
         userDao.createNewUser(user);
-        console.log("user name is: " + user.username);
 
         const username = user.username;
         const userData = await userDao.getUserByUsername(username);
@@ -284,8 +275,6 @@ router.get("/userHomePage", async function (req, res) {
         articleDataArray[i][likStateKey] = likeState;
         articleDataArray[i][likeNumberKey] = likeCount;
     }
-
-    console.log("articleDataArray------" + JSON.stringify(articleDataArray));
     res.locals.articles = articleDataArray;
 
     const allNotificationData = await notificationDao.getNotificationByUserId(userId);
@@ -333,7 +322,6 @@ router.get("/userHomePage", async function (req, res) {
             NotificationList.push(notification);
         }
         else if (type == "subscribe") {
-            console.log("item: " + JSON.stringify(item));
             const beFollowedId = item.receiver_id;
             const beFollowedData = await userDao.getUserByUserId(beFollowedId);
             const beFollowedUsername = beFollowedData.username;
@@ -349,7 +337,6 @@ router.get("/userHomePage", async function (req, res) {
             NotificationList.push(notification);
         }
     }
-    console.log("NotificationList: " + JSON.stringify(NotificationList));
     res.locals.notificationNum = notificationNum;
     res.locals.notification = NotificationList;
     res.render("userpage");
@@ -361,7 +348,6 @@ router.post("/deleteArticle", async function (req, res) {
     res.locals.articleID = articleID;
 
     const type = "article";
-    console.log("here0");
     await notificationDao.deleNotification(type, articleID);
     await userDao.deleteArticleById(articleID);
 
@@ -376,7 +362,6 @@ router.post("/editArticle", async function (req, res) {
     let article = await userDao.getArticleById(articleID);
     article = article[0];
     res.locals.article = article;
-    console.log("Edit Article: " + JSON.stringify(article));
 
     const folderPath = `./public/uploadedFiles/${article.user_id}`;
     getFileNames(folderPath, function (files) {
@@ -425,7 +410,6 @@ router.post("/newArticle", async function (req, res) {
 
 router.post("/submitChange", async function (req, res) {
     const content = req.body.content;
-    console.log("req.body.content: " + req.body.content);
     let title = req.body.title;
     if (title == "") {
         title = "default title";
@@ -433,7 +417,6 @@ router.post("/submitChange", async function (req, res) {
 
     const id = req.body.id;
     await userDao.updateArticletitle(title, id);
-    console.log(" content : " + content);
     if (content == "") {
         content = "default content";
     }
@@ -468,7 +451,6 @@ router.get("/homeSortByTitle", async function (req, res) {
         // For notification
         const userId = userData.id;
         const allNotificationData = await notificationDao.getNotificationByUserId(userId);
-        // console.log("allNotificationData--" + JSON.stringify(allNotificationData));
         let notReadList = [];
         for (let i = 0; i < allNotificationData.length; i++) {
             const item = allNotificationData[i];
@@ -517,7 +499,6 @@ router.get("/homeSortByTitle", async function (req, res) {
                 NotificationList.push(notification);
             }
             else if (type == "subscribe") {
-                console.log("item: " + JSON.stringify(item));
                 const beFollowedId = item.receiver_id;
                 const beFollowedData = await userDao.getUserByUserId(beFollowedId);
                 const beFollowedUsername = beFollowedData.username;
@@ -533,7 +514,6 @@ router.get("/homeSortByTitle", async function (req, res) {
                 NotificationList.push(notification);
             }
         }
-        console.log("NotificationList: " + JSON.stringify(NotificationList));
         res.locals.notificationNum = notificationNum;
         res.locals.notification = NotificationList;
 
@@ -566,7 +546,6 @@ router.get("/homeSortByTitle", async function (req, res) {
         }
     }
 
-    // console.log("articleDataArray: " + JSON.stringify(articleDataArray));
     res.locals.articlesArray = articleDataArray;
     res.render("home");
 });
@@ -588,7 +567,6 @@ router.get("/homeSortByUsername", async function (req, res) {
         // For notification
         const userId = userData.id;
         const allNotificationData = await notificationDao.getNotificationByUserId(userId);
-        // console.log("allNotificationData--" + JSON.stringify(allNotificationData));
         let notReadList = [];
         for (let i = 0; i < allNotificationData.length; i++) {
             const item = allNotificationData[i];
@@ -637,7 +615,6 @@ router.get("/homeSortByUsername", async function (req, res) {
                 NotificationList.push(notification);
             }
             else if (type == "subscribe") {
-                console.log("item: " + JSON.stringify(item));
                 const beFollowedId = item.receiver_id;
                 const beFollowedData = await userDao.getUserByUserId(beFollowedId);
                 const beFollowedUsername = beFollowedData.username;
@@ -653,7 +630,6 @@ router.get("/homeSortByUsername", async function (req, res) {
                 NotificationList.push(notification);
             }
         }
-        console.log("NotificationList: " + JSON.stringify(NotificationList));
         res.locals.notificationNum = notificationNum;
         res.locals.notification = NotificationList;
 
@@ -706,7 +682,6 @@ router.get("/homeSortByDate", async function (req, res) {
         // For notification
         const userId = userData.id;
         const allNotificationData = await notificationDao.getNotificationByUserId(userId);
-        // console.log("allNotificationData--" + JSON.stringify(allNotificationData));
         let notReadList = [];
         for (let i = 0; i < allNotificationData.length; i++) {
             const item = allNotificationData[i];
@@ -755,7 +730,6 @@ router.get("/homeSortByDate", async function (req, res) {
                 NotificationList.push(notification);
             }
             else if (type == "subscribe") {
-                console.log("item: " + JSON.stringify(item));
                 const beFollowedId = item.receiver_id;
                 const beFollowedData = await userDao.getUserByUserId(beFollowedId);
                 const beFollowedUsername = beFollowedData.username;
@@ -771,7 +745,6 @@ router.get("/homeSortByDate", async function (req, res) {
                 NotificationList.push(notification);
             }
         }
-        console.log("NotificationList: " + JSON.stringify(NotificationList));
         res.locals.notificationNum = notificationNum;
         res.locals.notification = NotificationList;
 
@@ -829,7 +802,6 @@ router.get("/sortByTitle", async function (req, res) {
     // For notification
     const userId = userData.id;
     const allNotificationData = await notificationDao.getNotificationByUserId(userId);
-    // console.log("allNotificationData--" + JSON.stringify(allNotificationData));
     let notReadList = [];
     for (let i = 0; i < allNotificationData.length; i++) {
         const item = allNotificationData[i];
@@ -878,7 +850,6 @@ router.get("/sortByTitle", async function (req, res) {
             NotificationList.push(notification);
         }
         else if (type == "subscribe") {
-            console.log("item: " + JSON.stringify(item));
             const beFollowedId = item.receiver_id;
             const beFollowedData = await userDao.getUserByUserId(beFollowedId);
             const beFollowedUsername = beFollowedData.username;
@@ -894,7 +865,6 @@ router.get("/sortByTitle", async function (req, res) {
             NotificationList.push(notification);
         }
     }
-    console.log("NotificationList: " + JSON.stringify(NotificationList));
     res.locals.notificationNum = notificationNum;
     res.locals.notification = NotificationList;
 
@@ -962,7 +932,6 @@ router.get("/sortByDate", async function (req, res) {
     // For notification
     const userId = userData.id;
     const allNotificationData = await notificationDao.getNotificationByUserId(userId);
-    // console.log("allNotificationData--" + JSON.stringify(allNotificationData));
     let notReadList = [];
     for (let i = 0; i < allNotificationData.length; i++) {
         const item = allNotificationData[i];
@@ -1011,7 +980,6 @@ router.get("/sortByDate", async function (req, res) {
             NotificationList.push(notification);
         }
         else if (type == "subscribe") {
-            console.log("item: " + JSON.stringify(item));
             const beFollowedId = item.receiver_id;
             const beFollowedData = await userDao.getUserByUserId(beFollowedId);
             const beFollowedUsername = beFollowedData.username;
@@ -1027,7 +995,6 @@ router.get("/sortByDate", async function (req, res) {
             NotificationList.push(notification);
         }
     }
-    console.log("NotificationList: " + JSON.stringify(NotificationList));
     res.locals.notificationNum = notificationNum;
     res.locals.notification = NotificationList;
 
@@ -1061,7 +1028,6 @@ router.post("/login", async function (req, res) {
         const rightHashedPasswordData = await userDao.getPassword(username);
         const rightHashedPassword = rightHashedPasswordData.password;
 
-        console.log("rightHashedPassword: " + rightHashedPassword);
         const hashedInputPassword = hashPassword(inputPassword, salt);
         if (hashedInputPassword == rightHashedPassword) {
             const cookieName = "authToken";
@@ -1079,7 +1045,6 @@ router.post("/login", async function (req, res) {
                 console.log("receive delete query");
             } else {
                 const username = req.body.username;
-                console.log("receive article");
                 res.locals.articles = await userDao.getAriticlesByUser(username);
                 res.locals.username = username;
             }
@@ -1101,8 +1066,13 @@ router.get("/setting", async function (req, res) {
     const cookie = req.cookies;
     const username = cookie.username;
     const userData = await userDao.getUserByUsername(username);
-    // console.log("userData----testing" + JSON.stringify(userData));
-
+    let toastMessage;
+    if (req.query.toastMessage != undefined){
+        toastMessage = req.query.toastMessage}
+    else{
+        toastMessage = null;
+    }
+    res.locals.toastMessage = toastMessage;
     res.locals.userCurrentData = userData;
     res.render("setting");
 });
@@ -1129,19 +1099,16 @@ router.post("/changeUsername", async function (req, res) {
 
     if (userData === undefined) {
         await userDao.changeUsername(oldUsername, newUsername);
-        console.log("change username suc");
 
         res.cookie("username", newUsername);
-        console.log("change cookie's username suc");
 
         const toastMessage = "Successfully change the username!";
-        res.locals.toastMessage = toastMessage;
-        res.render("setting");
+        res.redirect(`/setting?toastMessage=${toastMessage}`);
     }
     else {
         const toastMessage = "The username already exists!";
-        res.locals.toastMessage = toastMessage;
-        res.render("setting");
+        req.session.toastMessage = toastMessage;
+        res.redirect(`/setting?toastMessage=${toastMessage}`);
     }
 });
 
@@ -1153,17 +1120,14 @@ router.post("/changeAvatar", async function (req, res) {
     const username = cookies.username;
 
     await userDao.changeAvatar(username, newAvatar);
-    // console.log("change ava suc");
 
     const toastMessage = "Successfully change the Avatar!";
-    console.log(toastMessage);
     res.locals.toastMessage = toastMessage;
-    res.render("setting");
+    res.redirect(`/setting?toastMessage=${toastMessage}`);
 });
 
 router.post("/changeLastName", async function (req, res) {
     const newLastName = req.body.lastName;
-    console.log("get new last name: " + newLastName);
 
     const cookies = req.cookies;
     const username = cookies.username;
@@ -1172,12 +1136,11 @@ router.post("/changeLastName", async function (req, res) {
 
     const toastMessage = "Successfully change the Last Name!";
     res.locals.toastMessage = toastMessage;
-    res.render("setting");
+    res.redirect(`/setting?toastMessage=${toastMessage}`);
 });
 
 router.post("/changeFirstName", async function (req, res) {
     const newFirstName = req.body.firstName;
-    console.log("get new first name: " + newFirstName);
 
     const cookies = req.cookies;
     const username = cookies.username;
@@ -1186,12 +1149,11 @@ router.post("/changeFirstName", async function (req, res) {
 
     const toastMessage = "Successfully change the First Name!";
     res.locals.toastMessage = toastMessage;
-    res.render("setting");
+    res.redirect(`/setting?toastMessage=${toastMessage}`);
 });
 
 router.post("/changeBirth", async function (req, res) {
     const newBirth = req.body.birth;
-    console.log("get new birth: " + newBirth);
 
     const cookies = req.cookies;
     const username = cookies.username;
@@ -1199,7 +1161,7 @@ router.post("/changeBirth", async function (req, res) {
     await userDao.changeBirth(username, newBirth);
     const toastMessage = "Successfully change the Date of Birth!";
     res.locals.toastMessage = toastMessage;
-    res.render("setting");
+    res.redirect(`/setting?toastMessage=${toastMessage}`);
 })
 
 
@@ -1210,34 +1172,29 @@ router.post("/changeBirth", async function (req, res) {
     const username = cookies.username;
 
     await userDao.changeBirth(username, newBirth);
-    console.log("change birth suc");
 
     const toastMessage = "Successfully change the Birth Day";
     res.locals.toastMessage = toastMessage;
-    res.render("setting");
+    res.redirect(`/setting?toastMessage=${toastMessage}`);
 });
 
 
 router.post("/changeDescription", async function (req, res) {
     const newDescription = req.body.description;
-    console.log("get new description: " + newDescription);
 
     const cookies = req.cookies;
     const username = cookies.username;
 
     await userDao.changeDescription(username, newDescription);
-    console.log("change description suc");
 
     const toastMessage = "Successfully change the Description";
     res.locals.toastMessage = toastMessage;
-    res.render("setting");
+    res.redirect(`/setting?toastMessage=${toastMessage}`);
 })
 
 
 router.post("/delete", async function (req, res) {
     const cookies = req.cookies;
-    console.log("cookies: " + JSON.stringify(cookies));
-    console.log("username:" + cookies.username);
     const username = cookies.username;
 
     const user = await userDao.getUserByUsername(username);
@@ -1250,7 +1207,7 @@ router.post("/delete", async function (req, res) {
 
     const toastMessage = "Successfully deleted account!";
     res.locals.toastMessage = toastMessage;
-    res.render("setting");
+    res.redirect("/");
 })
 
 
@@ -1260,17 +1217,14 @@ router.get("/article", async function (req, res) {
     const cookies = req.cookies;
     const username = cookies.username;
     const userData = await userDao.getUserByUsername(username);
-    console.log("userData: " + JSON.stringify(userData));
 
     const user_avatar = userData.avatar;
     res.locals.avatar = user_avatar;
     // -----------------------------
 
     const articleId = req.query.id;
-    console.log("id:" + articleId);
 
     const articleData = await articleDao.getArticleById(articleId);
-    console.log("articleData---------" + JSON.stringify(articleData));
     res.locals.articleData = articleData;
 
     const header = articleData.header;
@@ -1303,7 +1257,6 @@ router.get("/article", async function (req, res) {
         const item = allCommentData[i];
         const parentId = item.parent_id;
         if (parentId === null) {
-            console.log("item: " + JSON.stringify(item));
             const comment = { "comment_id": item.id, "sender": item.username, "recipient": author, "content": item.content, "time": item.time, "nextLevelComment": [] }
             firstLevelCommentData.push(comment);
         }
@@ -1312,8 +1265,6 @@ router.get("/article", async function (req, res) {
             s_t_o_ChildrenCommentData.push(comment);
         }
     }
-    console.log("firstLevelComment: " + JSON.stringify(firstLevelCommentData));
-    console.log("all children comment: " + JSON.stringify(s_t_o_ChildrenCommentData));
 
     for (let i = 0; i < s_t_o_ChildrenCommentData.length; i++) {
         const child = s_t_o_ChildrenCommentData[i];
@@ -1334,9 +1285,6 @@ router.get("/article", async function (req, res) {
             }
         }
     }
-    console.log("-----------------")
-    console.log("t_o_ChildrenCommentData: " + JSON.stringify(t_o_ChildrenCommentData));
-    console.log("second: " + JSON.stringify(secondLevelCommentData));
 
     for (let i = 0; i < t_o_ChildrenCommentData.length; i++) {
         const child = t_o_ChildrenCommentData[i];
@@ -1356,13 +1304,11 @@ router.get("/article", async function (req, res) {
             }
         }
     }
-    console.log("third: " + JSON.stringify(thirdLevelCommentData));
     for (let i = 0; i < thirdLevelCommentData.length; i++) {
         const thirdComment = thirdLevelCommentData[i];
         const thirdCommentId = thirdComment.comment_id;
         const otherCommentData = await commentDao.getAllOtherCommentByCommentId(thirdCommentId);
 
-        console.log("other Comment data: " + JSON.stringify(otherCommentData));
         for (let j = 0; j < otherCommentData.length; j++) {
             const item = otherCommentData[j];
             if (item.id != thirdCommentId) {
@@ -1376,15 +1322,12 @@ router.get("/article", async function (req, res) {
     }
 
     res.locals.firstLevelCommentData = firstLevelCommentData;
-    console.log("----------------------first level comment data------------");
-    console.log("firstLevelCommentData: " + JSON.stringify(firstLevelCommentData));
 
     // For notification
     const userId = userData.id;
 
     // For notification
     const allNotificationData = await notificationDao.getNotificationByUserId(userId);
-    // console.log("allNotificationData--" + JSON.stringify(allNotificationData));
     let notReadList = [];
     for (let i = 0; i < allNotificationData.length; i++) {
         const item = allNotificationData[i];
@@ -1430,7 +1373,6 @@ router.get("/article", async function (req, res) {
             NotificationList.push(notification);
         }
         else if (type == "subscribe") {
-            console.log("item: " + JSON.stringify(item));
             const beFollowedId = item.receiver_id;
             const beFollowedData = await userDao.getUserByUserId(beFollowedId);
             const beFollowedUsername = beFollowedData.username;
@@ -1446,11 +1388,10 @@ router.get("/article", async function (req, res) {
             NotificationList.push(notification);
         }
     }
-    console.log("NotificationList: " + JSON.stringify(NotificationList));
     res.locals.notificationNum = notificationNum;
     res.locals.notification = NotificationList;
 
-    res.render("testArticle");
+    res.render("articlePage");
 });
 
 router.get("/article/comment", async function (req, res) {
@@ -1477,7 +1418,6 @@ router.get("/article/comment", async function (req, res) {
         await notificationDao.addNotification(receiverId, senderId, type, content, time);
     }
     res.json(commentData);
-    console.log("succeccfully add comment");
 });
 
 router.get("/article/deleComment", async function (req, res) {
@@ -1504,9 +1444,7 @@ router.get("/goNotificationDetail", async function (req, res) {
     }
     else if (notificationType == "subscribe") {
         const subscribeId = notificationTypeId;
-        console.log("subscribeId: "+subscribeId);
         const subscribeData = await subscribeDao.getSubscribeDataBySubscribeId(subscribeId);
-        console.log("subscribeData: "+JSON.stringify(subscribeData));
         const FollowerId = subscribeData.subscriber_id;
         const FollowerData = await userDao.getUserByUserID(FollowerId);
         const FollowerName = FollowerData.username;
@@ -1593,7 +1531,6 @@ router.get("/subscription", async function (req, res) {
     // For notification
     const userId = userData.id;
     const allNotificationData = await notificationDao.getNotificationByUserId(userId);
-    // console.log("allNotificationData--" + JSON.stringify(allNotificationData));
     let notReadList = [];
     for (let i = 0; i < allNotificationData.length; i++) {
         const item = allNotificationData[i];
@@ -1639,7 +1576,6 @@ router.get("/subscription", async function (req, res) {
             NotificationList.push(notification);
         }
         else if (type == "subscribe") {
-            console.log("item: " + JSON.stringify(item));
             const beFollowedId = item.receiver_id;
             const beFollowedData = await userDao.getUserByUserId(beFollowedId);
             const beFollowedUsername = beFollowedData.username;
@@ -1655,7 +1591,6 @@ router.get("/subscription", async function (req, res) {
             NotificationList.push(notification);
         }
     }
-    console.log("NotificationList: " + JSON.stringify(NotificationList));
     res.locals.notificationNum = notificationNum;
     res.locals.notification = NotificationList;
 
@@ -1726,7 +1661,6 @@ router.get("/subscription/author", async function (req, res) {
     // For notification-----------------------------
     const userId = userData.id;
     const allNotificationData = await notificationDao.getNotificationByUserId(userId);
-    // console.log("allNotificationData--" + JSON.stringify(allNotificationData));
     let notReadList = [];
     for (let i = 0; i < allNotificationData.length; i++) {
         const item = allNotificationData[i];
@@ -1775,7 +1709,6 @@ router.get("/subscription/author", async function (req, res) {
             NotificationList.push(notification);
         }
         else if (type == "subscribe") {
-            console.log("item: " + JSON.stringify(item));
             const beFollowedId = item.receiver_id;
             const beFollowedData = await userDao.getUserByUserId(beFollowedId);
             const beFollowedUsername = beFollowedData.username;
@@ -1791,7 +1724,6 @@ router.get("/subscription/author", async function (req, res) {
             NotificationList.push(notification);
         }
     }
-    console.log("NotificationList: " + JSON.stringify(NotificationList));
     res.locals.notificationNum = notificationNum;
     res.locals.notification = NotificationList;
 
@@ -1838,7 +1770,6 @@ router.get("/subscription/subscriber", async function (req, res) {
     // For notification-----------------------------
     const userId = userData.id;
     const allNotificationData = await notificationDao.getNotificationByUserId(userId);
-    // console.log("allNotificationData--" + JSON.stringify(allNotificationData));
     let notReadList = [];
     for (let i = 0; i < allNotificationData.length; i++) {
         const item = allNotificationData[i];
@@ -1887,7 +1818,6 @@ router.get("/subscription/subscriber", async function (req, res) {
             NotificationList.push(notification);
         }
         else if (type == "subscribe") {
-            console.log("item: " + JSON.stringify(item));
             const beFollowedId = item.receiver_id;
             const beFollowedData = await userDao.getUserByUserId(beFollowedId);
             const beFollowedUsername = beFollowedData.username;
@@ -1904,7 +1834,6 @@ router.get("/subscription/subscriber", async function (req, res) {
             NotificationList.push(notification);
         }
     }
-    console.log("NotificationList: " + JSON.stringify(NotificationList));
     res.locals.notificationNum = notificationNum;
     res.locals.notification = NotificationList;
 
@@ -2002,7 +1931,6 @@ router.get("/subscription/subscribe", async function (req, res) {
     // For notification-----------------------------
     const userId = userData.id;
     const allNotificationData = await notificationDao.getNotificationByUserId(userId);
-    // console.log("allNotificationData--" + JSON.stringify(allNotificationData));
     let notReadList = [];
     for (let i = 0; i < allNotificationData.length; i++) {
         const item = allNotificationData[i];
@@ -2051,7 +1979,6 @@ router.get("/subscription/subscribe", async function (req, res) {
             NotificationList.push(notification);
         }
         else if (type == "subscribe") {
-            console.log("item: " + JSON.stringify(item));
             const beFollowedId = item.receiver_id;
             const beFollowedData = await userDao.getUserByUserId(beFollowedId);
             const beFollowedUsername = beFollowedData.username;
@@ -2067,7 +1994,6 @@ router.get("/subscription/subscribe", async function (req, res) {
             NotificationList.push(notification);
         }
     }
-    console.log("NotificationList: " + JSON.stringify(NotificationList));
     res.locals.notificationNum = notificationNum;
     res.locals.notification = NotificationList;
 
@@ -2099,7 +2025,6 @@ router.get("/subscription/unsubscribe", async function (req, res) {
     const userData = await userDao.getUserByUsername(username);
     const userId = userData.id;
     const allNotificationData = await notificationDao.getNotificationByUserId(userId);
-    // console.log("allNotificationData--" + JSON.stringify(allNotificationData));
     let notReadList = [];
     for (let i = 0; i < allNotificationData.length; i++) {
         const item = allNotificationData[i];
@@ -2148,7 +2073,6 @@ router.get("/subscription/unsubscribe", async function (req, res) {
             NotificationList.push(notification);
         }
         else if (type == "subscribe") {
-            console.log("item: " + JSON.stringify(item));
             const beFollowedId = item.receiver_id;
             const beFollowedData = await userDao.getUserByUserId(beFollowedId);
             const beFollowedUsername = beFollowedData.username;
@@ -2164,7 +2088,6 @@ router.get("/subscription/unsubscribe", async function (req, res) {
             NotificationList.push(notification);
         }
     }
-    console.log("NotificationList: " + JSON.stringify(NotificationList));
     res.locals.notificationNum = notificationNum;
     res.locals.notification = NotificationList;
 
@@ -2319,7 +2242,6 @@ router.get("/favorite", async function (req, res) {
             NotificationList.push(notification);
         }
         else if (type == "subscribe") {
-            console.log("item: " + JSON.stringify(item));
             const beFollowedId = item.receiver_id;
             const beFollowedData = await userDao.getUserByUserId(beFollowedId);
             const beFollowedUsername = beFollowedData.username;
@@ -2408,7 +2330,6 @@ router.get("/analytics", async function (req, res) {
 
     // For notification-----------------------------
     const allNotificationData = await notificationDao.getNotificationByUserId(userId);
-    // console.log("allNotificationData--" + JSON.stringify(allNotificationData));
     let notReadList = [];
     for (let i = 0; i < allNotificationData.length; i++) {
         const item = allNotificationData[i];
@@ -2457,7 +2378,6 @@ router.get("/analytics", async function (req, res) {
             NotificationList.push(notification);
         }
         else if (type == "subscribe") {
-            console.log("item: " + JSON.stringify(item));
             const beFollowedId = item.receiver_id;
             const beFollowedData = await userDao.getUserByUserId(beFollowedId);
             const beFollowedUsername = beFollowedData.username;
@@ -2473,7 +2393,6 @@ router.get("/analytics", async function (req, res) {
             NotificationList.push(notification);
         }
     }
-    console.log("NotificationList: " + JSON.stringify(NotificationList));
     res.locals.notificationNum = notificationNum;
     res.locals.notification = NotificationList;
 
@@ -2519,11 +2438,29 @@ router.get("/analytics", async function (req, res) {
     res.locals.allCommentNumber = commentNumber;
     res.locals.allLikeNumber = likeNumber;
 
+    for (let i = 0; i < popularIndexList.length; i++)
+    {
+        const currentArticle = popularIndexList[i];
+        const currentArticleIndex = currentArticle.popularIndex;
+        for (let j = i + 1; j < popularIndexList.length; j++)
+        {
+            const nextArticle = popularIndexList[j];
+            const nextArticleIndex = nextArticle.popularIndex;
+            if (nextArticleIndex > currentArticleIndex)
+            {
+                const temp = popularIndexList[i];
+                popularIndexList[i] = popularIndexList[j];
+                popularIndexList[j] = temp;
+            }
+        }
+    }
 
     if (articleNumber >= topNumber) {
         let mostPopularArticleList = [];
         for (let i = 0; i < topNumber; i++) {
             const item = popularIndexList[i];
+            const key = "rank";
+            item[key] = i + 1;
             mostPopularArticleList.push(item);
         }
         res.locals.mostPopularArticleList = mostPopularArticleList;
@@ -2532,6 +2469,8 @@ router.get("/analytics", async function (req, res) {
         let mostPopularArticleList = [];
         for (let i = 0; i < popularIndexList.length; i++) {
             const item = popularIndexList[i];
+            const key = "rank";
+            item[key] = i + 1;
             mostPopularArticleList.push(item);
 
         }
@@ -2549,20 +2488,17 @@ router.get("/analyticsChart", async function (req, res) {
     const allCommentData = await commentDao.getAllCommentData();
     const today = new Date();
     const dayLength = 10;
-    console.log("today: " + today);
 
     let chartData = [];
     for (let i = dayLength - 1; i >= 0; i--) {
         let counter = 0;
         const currentDay = new Date(today).setDate(today.getDate() - i);
         const currentDayAfterFormat = formatDate(currentDay);
-        console.log("currentDayAfterFormat: " + currentDayAfterFormat);
         for (let j = 0; j < allCommentData.length; j++) {
             const item = allCommentData[j];
             const commentTimeString = item.time;
 
             const commentTime = YMDformat(commentTimeString);
-            console.log("commentTime: " + commentTime);
             if (commentTime == currentDayAfterFormat) {
                 counter = counter + 1;
             }
@@ -2571,7 +2507,6 @@ router.get("/analyticsChart", async function (req, res) {
 
         chartData.push(currentCommentNumberData);
     }
-    console.log("chartData: " + JSON.stringify(chartData));
     res.json(chartData);
 });
 
@@ -2646,5 +2581,13 @@ router.delete("/users/:id", async function (req, res) {
         res.status(401);
     }
 });
+
+router.post("/newImage", async function (req, res) {
+    const cookie = req.cookies;
+    const username = cookie.username;
+    const userID = await userDao.getUserIdByUserName(username);
+    res.locals.user_id = JSON.stringify(userID.id);
+    res.render("uploadImage");
+})
 
 module.exports = router;

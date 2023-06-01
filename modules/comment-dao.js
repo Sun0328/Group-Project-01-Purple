@@ -37,7 +37,6 @@ async function addCommentIntoCommentTable(inputSender, inputRcipientCommentId, i
     const seconds = String(currentDate.getSeconds()).padStart(2, '0');
 
     const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-    console.log("formattedDate: " + formattedDate);
     
     await db.run(SQL`
         INSERT INTO comment (user_id, parent_id, content, time, article_id)

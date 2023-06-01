@@ -92,6 +92,12 @@ button:hover {
 }
 
 .content {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 5;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    overflow-y: auto;
     border-bottom: 1px dashed grey;
     margin-left: 0;
 }

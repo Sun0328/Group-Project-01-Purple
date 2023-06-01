@@ -76,3 +76,7 @@ input {
 .turnTo a:hover {
     text-decoration: underline;
 }
+
+#toastMessage {
+    color: red;
+}

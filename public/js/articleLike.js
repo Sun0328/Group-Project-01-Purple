@@ -1,8 +1,6 @@
 window.addEventListener("load", function () {
     let likeStateArray = document.querySelectorAll(".likeSpan");
-    console.log(likeStateArray);
     likeStateArray.forEach(element => {
-        console.log(element.textContent);
         if (element.textContent == "Unlike") {
             const like_container = element.parentNode;
             like_container.classList.add("like_status");
@@ -22,7 +20,6 @@ window.addEventListener("load", function () {
             likeNumber = parseInt(likeNumber, 10);
 
             if (likeState == "Like") {
-                console.log("click like");
                 const response = await fetch(`../addLike?articleId=${articleId}`);
                 const json = await response.json();
                 currentLikeSpan.innerHTML = "Unlike";
@@ -34,7 +31,6 @@ window.addEventListener("load", function () {
                 likeContainer.classList.add("like_status")
             }
             else if (likeState == "Unlike") {
-                console.log("click cancel");
                 const response = await fetch(`../cancelLike?articleId=${articleId}`);
                 const json = await response.json();
                 currentLikeSpan.innerHTML = "Like";
@@ -49,6 +45,5 @@ window.addEventListener("load", function () {
     })
 
     // const likeContainerArray = document.querySelectorAll(".like_container");
-    // console.log(likeContainerArray);
 
 })

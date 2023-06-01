@@ -138,6 +138,10 @@ tr:hover {
         font-size: 20px;
     }
 
+    .part .header {
+        font-size: 30px;
+    }
+
 }
 
 @media only screen and (max-width: 880px) {
@@ -145,6 +149,27 @@ tr:hover {
     table th,
     table td {
         font-size: 16px;
+    }
+
+    .part .header {
+        font-size: 28px;
+    }
+
+}
+
+@media only screen and (max-width: 700px) {
+
+    table th,
+    table td {
+        font-size: 14px;
+    }
+
+    .popular_detail img {
+        width: 200px;
+    }
+
+    .part .header {
+        font-size: 25px;
     }
 
 }

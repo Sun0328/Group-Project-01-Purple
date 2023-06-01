@@ -2,7 +2,6 @@ window.addEventListener("load", async function () {
 
     const response = await this.fetch(`../analyticsChart`);
     const json = await response.json();
-    console.log("json: " + JSON.stringify(json));
 
     const commentNumberData = json;
     let xValues = [];

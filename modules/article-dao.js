@@ -10,7 +10,6 @@ async function getAllArticle(){
     JOIN user u ON a.user_id = u.id
     ORDER BY a.time DESC`);
 
-    console.log(article);
     return article;
 }
 

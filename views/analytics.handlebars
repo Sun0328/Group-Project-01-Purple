@@ -62,14 +62,14 @@
                     <span class="material-symbols-outlined">
                         local_fire_department
                     </span>
-                    <div class="title">Popular Articles -- Top 3</div>
+                    <div class="title">My Popular Articles -- Top 3</div>
                 </div>
 
                 {{#if mostPopularArticleList}}
                 <div class="popular_container">
                     {{#each mostPopularArticleList}}
                     <div class="popular_detail">
-                        <span class="p_title">Rank ?: {{this.header}}</span>
+                        <span class="p_title">Rank {{this.rank}}: {{this.header}}</span>
                         <span class="p_time">Time: {{this.time}}</span>
                         <span class="p_content">{{{this.content}}}</span>
 
