@@ -37,17 +37,16 @@
 
     </form>
 
-    <form action="./changeLastName" method="post">
-        <label for="textLastName">Last Name:</label>
-        <input type="text" id="textLastName" name="lastName" maxlength="32" placeholder="{{userCurrentData.lname}}" required>
-        <button type="submit" name="settingButton">Change Last Name</button>
-    </form>
-
-
     <form action="./changeFirstName" method="post">
         <label for="textFirstName">First Name:</label>
         <input type="text" id="textFirstName" name="firstName" maxlength="32" placeholder="{{userCurrentData.fname}}" required>
         <button type="submit" name="settingButton">Change First Name</button>
+    </form>
+
+    <form action="./changeLastName" method="post">
+        <label for="textLastName">Last Name:</label>
+        <input type="text" id="textLastName" name="lastName" maxlength="32" placeholder="{{userCurrentData.lname}}" required>
+        <button type="submit" name="settingButton">Change Last Name</button>
     </form>
 
     <form action="./changeBirth" method="post">
