@@ -1072,6 +1072,7 @@ router.get("/setting", async function (req, res) {
     else{
         toastMessage = null;
     }
+    res.locals.birth = userData.year + " / " + userData.month + " / " + userData.day;
     res.locals.toastMessage = toastMessage;
     res.locals.userCurrentData = userData;
     res.render("setting");
