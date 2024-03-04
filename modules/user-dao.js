@@ -138,6 +138,15 @@ async function deleteTheUser(username){
         WHERE username = ${testUsername}`);
 }
 
+async function deleteUserById(userId){
+    const db = await dbPromise;
+    
+    const userIdToDelete = userId;
+    await db.run(SQL`
+        DELETE FROM user
+        WHERE id = ${userIdToDelete}`);
+}
+
 async function changeUsername(oldUsername, newUsername){
     const db = await dbPromise;
 
@@ -726,5 +735,6 @@ module.exports = {
     getSubscribeId,
     getLikesByUserId,
     retrieveArticleDataByIdList,
-    getAllUser
+    getAllUser,
+    deleteUserById
 }

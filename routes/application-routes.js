@@ -17,6 +17,7 @@ const notificationDao = require("../modules/notification-dao.js");
 //sort array function
 const sortMethod = require("../modules/sort.js");
 const { log } = require("console");
+const { json } = require("body-parser");
 
 router.get("/", async function (req, res) {
 
@@ -68,7 +69,7 @@ router.get("/", async function (req, res) {
 
         // For notification
         const allNotificationData = await notificationDao.getNotificationByUserId(userId);
-    
+
         let notReadList = [];
         for (let i = 0; i < allNotificationData.length; i++) {
             const item = allNotificationData[i];
@@ -117,7 +118,7 @@ router.get("/", async function (req, res) {
                 NotificationList.push(notification);
             }
             else if (type == "subscribe") {
-        
+
                 const beFollowedId = item.receiver_id;
                 const beFollowedData = await userDao.getUserByUserId(beFollowedId);
                 const beFollowedUsername = beFollowedData.username;
@@ -1067,9 +1068,10 @@ router.get("/setting", async function (req, res) {
     const username = cookie.username;
     const userData = await userDao.getUserByUsername(username);
     let toastMessage;
-    if (req.query.toastMessage != undefined){
-        toastMessage = req.query.toastMessage}
-    else{
+    if (req.query.toastMessage != undefined) {
+        toastMessage = req.query.toastMessage
+    }
+    else {
         toastMessage = null;
     }
     res.locals.birth = userData.year + " / " + userData.month + " / " + userData.day;
@@ -1734,10 +1736,10 @@ router.get("/subscription/author", async function (req, res) {
     if (result == 1) {
         res.locals.subscribe = result;
     }
-    if (followresult == 1){
+    if (followresult == 1) {
         res.locals.follow = followresult;
     }
-    
+
     res.render("profile");
 })
 
@@ -2010,7 +2012,7 @@ router.get("/subscription/subscribe", async function (req, res) {
     if (result == 1) {
         res.locals.subscribe = result;
     }
-    if (result2 == 1){
+    if (result2 == 1) {
         res.locals.follow = result2;
     }
     res.render("profile");
@@ -2132,7 +2134,7 @@ router.get("/subscription/unsubscribe", async function (req, res) {
         if (result == 1) {
             res.locals.subscribe = result;
         }
-        if (result2 == 1){
+        if (result2 == 1) {
             res.locals.follow = result2;
         }
         res.render("profile");
@@ -2174,7 +2176,7 @@ router.get("/subscription/unsubscribe", async function (req, res) {
         if (result == 1) {
             res.locals.follow = result;
         }
-        if (result2 == 1){
+        if (result2 == 1) {
             res.locals.subscribe = result2;
         }
         res.render("profile");
@@ -2439,16 +2441,13 @@ router.get("/analytics", async function (req, res) {
     res.locals.allCommentNumber = commentNumber;
     res.locals.allLikeNumber = likeNumber;
 
-    for (let i = 0; i < popularIndexList.length; i++)
-    {
+    for (let i = 0; i < popularIndexList.length; i++) {
         const currentArticle = popularIndexList[i];
         const currentArticleIndex = currentArticle.popularIndex;
-        for (let j = i + 1; j < popularIndexList.length; j++)
-        {
+        for (let j = i + 1; j < popularIndexList.length; j++) {
             const nextArticle = popularIndexList[j];
             const nextArticleIndex = nextArticle.popularIndex;
-            if (nextArticleIndex > currentArticleIndex)
-            {
+            if (nextArticleIndex > currentArticleIndex) {
                 const temp = popularIndexList[i];
                 popularIndexList[i] = popularIndexList[j];
                 popularIndexList[j] = temp;
@@ -2535,14 +2534,14 @@ function formatDate(date) {
 function YMDformat(dateStr) {
     const dateObj = new Date(dateStr);
     const year = dateObj.getFullYear();
-    const month = dateObj.getMonth() + 1; // 注意月份从0开始，需要加1
+    const month = dateObj.getMonth() + 1; // Start from 0
     const day = dateObj.getDate();
 
     const formattedDate = `${year}-${month < 10 ? '0' + month : month}-${day < 10 ? '0' + day : day}`;
     return formattedDate;
 }
 
-router.get("/users", async function (req, res) {
+router.get("/api/users", async function (req, res) {
 
     const cookies = req.cookies;
     if (Object.keys(cookies).length > 0) {
@@ -2551,8 +2550,7 @@ router.get("/users", async function (req, res) {
         const userData = await userDao.getUserByUsername(username);
         if (userData.admin == 1) {
             const users = await userDao.getAllUser();
-            res.locals.users = users;
-            res.render("users");
+            res.json(users);
         } else {
             res.status(401);
         }
@@ -2561,22 +2559,18 @@ router.get("/users", async function (req, res) {
     }
 });
 
-
-
-router.delete("/users/:id", async function (req, res) {
+router.delete("/api/users/:id", async function (req, res) {
     const cookies = req.cookies;
     if (Object.keys(cookies).length > 0) {
         const username = cookies.username;
         res.locals.currentUser = username;
         const userData = await userDao.getUserByUsername(username);
         if (userData.admin == 1) {
-            const deleteUserId = req.params.userId;
-            const deleteUser = await userDao.getUserByUserID(deleteUserId);
-            if (userData.username !== deleteUser.username) {
-                await userDao.deleteTheUser(deleteUser.username);
-                res.status(204);
-                res.redirect("users");
-            }
+            const userIdToDelete = req.params.id;
+            await userDao.deleteUserById(userIdToDelete);
+            res.status(204);
+        } else {
+            res.status(401);
         }
     } else {
         res.status(401);

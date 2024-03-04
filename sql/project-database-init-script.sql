@@ -14,7 +14,7 @@ DROP TABLE IF EXISTS user;
 CREATE TABLE user (
   id integer NOT NULL PRIMARY KEY,
   username varchar(32) NOT NULL,
-  password varchar(32) NOT NULL,
+  password varchar(216) NOT NULL,
   fname varchar(32) NOT NULL,
   lname varchar(32) NOT NULL,
   year integer NOT NULL,
